@@ -13,7 +13,7 @@ A key feature of the brainsprite viewer is that it is fast to load, because it r
 ## Basic example
 The first thing to do is to add a div in your html with an empty canvas as well as the sprite image, which will be hidden:
 ```html
-<div id="div_viewer">
+<div>
     <canvas id="3Dviewer"> 
     <img id="spriteImg" class="hidden" src="sprite.jpg"> 
 </div>
