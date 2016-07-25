@@ -41,3 +41,20 @@ You can check the full code of the demo [here](https://raw.githubusercontent.com
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/brainSlices.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_basic.html)
 
+## Adding slice coordinates
+The option `flagCoordinates` will turn on display slice numbers at the bottom of each slice:
+```html
+ <script> 
+  $( window ).load(function() {
+    var brain = brainsprite({
+      canvas: "3Dviewer", 
+      sprite: "spriteImg", 
+      flagCoordinates: true,
+      nbSlice: { 'Y':233 , 'Z':189 }
+    });
+  });
+  </script>
+  ```
+You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_basic.html) and check a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html).
+
+>[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/example_slice_numbers.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html)
