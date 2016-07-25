@@ -58,3 +58,19 @@ The option `flagCoordinates` will turn on display slice numbers at the bottom of
 You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_slice_numbers.html) and check a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html).
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/example_slice_numbers.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html)
+
+It is also possible to specify a voxel size (isotropic, i.e. the same dimension in the X, Y and Z axis), as well as an origin, i.e. which voxel has coordinates 0, 0, 0. Note that no rotations/shears are supported, as the volume is assumed to be resampled in MNI space. 
+```html
+  $( window ).load(function() {
+    // Create brain slices
+    var brain = brainsprite({
+      canvas: "3Dviewer", 
+      sprite: "spriteImg", 
+      flagCoordinates: true, 
+      origin: {X: 98, Y:134, Z:72}, 
+      voxelSize: 1, 
+      nbSlice: { 'Y':233 , 'Z':189 }
+    });
+  });
+  ```
+Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_slice_numbers.html) that reports MNI coordinates for the MNI, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_coordinates.html).
