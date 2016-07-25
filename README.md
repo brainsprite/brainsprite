@@ -2,7 +2,7 @@
 
 The brainsprite javascript library turns an image that includes a stack of brain slices in sagital plane, like this one:
 
->![brain sprite](https://github.com/SIMEXP/brainsprite.js/raw/master/examples/sprite_small.jpg "A sprite (or mosaic) of brain slices in sagital plane")
+>[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/sprite_small.jpg" width="300px" />](https://github.com/SIMEXP/brainsprite.js/blob/master/examples/sprite.jpg)
 
 into three brain slices in different planes (sagital, coronal, axial) that can be used to explore the brain interactively  - click here for a basic [live demo>](http://simexp.github.io/brainsprite.js/examples/example_basic.html):
 
