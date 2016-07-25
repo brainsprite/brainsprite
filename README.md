@@ -41,7 +41,7 @@ You can check the full code of the demo [here](https://raw.githubusercontent.com
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/brainSlices.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_basic.html)
 
-## Adding slice coordinates
+## Slice coordinates
 The option `flagCoordinates` will turn on display slice numbers at the bottom of each slice:
 ```html
  <script> 
