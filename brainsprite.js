@@ -23,6 +23,10 @@ function brainsprite(params) {
   // Flag to turn on/off slice numbers 
   brain.flagCoordinates = typeof params.flagCoordinates !== 'undefined' ? params.flagCoordinates : false;
   
+  // Origins and voxel size
+  brain.origin = typeof params.origin !== 'undefined' ? params.origin : {X: 0, Y: 0, Z: 0};
+  brain.voxelSize = typeof params.voxelSize !== 'undefined' ? params.voxelSize : 1;
+  
   // Font parameters
   brain.sizeFont = 0.075;
   brain.colorFont = typeof params.colorFont !== 'undefined' ? params.colorFont : "#FFFFFF";
@@ -100,7 +104,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          var coord = "x="+brain.numSlice.X;
+          var coord = "x="+((brain.numSlice.X * brain.voxelSize) - brain.origin.X);
           var coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X/2-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
         }
@@ -124,7 +128,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          var coord = "y="+brain.numSlice.Y;
+          var coord = "y="+((brain.numSlice.Y * brain.voxelSize) - brain.origin.Y);
           var coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X+(brain.widthCanvas.Y/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
         }
@@ -150,7 +154,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          var coord = "x="+(brain.nbSlice.Z-brain.numSlice.Z-1);
+          var coord = "z="+(((brain.nbSlice.Z-brain.numSlice.Z-1) * brain.voxelSize) - brain.origin.Z);
           var coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
         }
