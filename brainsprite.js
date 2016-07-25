@@ -150,7 +150,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          var coord = "z="+brain.numSlice.Z;
+          var coord = "x="+(brain.nbSlice.Z-brain.numSlice.Z-1);
           var coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
         }
