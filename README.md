@@ -55,6 +55,6 @@ The option `flagCoordinates` will turn on display slice numbers at the bottom of
   });
   </script>
   ```
-You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_basic.html) and check a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html).
+You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_slice_numbers.html) and check a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html).
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/example_slice_numbers.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html)
