@@ -4,7 +4,7 @@ The brainsprite javascript library turns an image that includes a stack of brain
 
 >![brain sprite](https://github.com/SIMEXP/brainsprite.js/raw/master/examples/sprite_small.jpg "A sprite (or mosaic) of brain slices in sagital plane")
 
-into three brain slices in different planes (sagital, coronal, axial) that can be used to explore the brain interactively  - click here for [a live demo](http://simexp.github.io/brainsprite.js/example_basic.html):
+into three brain slices in different planes (sagital, coronal, axial) that can be used to explore the brain interactively  - click here for [a live demo](http://simexp.github.io/brainsprite.js/examples/example_basic.html):
 
 >![brain slices](https://github.com/SIMEXP/brainsprite.js/raw/master/examples/brainSlices.png "Interactive brain slices in sagital/coronal/axial planes")
 
@@ -35,7 +35,7 @@ Finally, once the page is loaded, you call brainsprite to create a `brainSlice` 
   });
   </script>
   ```
-The three parameters are `canvas`: the ID of the canvas where the brain slices will be added; `sprite`: the ID of the sprite image; and, `nbslice` the size, along axis Y and Z, of each slice inside the sprite. The call to `brainsprite` will automatically generate the slices. 
+The three parameters are `canvas`: the ID of the canvas where the brain slices will be added; `sprite`: the ID of the sprite image; and, `nbslice` the size, along axis Y and Z, of each slice inside the sprite. The call to `brainsprite` will automatically generate the slices. Try clicking on the slices to navigate the volume. 
 
-You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_basic.html) and check a live version [here](http://simexp.github.io/brainsprite.js/example_basic.html).
+You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_basic.html) and check a live version [here](http://simexp.github.io/brainsprite.js/examples/example_basic.html).
 
