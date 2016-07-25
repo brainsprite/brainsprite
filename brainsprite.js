@@ -18,7 +18,19 @@ function brainsprite(params) {
   brain.contextZ = brain.canvasZ.getContext('2d');
   
   // Background color for the canvas
-  brain.colorBackGround = typeof params.colorBackGround !== 'undefined' ? params.colorBackGround : "black";
+  brain.colorBackGround = typeof params.colorBackGround !== 'undefined' ? params.colorBackGround : "#000000";
+  
+  // Flag to turn on/off slice numbers 
+  brain.flagCoordinates = typeof params.flagCoordinates !== 'undefined' ? params.flagCoordinates : false;
+  
+  // Font parameters
+  brain.sizeFont = 0.075;
+  brain.colorFont = typeof params.colorFont !== 'undefined' ? params.colorFont : "#FFFFFF";
+  if (brain.flagCoordinates) { 
+    brain.spaceFont = 0.1;
+  } else {
+    brain.spaceFont = 0;
+  };
   
   // The sprite image
   brain.sprite = document.getElementById(params.sprite);
@@ -62,28 +74,40 @@ function brainsprite(params) {
     brain.heightCanvas.Z = Math.floor(brain.widthCanvas.Z * brain.nbSlice.Y / brain.nbSlice.X );
     brain.heightCanvas.max = Math.max(brain.heightCanvas.X,brain.heightCanvas.Y,brain.heightCanvas.Z);
     
-    // If necessary, apply new dimensions to the canvas
+    // Apply the width/height to the canvas, if necessary    
     if (brain.canvas.width!=(brain.widthCanvas.X+brain.widthCanvas.Y+brain.widthCanvas.Z)) {   
       brain.canvas.width = brain.widthCanvas.X+brain.widthCanvas.Y+brain.widthCanvas.Z;
-      brain.canvas.height = brain.heightCanvas.max;
+      brain.canvas.height = Math.round((1+brain.spaceFont)*(brain.heightCanvas.max));
     };
+    
+    // Set fill color for the slice
     brain.context.fillStyle=brain.colorBackGround;
   
+    // Size for fonts
+    var sizeFontPixels = Math.round(brain.sizeFont*(brain.heightCanvas.max));
+    
     // Now draw the slice
     switch(type) {
       case 'X':
         // Draw a sagital slice
         var posW = ((brain.numSlice.X)%brain.nbCol);
         var posH = (brain.numSlice.X-posW)/brain.nbCol;
-        brain.context.fillRect(0, 0, brain.widthCanvas.X , brain.heightCanvas.max);
+        brain.context.fillRect(0, 0, brain.widthCanvas.X , brain.canvas.height);
         brain.context.drawImage(brain.sprite,
                 posW*brain.nbSlice.Y, posH*brain.nbSlice.Z, brain.nbSlice.Y, brain.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
-        //ctx.fillStyle = "#ffffff";
-        //ctx.fillText("Slice number "+numSlice.X,wImg.X/2,0.05*hImg.max);
+        
+        // Add X coordinates on the slice
+        if (brain.flagCoordinates) {
+          brain.context.font = sizeFontPixels + "px Arial";
+          brain.context.fillStyle = brain.colorFont;
+          var coord = "x="+brain.numSlice.X;
+          var coordWidth = brain.context.measureText(coord).width;
+          brain.context.fillText(coord,brain.widthCanvas.X/2-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
+        }
         break
       case 'Y':
         // Draw a coronal slice
-        brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y, brain.heightCanvas.max);
+        brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y, brain.canvas.height);
         brain.canvasY.width  = brain.nbSlice.X;
         brain.canvasY.height = brain.nbSlice.Z;
         for (xx=0; xx<brain.nbSlice.X; xx++) {
@@ -95,11 +119,19 @@ function brainsprite(params) {
         }
         brain.context.drawImage(brain.canvasY,
                 0, 0, brain.nbSlice.X, brain.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max-brain.heightCanvas.Y)/2, brain.widthCanvas.Y, brain.heightCanvas.Y );
-        // brain.context.fillStyle = "#ffffff";
-        // brain.context.fillText("Slice number "+numSlice.Y,wImg.X + (wImg.Y/2),0.05*hImg.max);
+        
+        // Add Y coordinates on the slice
+        if (brain.flagCoordinates) {
+          brain.context.font = sizeFontPixels + "px Arial";
+          brain.context.fillStyle = brain.colorFont;
+          var coord = "y="+brain.numSlice.Y;
+          var coordWidth = brain.context.measureText(coord).width;
+          brain.context.fillText(coord,brain.widthCanvas.X+(brain.widthCanvas.Y/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
+        }
+        
       case 'Z':
         // Draw an axial slice
-        brain.context.fillRect(brain.widthCanvas.X+brain.widthCanvas.Y, 0, brain.widthCanvas.Z, brain.heightCanvas.max);
+        brain.context.fillRect(brain.widthCanvas.X+brain.widthCanvas.Y, 0, brain.widthCanvas.Z, brain.canvas.height);
         brain.canvasZ.width = brain.nbSlice.X;
         brain.canvasZ.height = brain.nbSlice.Y;
         brain.contextZ.rotate(-Math.PI/2);
@@ -113,9 +145,15 @@ function brainsprite(params) {
         }
         brain.context.drawImage(brain.canvasZ,
                 0, 0, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X+brain.widthCanvas.Y, (brain.heightCanvas.max-brain.heightCanvas.Z)/2, brain.widthCanvas.Z, brain.heightCanvas.Z );
-        // brain.context.fillStyle = "#ffffff";
-        // brain.context.fillText("Slice number "+brain.numSlice.Z,brain.widthCanvas.X + brain.widthCanvas.Y + (brain.widthCanvas.Z/2),0.05*brain.heightCanvas.max);
         
+        // Add Z coordinates on the slice
+        if (brain.flagCoordinates) {
+          brain.context.font = sizeFontPixels + "px Arial";
+          brain.context.fillStyle = brain.colorFont;
+          var coord = "z="+brain.numSlice.Z;
+          var coordWidth = brain.context.measureText(coord).width;
+          brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
+        }
     }
   };
 
@@ -124,16 +162,23 @@ function brainsprite(params) {
     var xx = e.pageX - brain.canvas.offsetLeft;
     var yy = e.pageY - brain.canvas.offsetTop;
     if (xx<brain.widthCanvas.X){
-      brain.draw(Math.round(brain.nbSlice.Y*(xx/brain.widthCanvas.X)),'Y');
-      brain.draw(Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.X)/2))/brain.heightCanvas.X),'Z');
+      var sy = Math.round(brain.nbSlice.Y*(xx/brain.widthCanvas.X));
+      var sz = Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.X)/2))/brain.heightCanvas.X);
+      brain.draw(Math.max(Math.min(sy,brain.nbSlice.Y-1),0),'Y');
+      brain.draw(Math.max(Math.min(sz,brain.nbSlice.Z-1),0),'Z');
     } else if (xx<(brain.widthCanvas.X+brain.widthCanvas.Y)) {
       xx = xx-brain.widthCanvas.X;
-      brain.draw(Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Y)),'X');
-      brain.draw(Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.Y)/2))/brain.heightCanvas.Y),'Z');
+      sx = Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Y));
+      sz = Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.Y)/2))/brain.heightCanvas.Y);
+      brain.draw(Math.max(Math.min(sx,brain.nbSlice.X-1),0),'X');
+      brain.draw(Math.max(Math.min(sz,brain.nbSlice.Z-1),0),'Z');
     } else {
       xx = xx-brain.widthCanvas.X-brain.widthCanvas.Y;
-      brain.draw(Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Z)),'X');
-      brain.draw(Math.round(brain.nbSlice.Y*(1-((yy-((brain.heightCanvas.max-brain.heightCanvas.Z)/2))/brain.heightCanvas.Z))),'Y');
+      sx = Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Z));
+      sy = Math.round(brain.nbSlice.Y*(1-((yy-((brain.heightCanvas.max-brain.heightCanvas.Z)/2))/brain.heightCanvas.Z)));
+      brain.draw(Math.max(Math.min(sx,brain.nbSlice.X-1),0),'X');
+      brain.draw(Math.max(Math.min(sy,brain.nbSlice.Y-1),0),'Y');
+      brain.draw(brain.numSlice.Z,'Z');
     }
   };
   
