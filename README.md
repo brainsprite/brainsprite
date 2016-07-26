@@ -74,3 +74,21 @@ It is also possible to specify a voxel size (isotropic, i.e. the same dimension 
   });
   ```
 Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_slice_numbers.html) that reports MNI coordinates for the MNI, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_coordinates.html).
+
+## Click events
+It is possible to attach a function that will be triggered when the user clicks on the brain viewer. The stucture passed to the function is `brain` and contains all the info about the brain viewer, including the current slice coordinates. In this example, an alert is triggered that reports current coordinates:
+```html
+  $( window ).load(function() {
+    var brain = brainsprite({
+      canvas: "3Dviewer", 
+      sprite: "spriteImg", 
+      origin: {X: 98, Y:134, Z:72}, 
+      voxelSize: 1, 
+      onclick: function showCoordinates(brain) { 
+        alert("Slice coordinates: x=" + brain.coordinatesSlice.X + " , y=" + brain.coordinatesSlice.Y + " ,z=" + brain.coordinatesSlice.Z);
+      }, 
+      nbSlice: { 'Y':233 , 'Z':189 }
+    });
+  });
+  ```
+Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_click.html) that reports MNI coordinates for the MNI, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_click.html).
