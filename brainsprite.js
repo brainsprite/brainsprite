@@ -17,6 +17,9 @@ function brainsprite(params) {
   brain.canvasZ = document.createElement('canvas');
   brain.contextZ = brain.canvasZ.getContext('2d');
   
+  // Onclick events
+  brain.onclick = typeof params.onclick !== 'undefined' ? params.onclick : "";
+  
   // Background color for the canvas
   brain.colorBackGround = typeof params.colorBackGround !== 'undefined' ? params.colorBackGround : "#000000";
   
@@ -61,6 +64,13 @@ function brainsprite(params) {
     'Z': Math.floor(brain.nbSlice.Z/2) 
   };
 
+  // Coordinates for current slices - these will get updated when drawing the slices
+  brain.coordinatesSlice = {
+    'X': 0, 
+    'Y': 0, 
+    'Z': 0 
+  };
+  
   // Draw X,Y,Z slices for a particular time frame in the canvas. 
   brain.draw = function(slice,type) {
 
@@ -90,6 +100,11 @@ function brainsprite(params) {
     // Size for fonts
     var sizeFontPixels = Math.round(brain.sizeFont*(brain.heightCanvas.max));
     
+    // Update slice coordinates
+    brain.coordinatesSlice.X = (brain.numSlice.X * brain.voxelSize) - brain.origin.X;
+    brain.coordinatesSlice.Y = (brain.numSlice.Y * brain.voxelSize) - brain.origin.Y;
+    brain.coordinatesSlice.Z = ((brain.nbSlice.Z-brain.numSlice.Z-1) * brain.voxelSize) - brain.origin.Z;
+          
     // Now draw the slice
     switch(type) {
       case 'X':
@@ -104,7 +119,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          var coord = "x="+((brain.numSlice.X * brain.voxelSize) - brain.origin.X);
+          var coord = "x="+brain.coordinatesSlice.X;
           var coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X/2-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
         }
@@ -128,7 +143,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          var coord = "y="+((brain.numSlice.Y * brain.voxelSize) - brain.origin.Y);
+          var coord = "y="+brain.coordinatesSlice.Y;
           var coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X+(brain.widthCanvas.Y/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
         }
@@ -154,7 +169,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          var coord = "z="+(((brain.nbSlice.Z-brain.numSlice.Z-1) * brain.voxelSize) - brain.origin.Z);
+          var coord = "z="+brain.coordinatesSlice.Z;
           var coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
         }
@@ -187,7 +202,7 @@ function brainsprite(params) {
   };
   
   // Attach a listener for clicks
-  brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e)}, false);
+  brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e); brain.onclick(brain)}, false);
   
   // Draw a X slice for good measure
   brain.draw(brain.numSlice.X,'X')
