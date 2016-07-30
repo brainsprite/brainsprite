@@ -92,3 +92,30 @@ It is possible to attach a function that will be triggered when the user clicks 
   });
   ```
 Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_click.html) that pops up an alert with MNI coordinates for the voxel associated with the click, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_click.html).
+
+## Overlay
+It is possible to add an overlay to a volume. The overlay is loaded as a sprite image and needs to be in the same space. The resolution of the background and overlay can differ by a constant factor. We first start by adding a second (hidden) sprite image in the page:
+```html
+<div id="div_viewer">
+    <canvas id="3Dviewer"> <!-- this is the canvas that will feature the brain slices -->
+    <img id="spriteImg" class="hidden" src="sprite.jpg"> <!-- load a hidden version of the sprite image that includes all (sagital) brain slices -->
+    <img id="overlayImg" class="hidden" src="dmnSprite.png"> <!-- another sprite image, with an overlay-->
+</div>
+```
+Then, we add the description of the overlay (including the number of voxels in the `Y` and `Z` dimensions) to the call to `brainsprite`. Note that the sprite can have a different organization than the background, in terms of the number of rows and columns.
+```html
+  $( window ).load(function() {
+    // Create brain slices
+    var brain = brainsprite({
+      canvas: "3Dviewer", 
+      sprite: "spriteImg", 
+      overlay: {
+        sprite: "overlayImg", 
+        nbSlice: {'Y':79 , 'Z':63 }
+      },
+      nbSlice: { 'Y':233 , 'Z':189 }
+    });
+  });
+  ```
+Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_overlay.html) adding a functional connectivity map to a structural MRI, along with a live [example of overlay >](http://simexp.github.io/brainsprite.js/examples/example_overlay.html).
+
