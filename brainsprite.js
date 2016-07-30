@@ -87,14 +87,20 @@ function brainsprite(params) {
         Y: params.overlay.nbSlice.Y, 
         Z: params.overlay.nbSlice.Z
       };
+      // Ratio between the size of the foreground and background
       brain.overlay.ratio = brain.overlay.nbSlice.Y / brain.nbSlice.Y;
+      // An in-memory canvas to draw intermediate reconstruction
+      // of the coronal slice, at native resolution
+      brain.overlay.canvasY = document.createElement('canvas');
+      brain.overlay.contextY = brain.overlay.canvasY.getContext('2d');
+  
   } else {
       brain.overlay = false;
   };
   
-  //**************************************************************//
-  // Draw X,Y,Z slices for a particular time frame in the canvas. //
-  //**************************************************************//
+  //***************************************//
+  // Draw a particular slice in the canvas //
+  //***************************************//
   brain.draw = function(slice,type) {
 
     // Update the slice number
@@ -137,6 +143,8 @@ function brainsprite(params) {
         brain.context.fillRect(0, 0, brain.widthCanvas.X , brain.canvas.height);
         brain.context.drawImage(brain.sprite,
                 posW*brain.nbSlice.Y, posH*brain.nbSlice.Z, brain.nbSlice.Y, brain.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
+        
+        // Add overlay
         if (brain.overlay) {
             var posW = ((Math.round(brain.overlay.ratio*brain.numSlice.X))%brain.overlay.nbCol);
             var posH = (Math.round(brain.overlay.ratio*brain.numSlice.X)-posW)/brain.overlay.nbCol;
@@ -154,7 +162,7 @@ function brainsprite(params) {
         }
         break
       case 'Y':
-        // Draw a coronal slice
+        // Draw a single coronal slice at native resolution
         brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y, brain.canvas.height);
         brain.canvasY.width  = brain.nbSlice.X;
         brain.canvasY.height = brain.nbSlice.Z;
@@ -163,10 +171,26 @@ function brainsprite(params) {
             var posH = (xx-posW)/brain.nbCol;
             brain.contextY.drawImage(brain.sprite, 
                 posW*brain.nbSlice.Y + brain.numSlice.Y, posH*brain.nbSlice.Z, 1, brain.nbSlice.Z, xx, 0, 1, brain.nbSlice.Z );
-                
         }
+        // Redraw the coronal slice in the canvas at screen resolution
         brain.context.drawImage(brain.canvasY,
                 0, 0, brain.nbSlice.X, brain.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max-brain.heightCanvas.Y)/2, brain.widthCanvas.Y, brain.heightCanvas.Y );
+        
+        // Add overlay
+        if (brain.overlay) {
+          // Draw a single coronal slice at native resolution (for the overlay) 
+          brain.overlay.canvasY.width = brain.overlay.nbSlice.X;
+          brain.overlay.canvasY.height = brain.overlay.nbSlice.Z;
+          for (xx=0; xx<brain.overlay.nbSlice.X; xx++) {
+            var posW = xx%brain.overlay.nbCol;
+            var posH = (xx-posW)/brain.overlay.nbCol;
+            brain.overlay.contextY.drawImage(brain.overlay.sprite, 
+                posW*brain.overlay.nbSlice.Y + Math.round(brain.overlay.ratio*brain.numSlice.Y), posH*brain.overlay.nbSlice.Z, 1, brain.overlay.nbSlice.Z, xx, 0, 1, brain.overlay.nbSlice.Z );
+          }  
+          // Redraw the coronal slice in the canvas at screen resolution
+          brain.context.drawImage(brain.overlay.canvasY,
+                0, 0, brain.overlay.nbSlice.X, brain.overlay.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max-brain.heightCanvas.Y)/2, brain.widthCanvas.Y, brain.heightCanvas.Y );
+        }
         
         // Add Y coordinates on the slice
         if (brain.flagCoordinates) {
