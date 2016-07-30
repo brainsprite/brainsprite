@@ -1,5 +1,9 @@
 function brainsprite(params) {
 
+  //******************//
+  // Parse parameters //
+  //******************//
+    
   // Initialize the brain object
   var brain = {};
   
@@ -39,39 +43,58 @@ function brainsprite(params) {
     brain.spaceFont = 0;
   };
   
-  // The sprite image
-  brain.sprite = document.getElementById(params.sprite);
-  
+  //******************//
+  // The sprite image //
+  //******************//
+  brain.sprite = document.getElementById(params.sprite);  
   // Number of columns and rows in the sprite
   brain.nbCol = brain.sprite.width/params.nbSlice.Y; 
   brain.nbRow = brain.sprite.height/params.nbSlice.Z;  
-
   // Number of slices
   brain.nbSlice = { 
     X: brain.nbCol*brain.nbRow, 
     Y: params.nbSlice.Y, 
     Z: params.nbSlice.Z
   };
-  
   // width and height for the canvas
   brain.widthCanvas  = {'X':0 , 'Y':0 , 'Z':0 };
   brain.heightCanvas = {'X':0 , 'Y':0 , 'Z':0 , 'max':0};
-  
   // Default for current slices
   brain.numSlice = {
     'X': Math.floor(brain.nbSlice.X/2), 
     'Y': Math.floor(brain.nbSlice.Y/2), 
     'Z': Math.floor(brain.nbSlice.Z/2) 
   };
-
   // Coordinates for current slices - these will get updated when drawing the slices
-  brain.coordinatesSlice = {
-    'X': 0, 
-    'Y': 0, 
-    'Z': 0 
+  brain.coordinatesSlice = {'X': 0, 'Y': 0, 'Z': 0 };
+
+  //*************//  
+  // The overlay //
+  //*************//
+  params.overlay = typeof params.overlay !== 'undefined' ? params.overlay : {};
+  if (params.overlay) {
+      // Initialize the overlay
+      brain.overlay = {};
+      // Get the sprite
+      brain.overlay.sprite = document.getElementById(params.overlay.sprite); 
+      // Ratio between the resolution of the foreground and background
+      // Number of columns and rows in the overlay
+      brain.overlay.nbCol = brain.overlay.sprite.width/params.overlay.nbSlice.Y;
+      brain.overlay.nbRow = brain.overlay.sprite.height/params.overlay.nbSlice.Z; 
+      // Number of slices in the overlay
+      brain.overlay.nbSlice = { 
+        X: brain.overlay.nbCol*brain.overlay.nbRow, 
+        Y: params.overlay.nbSlice.Y, 
+        Z: params.overlay.nbSlice.Z
+      };
+      brain.overlay.ratio = brain.overlay.nbSlice.Y / brain.nbSlice.Y;
+  } else {
+      brain.overlay = false;
   };
   
-  // Draw X,Y,Z slices for a particular time frame in the canvas. 
+  //**************************************************************//
+  // Draw X,Y,Z slices for a particular time frame in the canvas. //
+  //**************************************************************//
   brain.draw = function(slice,type) {
 
     // Update the slice number
@@ -114,7 +137,13 @@ function brainsprite(params) {
         brain.context.fillRect(0, 0, brain.widthCanvas.X , brain.canvas.height);
         brain.context.drawImage(brain.sprite,
                 posW*brain.nbSlice.Y, posH*brain.nbSlice.Z, brain.nbSlice.Y, brain.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
-        
+        if (brain.overlay) {
+            var posW = ((Math.round(brain.overlay.ratio*brain.numSlice.X))%brain.overlay.nbCol);
+            var posH = (Math.round(brain.overlay.ratio*brain.numSlice.X)-posW)/brain.overlay.nbCol;
+            brain.context.drawImage(brain.overlay.sprite,
+                posW*brain.overlay.nbSlice.Y, posH*brain.overlay.nbSlice.Z, brain.overlay.nbSlice.Y, brain.overlay.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
+        };
+            
         // Add X coordinates on the slice
         if (brain.flagCoordinates) {
           brain.context.font = sizeFontPixels + "px Arial";
@@ -202,7 +231,11 @@ function brainsprite(params) {
   };
   
   // Attach a listener for clicks
-  brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e); brain.onclick(brain)}, false);
+  if (brain.onclick) { 
+      brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e); brain.onclick(brain)}, false);
+  } else {
+      brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e)}, false);
+  };
   
   // Draw a X slice for good measure
   brain.draw(brain.numSlice.X,'X')
