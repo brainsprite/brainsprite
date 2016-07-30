@@ -93,7 +93,10 @@ function brainsprite(params) {
       // of the coronal slice, at native resolution
       brain.overlay.canvasY = document.createElement('canvas');
       brain.overlay.contextY = brain.overlay.canvasY.getContext('2d');
-  
+      // An in-memory canvas to draw intermediate reconstruction
+      // of the axial slice, at native resolution
+      brain.overlay.canvasZ = document.createElement('canvas');
+      brain.overlay.contextZ = brain.overlay.canvasZ.getContext('2d');
   } else {
       brain.overlay = false;
   };
@@ -202,7 +205,7 @@ function brainsprite(params) {
         }
         
       case 'Z':
-        // Draw an axial slice
+        // Draw a single axial slice at native resolution
         brain.context.fillRect(brain.widthCanvas.X+brain.widthCanvas.Y, 0, brain.widthCanvas.Z, brain.canvas.height);
         brain.canvasZ.width = brain.nbSlice.X;
         brain.canvasZ.height = brain.nbSlice.Y;
@@ -215,8 +218,27 @@ function brainsprite(params) {
                 posW*brain.nbSlice.Y , posH*brain.nbSlice.Z + brain.numSlice.Z, brain.nbSlice.Y, 1, 0, xx, brain.nbSlice.Y, 1 );
                 
         }
+        // Redraw the axial slice in the canvas at screen resolution
         brain.context.drawImage(brain.canvasZ,
                 0, 0, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X+brain.widthCanvas.Y, (brain.heightCanvas.max-brain.heightCanvas.Z)/2, brain.widthCanvas.Z, brain.heightCanvas.Z );
+        
+        // Add overlay
+        if (brain.overlay) {
+          // Draw a single axial slice at native resolution (for the overlay) 
+          brain.overlay.canvasZ.width = brain.overlay.nbSlice.X;
+          brain.overlay.canvasZ.height = brain.overlay.nbSlice.Y;
+          brain.overlay.contextZ.rotate(-Math.PI/2);
+          brain.overlay.contextZ.translate(-brain.overlay.nbSlice.Y,0);
+          for (xx=0; xx<brain.overlay.nbSlice.X; xx++) {
+            var posW = xx%brain.overlay.nbCol;
+            var posH = (xx-posW)/brain.overlay.nbCol;
+            brain.overlay.contextZ.drawImage(brain.overlay.sprite, 
+                posW*brain.overlay.nbSlice.Y , posH*brain.overlay.nbSlice.Z + Math.round(brain.overlay.ratio*brain.numSlice.Z), brain.overlay.nbSlice.Y, 1,  0, xx, brain.overlay.nbSlice.Y , 1 );
+          }  
+          // Redraw the axial slice in the canvas at screen resolution
+          brain.context.drawImage(brain.overlay.canvasZ,
+                0, 0, brain.overlay.nbSlice.X, brain.overlay.nbSlice.Y, brain.widthCanvas.X+brain.widthCanvas.Y, (brain.heightCanvas.max-brain.heightCanvas.Z)/2, brain.widthCanvas.Z, brain.heightCanvas.Z );
+        }
         
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
