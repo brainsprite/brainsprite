@@ -280,8 +280,18 @@ function brainsprite(params) {
   if (brain.onclick) { 
       brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e); brain.onclick(brain)}, false);
   } else {
-      brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e)}, false);
+      brain.canvas.addEventListener('click', brain.clickBrain, false);
   };
+  
+  // Attach a listener on mouse down 
+  brain.canvas.addEventListener('mousedown', function(e) { 
+    brain.canvas.addEventListener('mousemove', brain.clickBrain, false);    
+  }, false);
+  
+  // Attach a listener on mouse up
+  brain.canvas.addEventListener('mouseup', function(e) {
+      brain.canvas.removeEventListener('mousemove', brain.clickBrain, false);
+  }, false);    
   
   // Draw a X slice for good measure
   brain.draw(brain.numSlice.X,'X')
