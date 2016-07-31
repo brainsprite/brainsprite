@@ -71,7 +71,7 @@ function brainsprite(params) {
   //*************//  
   // The overlay //
   //*************//
-  params.overlay = typeof params.overlay !== 'undefined' ? params.overlay : {};
+  params.overlay = typeof params.overlay !== 'undefined' ? params.overlay : false;
   if (params.overlay) {
       // Initialize the overlay
       brain.overlay = {};
