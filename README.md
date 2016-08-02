@@ -117,5 +117,7 @@ Then, we add the description of the overlay (including the number of voxels in t
     });
   });
   ```
-Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_overlay.html) adding a functional connectivity map to a structural MRI, along with a live [example of overlay >](http://simexp.github.io/brainsprite.js/examples/example_overlay.html).
+Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_overlay.html) adding a functional connectivity map to a structural MRI, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_overlay.html).
+
+>[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/example_overlay.jpg" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_overlay.html)
 
