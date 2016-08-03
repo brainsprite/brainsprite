@@ -90,6 +90,10 @@ function brainsprite(params) {
       // Ratio between the size of the foreground and background
       brain.overlay.ratio = brain.overlay.nbSlice.Y / brain.nbSlice.Y;
       // An in-memory canvas to draw intermediate reconstruction
+      // of the axial slice, at native resolution
+      brain.overlay.canvasX = document.createElement('canvas');
+      brain.overlay.contextX = brain.overlay.canvasX.getContext('2d');
+      // An in-memory canvas to draw intermediate reconstruction
       // of the coronal slice, at native resolution
       brain.overlay.canvasY = document.createElement('canvas');
       brain.overlay.contextY = brain.overlay.canvasY.getContext('2d');
@@ -97,6 +101,8 @@ function brainsprite(params) {
       // of the axial slice, at native resolution
       brain.overlay.canvasZ = document.createElement('canvas');
       brain.overlay.contextZ = brain.overlay.canvasZ.getContext('2d');
+      // opacity
+      brain.overlay.opacity = typeof params.overlay.opacity !== 'undefined' ? params.overlay.opacity : 1;
   } else {
       brain.overlay = false;
   };
@@ -149,10 +155,17 @@ function brainsprite(params) {
         
         // Add overlay
         if (brain.overlay) {
+            // Draw a single axial slice at native resolution (for the overlay) 
+            brain.overlay.canvasX.width = brain.overlay.nbSlice.Y;
+            brain.overlay.canvasX.height = brain.overlay.nbSlice.Z;
+            brain.overlay.contextX.globalAlpha = brain.overlay.opacity;
             var posW = ((Math.round(brain.overlay.ratio*brain.numSlice.X))%brain.overlay.nbCol);
             var posH = (Math.round(brain.overlay.ratio*brain.numSlice.X)-posW)/brain.overlay.nbCol;
-            brain.context.drawImage(brain.overlay.sprite,
-                posW*brain.overlay.nbSlice.Y, posH*brain.overlay.nbSlice.Z, brain.overlay.nbSlice.Y, brain.overlay.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
+            brain.overlay.contextX.drawImage(brain.overlay.sprite, 
+                posW*brain.overlay.nbSlice.Y, posH*brain.overlay.nbSlice.Z, brain.overlay.nbSlice.Y, brain.overlay.nbSlice.Z,0,0,brain.overlay.nbSlice.Y,brain.overlay.nbSlice.Z);
+            // Draw the X slice on the main canvas
+            brain.context.drawImage(brain.overlay.canvasX,
+                0, 0, brain.overlay.nbSlice.Y, brain.overlay.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
         };
             
         // Add X coordinates on the slice
@@ -184,6 +197,7 @@ function brainsprite(params) {
           // Draw a single coronal slice at native resolution (for the overlay) 
           brain.overlay.canvasY.width = brain.overlay.nbSlice.X;
           brain.overlay.canvasY.height = brain.overlay.nbSlice.Z;
+          brain.overlay.contextY.globalAlpha = brain.overlay.opacity;
           for (xx=0; xx<brain.overlay.nbSlice.X; xx++) {
             var posW = xx%brain.overlay.nbCol;
             var posH = (xx-posW)/brain.overlay.nbCol;
@@ -229,6 +243,7 @@ function brainsprite(params) {
           brain.overlay.canvasZ.height = brain.overlay.nbSlice.Y;
           brain.overlay.contextZ.rotate(-Math.PI/2);
           brain.overlay.contextZ.translate(-brain.overlay.nbSlice.Y,0);
+          brain.overlay.contextZ.globalAlpha = brain.overlay.opacity;
           for (xx=0; xx<brain.overlay.nbSlice.X; xx++) {
             var posW = xx%brain.overlay.nbCol;
             var posH = (xx-posW)/brain.overlay.nbCol;
@@ -277,7 +292,7 @@ function brainsprite(params) {
   };
   
   // Attach a listener for clicks
-  if (brain.onclick) { 
+  if (brain.onclick) {
       brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e); brain.onclick(brain)}, false);
   } else {
       brain.canvas.addEventListener('click', brain.clickBrain, false);
