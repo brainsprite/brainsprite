@@ -97,9 +97,9 @@ Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js
 It is possible to add an overlay to a volume. The overlay is loaded as a sprite image and needs to be in the same space. The resolution of the background and overlay can differ by a constant factor. We first start by adding a second (hidden) sprite image in the page:
 ```html
 <div id="div_viewer">
-    <canvas id="3Dviewer"> <!-- this is the canvas that will feature the brain slices -->
-    <img id="spriteImg" class="hidden" src="sprite.jpg"> <!-- load a hidden version of the sprite image that includes all (sagital) brain slices -->
-    <img id="overlayImg" class="hidden" src="dmnSprite.png"> <!-- another sprite image, with an overlay-->
+    <canvas id="3Dviewer"> 
+    <img id="spriteImg" class="hidden" src="sprite.jpg"> 
+    <img id="overlayImg" class="hidden" src="dmnSprite.png"> 
 </div>
 ```
 Then, we add the description of the overlay (including the number of voxels in the `Y` and `Z` dimensions) to the call to `brainsprite`. Note that the sprite can have a different organization than the background, in terms of the number of rows and columns.
@@ -121,3 +121,13 @@ Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/example_overlay.jpg" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_overlay.html)
 
+## Colors
+It is possible to tweak the color of the background that is applied behind the slices, as well as the color of the text being applied, using properties passed to brainSprite.
+```html
+      colorBackground: "#FFFFFF",
+      colorFont: "#000000"
+  </script>
+  ```
+Here is an [example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_white.html) using a template with a white background, and black fonts, as well as the [live demo >](http://simexp.github.io/brainsprite.js/examples/example_white.html).
+
+>[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/example_white.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_white.html)

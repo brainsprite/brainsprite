@@ -25,7 +25,7 @@ function brainsprite(params) {
   brain.onclick = typeof params.onclick !== 'undefined' ? params.onclick : "";
   
   // Background color for the canvas
-  brain.colorBackGround = typeof params.colorBackGround !== 'undefined' ? params.colorBackGround : "#000000";
+  brain.colorBackground = typeof params.colorBackground !== 'undefined' ? params.colorBackground : "#000000";
   
   // Flag to turn on/off slice numbers 
   brain.flagCoordinates = typeof params.flagCoordinates !== 'undefined' ? params.flagCoordinates : false;
@@ -133,7 +133,7 @@ function brainsprite(params) {
     };
     
     // Set fill color for the slice
-    brain.context.fillStyle=brain.colorBackGround;
+    brain.context.fillStyle=brain.colorBackground;
   
     // Size for fonts
     var sizeFontPixels = Math.round(brain.sizeFont*(brain.heightCanvas.max));

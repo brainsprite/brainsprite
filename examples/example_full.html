@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+<body>
+  <div id="div_viewer">
+    <canvas id="3Dviewer"> <!-- this is the canvas that will feature the brain slices -->
+    <img id="spriteImg" class="hidden" src="spriteWhite.jpg"> <!-- load a hidden version of the sprite image that includes all (sagital) brain slices -->
+    <img id="overlayImg" class="hidden" src="dmnSprite.png"> <!-- another sprite image, with an overlay-->
+  </div>
+
+  <script type="text/javascript" src="../assets/jquery-1.9.1/jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js --> 
+  <script type="text/javascript" src="../brainsprite.js"></script>       
+  
+  <script> 
+    
+  // On load: build all figures   
+  $( window ).load(function() {
+    // Create brain slices
+    var brain = brainsprite({
+      canvas: "3Dviewer", // That is the ID of the canvas to build slices into
+      sprite: "spriteImg", // That is the ID of the sprite image that includes all (sagital) brain slices
+      flagCoordinates: true, // turn on the slice coordinates
+      origin: {X: 98, Y:134, Z:72}, // Coordinates of the origin of the volume, i.e. point with world coordinates (0,0,0)
+      voxelSize: 1, // voxel size. Only isotropic volumes are supported
+      nbSlice: { 'Y':233 , 'Z':189 },
+      colorBackground: "#FFFFFF",
+      colorFont: "#000000",
+      overlay: {
+        sprite: "overlayImg", // That is the ID of the sprite image to overlay on the brain
+        nbSlice: {'Y':79 , 'Z':63 },
+        opacity: 0.7
+      },
+    });
+  });
+  </script>
+</body>
+</html>
