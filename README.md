@@ -126,8 +126,7 @@ It is possible to tweak the color of the background that is applied behind the s
 ```html
       colorBackground: "#FFFFFF",
       colorFont: "#000000"
-  </script>
-  ```
+```
 Here is an [example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/examples/example_white.html) using a template with a white background, and black fonts, as well as the [live demo >](http://simexp.github.io/brainsprite.js/examples/example_white.html).
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/examples/example_white.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_white.html)
