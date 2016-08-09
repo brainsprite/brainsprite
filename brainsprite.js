@@ -1,32 +1,32 @@
 function brainsprite(params) {
 
   // Function to add nearest neighbour interpolation to a canvas
-  function setNearestNeighbour(canvas){
-  canvas.mozImageSmoothingEnabled = false;
-  canvas.webkitImageSmoothingEnabled = false;
-  canvas.msImageSmoothingEnabled = false;
-  canvas.imageSmoothingEnabled = false;
-  return canvas
+  function setNearestNeighbour(context,flag){
+    context.mozImageSmoothingEnabled = flag;
+    context.msImageSmoothingEnabled = flag;
+    context.imageSmoothingEnabled = flag;
+    return context
   }
   
   // Initialize the brain object
   var brain = {};
   
+  // Smoothing of the main slices
+  brain.smooth = typeof params.smooth !== 'undefined' ? params.smooth: false;
+  
   // The main canvas, where the three slices are drawn
   brain.canvas = document.getElementById(params.canvas);
-  brain.canvas = setNearestNeighbour(brain.canvas);
   brain.context = brain.canvas.getContext('2d');
+  brain.context = setNearestNeighbour(brain.context,brain.smooth);
   
   // An in-memory canvas to draw intermediate reconstruction
   // of the coronal slice, at native resolution
   brain.canvasY = document.createElement('canvas');
-  brain.canvasY = setNearestNeighbour(brain.canvasY);
   brain.contextY = brain.canvasY.getContext('2d');
   
   // An in-memory canvas to draw intermediate reconstruction
   // of the axial slice, at native resolution
   brain.canvasZ = document.createElement('canvas');
-  brain.canvasZ = setNearestNeighbour(brain.canvasZ);
   brain.contextZ = brain.canvasZ.getContext('2d');
   
   // Onclick events
@@ -100,17 +100,14 @@ function brainsprite(params) {
       // An in-memory canvas to draw intermediate reconstruction
       // of the axial slice, at native resolution
       brain.overlay.canvasX = document.createElement('canvas');
-      brain.overlay.canvasX = setNearestNeighbour(brain.overlay.canvasX);
       brain.overlay.contextX = brain.overlay.canvasX.getContext('2d');
       // An in-memory canvas to draw intermediate reconstruction
       // of the coronal slice, at native resolution
       brain.overlay.canvasY = document.createElement('canvas');
-      brain.overlay.canvasY = setNearestNeighbour(brain.overlay.canvasY);
       brain.overlay.contextY = brain.overlay.canvasY.getContext('2d');
       // An in-memory canvas to draw intermediate reconstruction
       // of the axial slice, at native resolution
       brain.overlay.canvasZ = document.createElement('canvas');
-      brain.overlay.canvasZ = setNearestNeighbour(brain.overlay.canvasZ);
       brain.overlay.contextZ = brain.overlay.canvasZ.getContext('2d');
       // opacity
       brain.overlay.opacity = typeof params.overlay.opacity !== 'undefined' ? params.overlay.opacity : 1;
@@ -141,6 +138,7 @@ function brainsprite(params) {
     if (brain.canvas.width!=(brain.widthCanvas.X+brain.widthCanvas.Y+brain.widthCanvas.Z)) {   
       brain.canvas.width = brain.widthCanvas.X+brain.widthCanvas.Y+brain.widthCanvas.Z;
       brain.canvas.height = Math.round((1+brain.spaceFont)*(brain.heightCanvas.max));
+      brain.context = setNearestNeighbour(brain.context,brain.smooth);
     };
     
     // Set fill color for the slice
