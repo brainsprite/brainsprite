@@ -42,6 +42,9 @@ function brainsprite(params) {
   brain.origin = typeof params.origin !== 'undefined' ? params.origin : {X: 0, Y: 0, Z: 0};
   brain.voxelSize = typeof params.voxelSize !== 'undefined' ? params.voxelSize : 1;
   
+  // Colorbar size parameters
+  brain.heightColorBar = 0.04;
+  
   // Font parameters
   brain.sizeFont = 0.075;
   brain.colorFont = typeof params.colorFont !== 'undefined' ? params.colorFont : "#FFFFFF";
@@ -113,6 +116,24 @@ function brainsprite(params) {
       brain.overlay.opacity = typeof params.overlay.opacity !== 'undefined' ? params.overlay.opacity : 1;
   } else {
       brain.overlay = false;
+  };
+  
+  //**************//  
+  // The colormap //
+  //**************//
+  params.colorMap = typeof params.colorMap !== 'undefined' ? params.colorMap: false;
+  if (params.overlay) {
+      // Initialize the overlay
+      brain.colorMap = {};
+      // Get the sprite
+      brain.colorMap.img = document.getElementById(params.colorMap.img); 
+      // Set min / max
+      brain.colorMap.min = params.colorMap.min; 
+      brain.colorMap.max = params.colorMap.max;
+      // Set visibility
+      params.colorMap.hide = typeof params.colorMap.hide !== 'undefined' ? params.colorMap.hide: false;
+  } else {
+      brain.colorMap.hide = true;
   };
   
   //***************************************//
@@ -216,6 +237,17 @@ function brainsprite(params) {
           // Redraw the coronal slice in the canvas at screen resolution
           brain.context.drawImage(brain.overlay.canvasY,
                 0, 0, brain.overlay.nbSlice.X, brain.overlay.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max-brain.heightCanvas.Y)/2, brain.widthCanvas.Y, brain.heightCanvas.Y );
+        }
+        
+        // Add colorbar
+        if (!brain.colorMap.hide) {
+          // draw the colorMap on the coronal slice at screen resolution
+          brain.context.drawImage(brain.colorMap.img,
+                0, 0, brain.colorMap.img.width, 1, Math.round(brain.widthCanvas.X + brain.widthCanvas.Y*0.2) , Math.round(brain.heightCanvas.max * brain.heightColorBar / 2), Math.round(brain.widthCanvas.Y*0.6) , Math.round(brain.heightCanvas.max * brain.heightColorBar));
+          brain.context.font = sizeFontPixels + "px Arial";
+          brain.context.fillStyle = brain.colorFont;
+          brain.context.fillText(brain.colorMap.min,brain.widthCanvas.X+(brain.widthCanvas.Y*0.2),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(sizeFontPixels) )); 
+          brain.context.fillText(brain.colorMap.max,brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(brain.colorMap.max).width,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(sizeFontPixels) )); 
         }
         
         // Add Y coordinates on the slice
