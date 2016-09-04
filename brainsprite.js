@@ -122,8 +122,8 @@ function brainsprite(params) {
   // The colormap //
   //**************//
   params.colorMap = typeof params.colorMap !== 'undefined' ? params.colorMap: false;
-  if (params.overlay) {
-      // Initialize the overlay
+  if (params.colorMap) {
+      // Initialize the color map
       brain.colorMap = {};
       // Get the sprite
       brain.colorMap.img = document.getElementById(params.colorMap.img); 
@@ -132,8 +132,45 @@ function brainsprite(params) {
       brain.colorMap.max = params.colorMap.max;
       // Set visibility
       params.colorMap.hide = typeof params.colorMap.hide !== 'undefined' ? params.colorMap.hide: false;
+      // An in-memory canvas to store the colormap
+      brain.colorMap.canvas = document.createElement('canvas');
+      brain.colorMap.context = brain.colorMap.canvas.getContext('2d');
+      brain.colorMap.canvas.width  = brain.colorMap.img.width;
+      brain.colorMap.canvas.height = brain.colorMap.img.height;
+      
+      // Copy the color map in an in-memory canvas 
+      brain.colorMap.context.drawImage(brain.colorMap.img, 
+                0,0,brain.colorMap.img.width, brain.colorMap.img.height, 
+                0,0,brain.colorMap.img.width, brain.colorMap.img.height);            
   } else {
       brain.colorMap.hide = true;
+  };
+  
+  //********************************************//
+  // Extract the value associated with on voxel //
+  //********************************************//
+  brain.getValue = function(rgb,colorMap) {
+    if (!colorMap) { 
+      return NaN;
+    }
+    var cv, dist, nbColor, ind, val, voxelValue;
+    nbColor = colorMap.canvas.width;
+    ind = NaN;
+    val = Infinity;
+    for (xx=0; xx<nbColor; xx++) {
+      cv = colorMap.context.getImageData(xx,0,1,1).data;
+      dist = Math.pow(cv[0]-rgb[0],2)+Math.pow(cv[1]-rgb[1],2)+Math.pow(cv[2]-rgb[2],2);
+      if (dist<val) {
+        ind = xx;
+        val = dist;
+      }
+    }
+    if (ind) {
+      voxelValue = (ind*(colorMap.max - colorMap.min)/(nbColor-1)) + colorMap.min;
+      return voxelValue;
+    } else {
+      return NaN;
+    }
   };
   
   //***************************************//
@@ -173,6 +210,10 @@ function brainsprite(params) {
     brain.coordinatesSlice.Y = (brain.numSlice.Y * brain.voxelSize) - brain.origin.Y;
     brain.coordinatesSlice.Z = ((brain.nbSlice.Z-brain.numSlice.Z-1) * brain.voxelSize) - brain.origin.Z;
           
+    // Update voxel value
+    var rgb = brain.overlay.contextX.getImageData(brain.numSlice.Y,brain.numSlice.Z,1,1).data;
+    brain.voxelValue = brain.getValue(rgb,brain.colorMap);
+    
     // Now draw the slice
     switch(type) {
       case 'X':
@@ -332,9 +373,15 @@ function brainsprite(params) {
     }
   };
   
+  brain.drawAll = function(){
+    brain.draw(brain.numSlice.X,'X')
+    brain.draw(brain.numSlice.Y,'Y')
+    brain.draw(brain.numSlice.Z,'Z')
+  };
+  
   // Attach a listener for clicks
   if (brain.onclick) {
-      brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e); brain.onclick(brain)}, false);
+      brain.canvas.addEventListener('click', function(e) { brain.clickBrain(e); brain.onclick(e)}, false);
   } else {
       brain.canvas.addEventListener('click', brain.clickBrain, false);
   };
@@ -349,9 +396,7 @@ function brainsprite(params) {
       brain.canvas.removeEventListener('mousemove', brain.clickBrain, false);
   }, false);    
   
-  // Draw a X slice for good measure
-  brain.draw(brain.numSlice.X,'X')
-  brain.draw(brain.numSlice.Y,'Y')
-  brain.draw(brain.numSlice.Z,'Z')
+  // Draw all slices
+  brain.drawAll();
   return brain
 };

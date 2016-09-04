@@ -10,7 +10,8 @@
     <img id="overlayImg" class="hidden" src="dmnSprite.png"> <!-- another sprite image, with an overlay-->
     <img id="colorMap" class="hidden" src="dmnSprite_cm.png"> <!-- another sprite image, with an overlay-->
   </div>
-
+  <div id="text"> </div>
+  
   <script type="text/javascript" src="../assets/jquery-1.9.1/jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js --> 
   <script type="text/javascript" src="../brainsprite.js"></script>       
   
@@ -18,8 +19,18 @@
     
   // On load: build all figures   
   $( window ).load(function() {
+  
+    var brainOverlay
+    
+    // Function to show coordinates
+    function showCoordinates(e) { 
+      if (brainOverlay) {
+        document.getElementById("text").innerHTML = "Slice coordinates: x=" + brainOverlay.coordinatesSlice.X + ", y=" + brainOverlay.coordinatesSlice.Y + ", z=" + brainOverlay.coordinatesSlice.Z + ", value=" + brainOverlay.voxelValue;
+      }
+    }
+    
     // Create brain slices
-    var brain = brainsprite({
+    brainOverlay = brainsprite({
       canvas: "3Dviewer", // That is the ID of the canvas to build slices into
       sprite: "spriteImg", // That is the ID of the sprite image that includes all (sagital) brain slices
       flagCoordinates: true, // turn on the slice coordinates
@@ -28,6 +39,7 @@
       nbSlice: { 'Y':233 , 'Z':189 },
       colorBackground: "#FFFFFF",
       colorFont: "#000000",
+      onclick: showCoordinates,
       overlay: {
         sprite: "overlayImg", // That is the ID of the sprite image to overlay on the brain
         nbSlice: {'Y':233 , 'Z':189 },
@@ -39,6 +51,9 @@
         max: 0.66,
       },
     });
+    
+    
+    
   });
   </script>
 </body>
