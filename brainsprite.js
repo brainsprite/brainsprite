@@ -114,8 +114,6 @@ function brainsprite(params) {
       brain.overlay.contextZ = brain.overlay.canvasZ.getContext('2d');
       // opacity
       brain.overlay.opacity = typeof params.overlay.opacity !== 'undefined' ? params.overlay.opacity : 1;
-  } else {
-      brain.overlay = false;
   };
   
   //**************//  
