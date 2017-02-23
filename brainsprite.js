@@ -56,6 +56,7 @@ function brainsprite(params) {
   // The sprite image //
   //******************//
   brain.sprite = document.getElementById(params.sprite);
+
   // Number of columns and rows in the sprite
   brain.nbCol = brain.sprite.width/params.nbSlice.Y;
   brain.nbRow = brain.sprite.height/params.nbSlice.Z;
@@ -151,14 +152,20 @@ function brainsprite(params) {
     nbColor = colorMap.canvas.width;
     ind = NaN;
     val = Infinity;
-    for (xx=0; xx<nbColor; xx++) {
-      cv = colorMap.context.getImageData(xx,0,1,1).data;
-      dist = Math.pow(cv[0]-rgb[0],2)+Math.pow(cv[1]-rgb[1],2)+Math.pow(cv[2]-rgb[2],2);
-      if (dist<val) {
-        ind = xx;
-        val = dist;
+    try {
+      for (xx=0; xx<nbColor; xx++) {
+        cv = colorMap.context.getImageData(xx,0,1,1).data;
+        dist = Math.pow(cv[0]-rgb[0],2)+Math.pow(cv[1]-rgb[1],2)+Math.pow(cv[2]-rgb[2],2);
+        if (dist<val) {
+          ind = xx;
+          val = dist;
+        }
+
       }
     }
+    catch (err) {
+      console.warn(err.message);
+    };
     if (ind) {
       voxelValue = (ind*(colorMap.max - colorMap.min)/(nbColor-1)) + colorMap.min;
       return voxelValue;
@@ -399,7 +406,16 @@ function brainsprite(params) {
       brain.canvas.removeEventListener('mousemove', brain.clickBrain, false);
     }, false);
 
+  // Draw all slices when background/overlay are loaded
+  brain.sprite.addEventListener('load', function(){
+    brain.drawAll();
+  });
+  brain.overlay.sprite.addEventListener('load', function(){
+    brain.drawAll();
+  });
+
   // Draw all slices
   brain.drawAll();
+
   return brain
 };
