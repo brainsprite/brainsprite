@@ -160,18 +160,14 @@ function brainsprite(params) {
           ind = xx;
           val = dist;
         }
-
       }
+      voxelValue = (ind*(colorMap.max - colorMap.min)/(nbColor-1)) + colorMap.min;
+      return voxelValue;
     }
     catch (err) {
       console.warn(err.message);
-    };
-    if (ind) {
-      voxelValue = (ind*(colorMap.max - colorMap.min)/(nbColor-1)) + colorMap.min;
-      return voxelValue;
-    } else {
       return NaN;
-    }
+    };
   };
 
   //***************************************//
