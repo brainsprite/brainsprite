@@ -55,9 +55,9 @@ def load_notebook_html(bkg_path, overlay_path, tmp_path, json_data):
       <script type="text/javascript" src="{2}brainsprite.js"></script>
       <script>
       // On load: build all figures
-      $( document ).ready(function() {
+      $( document ).ready(function() {{
         var brain = brainsprite({3});
-      });
+      }});
       </script>
     </body>
     </html>"""
@@ -161,7 +161,7 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
             overimg = resample_img(overimg, bkimg.affine, bkimg.shape[::-1], interpolation='nearest')
             overlay_vol = np.swapaxes(overimg.get_data(), 0, 2)
         else:
-            overimg = nib.nifti1.Nifti1Image(overimg.get_data(), overimage.get_affine)
+            overimg = nib.nifti1.Nifti1Image(overimg.get_data(), overimg.get_affine)
             overimg = resample_img(overimg, bkimg.affine, bkimg.shape)
             overlay_vol = overimg.get_data()
 
@@ -186,7 +186,7 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
 
 
 
-def show_sprite(bk_img, overlay_img, tmp_path):
+def show_sprite(bkg_img, overlay_img, tmp_path):
     from IPython.display import HTML, display
     # make a tmp folder
     tmp_path = tmp_path + '/brainsprite_tmp/'
@@ -197,12 +197,13 @@ def show_sprite(bk_img, overlay_img, tmp_path):
 
     hash = gen_file_name()
 
-    bkimg_ = tmp_path + hash + '_bkg.jpg'
+    bkgimg_ = tmp_path + hash + '_bkg.jpg'
     overlayimg_ = tmp_path + hash + '_overlay_mosaic.png'
 
-    json_data = transform(bk_img, bkimg_, tmp_path + hash + '_params.json', overlay_img, overlayimg_, overlay_threshold=0.3, return_json=True)
-    return load_notebook_html(bkimg_, overlayimg_, tmp_path, json_data)
-    #display(load_notebook_html(bkimg_, overlayimg_, tmp_path, json_data))
+    json_data = transform(bkg_img, bkgimg_, tmp_path + hash + '_params.json', overlay_img, overlayimg_, overlay_threshold=0.3, return_json=True)
+    html_code = load_notebook_html('brainsprite_tmp/'+ hash + '_bkg.jpg', 'brainsprite_tmp/' + hash + '_overlay_mosaic.png', 'brainsprite_tmp/', json_data)
+    display(HTML(html_code))
+    return html_code
 
 def make_folder(path):
     if not os.path.exists(path):
