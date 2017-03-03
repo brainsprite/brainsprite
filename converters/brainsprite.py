@@ -6,7 +6,7 @@ from PIL import Image
 import json
 from nilearn.image import resample_img
 import hashlib, time
-from shutil import copyfile
+from matplotlib import pyplot as plt
 
 
 def load_json_template():
@@ -206,7 +206,7 @@ def make_folder(path):
 
 def gen_file_name():
     hash_ = hashlib.sha1()
-    hash_.update(str(time.time()))
+    hash_.update(str(time.time()).encode('utf-8'))
     return hash_.hexdigest()
 
 def test_mosaic():
