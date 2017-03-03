@@ -40,29 +40,29 @@ def load_json_template():
     return data
 
 
-def load_notebook_html(bkg_path, overlay_path, tmp_path, json_data):
+def load_notebook_html(canvas_id, bkg_path, overlay_path, tmp_path, json_data):
     html = """<!DOCTYPE html>
     <html>
     <head>
     </head>
     <body>
       <div id="div_viewer">
-        <canvas id="3Dviewer"> <!-- this is the canvas that will feature the brain slices -->
-        <img id="spriteImg" class="hidden" src="{0}"> <!-- load a hidden version of the sprite image that includes all (sagital) brain slices -->
-        <img id="overlayImg" class="hidden" src="{1}"> <!-- another sprite image, with an overlay-->
+        <canvas id="{0}"> <!-- this is the canvas that will feature the brain slices -->
+        <img id="spriteImg" class="hidden" src="{1}"> <!-- load a hidden version of the sprite image that includes all (sagital) brain slices -->
+        <img id="overlayImg" class="hidden" src="{2}"> <!-- another sprite image, with an overlay-->
     </div>
-      <script type="text/javascript" src="{2}jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js -->
-      <script type="text/javascript" src="{2}brainsprite.js"></script>
+      <script type="text/javascript" src="{3}jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js -->
+      <script type="text/javascript" src="{3}brainsprite.js"></script>
       <script>
       // On load: build all figures
-      $( document ).ready(function() {{
-        var brain = brainsprite({3});
+      $( "{0}" ).ready(function() {{
+        var brain = brainsprite({4});
       }});
       </script>
     </body>
     </html>"""
 
-    return html.format(bkg_path, overlay_path, tmp_path, json_data)
+    return html.format(canvas_id, bkg_path, overlay_path, tmp_path, json_data)
 
 def make_folder(path, directory):
     if not os.path.exists(path + directory):
@@ -203,8 +203,9 @@ def show_sprite(bkg_img, overlay_img, tmp_path):
     overlayimg_ = tmp_path + hash + '_overlay_mosaic.png'
 
     json_data = transform(bkg_img, bkgimg_, tmp_path + hash + '_params.json', overlay_img, overlayimg_, overlay_threshold=0.3, return_json=True)
+    json_data = json_data.replace("3Dviewer", "canvas" + hash)
     print json_data
-    html_code = load_notebook_html('brainsprite_tmp/'+ hash + '_bkg.jpg', 'brainsprite_tmp/' + hash + '_overlay_mosaic.png', 'brainsprite_tmp/', json_data)
+    html_code = load_notebook_html('canvas'+hash, 'brainsprite_tmp/'+ hash + '_bkg.jpg', 'brainsprite_tmp/' + hash + '_overlay_mosaic.png', 'brainsprite_tmp/', json_data)
     return html_code
 
 def make_folder(path):
