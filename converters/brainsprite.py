@@ -184,10 +184,12 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
             data = json.dumps(params)
             outfile.write(data)
 
+    if return_json:
+        return json.dumps(params)
+
 
 
 def show_sprite(bkg_img, overlay_img, tmp_path):
-    from IPython.display import HTML, display
     # make a tmp folder
     tmp_path = tmp_path + '/brainsprite_tmp/'
     make_folder(tmp_path)
@@ -201,8 +203,8 @@ def show_sprite(bkg_img, overlay_img, tmp_path):
     overlayimg_ = tmp_path + hash + '_overlay_mosaic.png'
 
     json_data = transform(bkg_img, bkgimg_, tmp_path + hash + '_params.json', overlay_img, overlayimg_, overlay_threshold=0.3, return_json=True)
+    print json_data
     html_code = load_notebook_html('brainsprite_tmp/'+ hash + '_bkg.jpg', 'brainsprite_tmp/' + hash + '_overlay_mosaic.png', 'brainsprite_tmp/', json_data)
-    display(HTML(html_code))
     return html_code
 
 def make_folder(path):
