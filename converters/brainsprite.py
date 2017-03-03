@@ -5,6 +5,8 @@ import nibabel as nib
 from PIL import Image
 import json
 from nilearn.image import resample_img
+import hashlib, time
+from shutil import copyfile
 
 
 def load_json_template():
@@ -36,6 +38,31 @@ def load_json_template():
     data = json.loads(data_file)
     return data
 
+
+def load_notebook_html(bkg_path, overlay_path, tmp_path, json_data):
+    html = """<!DOCTYPE html>
+    <html>
+    <head>
+    </head>
+    <body>
+      <div id="div_viewer">
+        <canvas id="3Dviewer"> <!-- this is the canvas that will feature the brain slices -->
+        <img id="spriteImg" class="hidden" src="{0}"> <!-- load a hidden version of the sprite image that includes all (sagital) brain slices -->
+        <img id="overlayImg" class="hidden" src="{1}"> <!-- another sprite image, with an overlay-->
+    </div>
+      <script type="text/javascript" src="{2}jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js -->
+      <script type="text/javascript" src="{2}brainsprite.js"></script>
+      <script>
+      // On load: build all figures
+      $( document ).ready(function() {
+        // Create brain slices
+        var brain = brainsprite({3});
+      });
+      </script>
+    </body>
+    </html>"""
+
+    return html.format(bkg_path, overlay_path, tmp_path, json_data)
 
 def make_folder(path, directory):
     if not os.path.exists(path + directory):
@@ -105,7 +132,7 @@ def transform_package(img_path, output_folder, overlay_path=''):
 
 
 def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', out_overlay_path='',
-              overlay_threshold=0.1):
+              overlay_threshold=0.1, return_json=False):
     # load data
     bkg_vol = loadVolume(source_bkg_path)
     bkg_vol = (bkg_vol / float(bkg_vol.max())) * 255.
@@ -157,6 +184,30 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
             data = json.dumps(params)
             outfile.write(data)
 
+
+
+def show_sprite(bk_img, overlay_img, tmp_path):
+    from IPython.display import HTML, display
+    # make a tmp folder
+    make_folder(tmp_path)
+    hash = gen_file_name()
+
+    bkimg_ = tmp_path + hash + '_bkg.jpg'
+    overlayimg_ = tmp_path + hash + '_overlay_mosaic.png'
+
+    json_data = transform(bk_img, bkimg_, tmp_path + hash + '_params.json', overlay_img, overlayimg_, overlay_threshold=0.3, return_json=True)
+    display(load_notebook_html(bkimg_, overlayimg_, tmp_path, json_data))
+
+def make_folder(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+        return True
+    return False
+
+def gen_file_name():
+    hash_ = hashlib.sha1()
+    hash_.update(str(time.time()))
+    return hash_.hexdigest()
 
 def test_mosaic():
     # custom path
