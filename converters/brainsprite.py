@@ -6,6 +6,7 @@ from PIL import Image
 import json
 from nilearn.image import resample_img
 import hashlib, time
+import matplotlib.pyplot as plt
 from shutil import copyfile
 
 
@@ -55,7 +56,6 @@ def load_notebook_html(bkg_path, overlay_path, tmp_path, json_data):
       <script>
       // On load: build all figures
       $( document ).ready(function() {
-        // Create brain slices
         var brain = brainsprite({3});
       });
       </script>
@@ -189,14 +189,20 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
 def show_sprite(bk_img, overlay_img, tmp_path):
     from IPython.display import HTML, display
     # make a tmp folder
+    tmp_path = tmp_path + '/brainsprite_tmp/'
     make_folder(tmp_path)
+    copyfile('../brainsprite.js', tmp_path+'brainsprite.js')
+    copyfile('../assets/jquery-1.9.1/jquery.min.js', tmp_path + 'jquery.min.js')
+
+
     hash = gen_file_name()
 
     bkimg_ = tmp_path + hash + '_bkg.jpg'
     overlayimg_ = tmp_path + hash + '_overlay_mosaic.png'
 
     json_data = transform(bk_img, bkimg_, tmp_path + hash + '_params.json', overlay_img, overlayimg_, overlay_threshold=0.3, return_json=True)
-    display(load_notebook_html(bkimg_, overlayimg_, tmp_path, json_data))
+    return load_notebook_html(bkimg_, overlayimg_, tmp_path, json_data)
+    #display(load_notebook_html(bkimg_, overlayimg_, tmp_path, json_data))
 
 def make_folder(path):
     if not os.path.exists(path):
