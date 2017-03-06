@@ -11,24 +11,24 @@
     <img id="colorMap" class="hidden" src="dmnSprite_cm.png"> <!-- another sprite image, with an overlay-->
   </div>
   <div id="text"> </div>
-  
-  <script type="text/javascript" src="../assets/jquery-1.9.1/jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js --> 
-  <script type="text/javascript" src="../brainsprite.js"></script>       
-  
-  <script> 
-    
-  // On load: build all figures   
+
+  <script type="text/javascript" src="../assets/jquery-1.9.1/jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js -->
+  <script type="text/javascript" src="../assets/brainsprite.js"></script>
+
+  <script>
+
+  // On load: build all figures
   $( window ).load(function() {
-  
+
     var brainOverlay
-    
+
     // Function to show coordinates
-    function showCoordinates(e) { 
+    function showCoordinates(e) {
       if (brainOverlay) {
         document.getElementById("text").innerHTML = "Slice coordinates: x=" + brainOverlay.coordinatesSlice.X + ", y=" + brainOverlay.coordinatesSlice.Y + ", z=" + brainOverlay.coordinatesSlice.Z + ", value=" + brainOverlay.voxelValue;
       }
     }
-    
+
     // Create brain slices
     brainOverlay = brainsprite({
       canvas: "3Dviewer", // That is the ID of the canvas to build slices into
@@ -51,9 +51,9 @@
         max: 0.66,
       },
     });
-    
-    
-    
+
+
+
   });
   </script>
 </body>
