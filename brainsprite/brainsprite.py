@@ -9,32 +9,32 @@ import hashlib, time
 import matplotlib.pyplot as plt
 from shutil import copyfile
 
-
 def load_json_template():
-    data_file = '{ \
-    "canvas": "3Dviewer",\
-    "sprite": "spriteImg",\
-    "flagCoordinates": true,\
-    "nbSlice": {\
-        "Y": 233,\
-        "Z": 189\
-    },\
-    "colorBackground": "#000",\
-    "colorFont": "#FFF",\
-    "overlay": {\
-        "sprite": "overlayImg",\
-        "nbSlice": {\
-            "Y": 233,\
-            "Z": 189\
-        },\
-        "opacity": 0.7\
-    },\
-    "colorMap": {\
-        "img": "colorMap",\
-        "min": 0.2,\
-        "max": 0.66\
-    }\
-    }'
+    data_file = """{
+    "canvas": "3Dviewer",
+    "sprite": "spriteImg",
+    "flagCoordinates": true,
+    "nbSlice": {
+        "Y": 233,
+        "Z": 189
+    },
+    "colorBackground": "#000",
+    "colorFont": "#FFF",
+    "overlay": {
+        "sprite": "overlayImg",
+        "nbSlice": {
+            "Y": 233,
+            "Z": 189
+        },
+        "opacity": 0.7
+    },
+    "colorMap": {
+        "img": "colorMap",
+        "min": 0.2,
+        "max": 0.66
+    }
+    }
+    """
 
     data = json.loads(data_file)
     return data
