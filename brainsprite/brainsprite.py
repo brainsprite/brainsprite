@@ -9,7 +9,7 @@ import hashlib, time
 import matplotlib.pyplot as plt
 from shutil import copyfile
 
-def load_json_template():
+def _load_json_template():
     data_file = """{
     "canvas": "3Dviewer",
     "sprite": "spriteImg",
@@ -40,7 +40,7 @@ def load_json_template():
     return data
 
 
-def load_notebook_html(canvas_id, bkg_path, overlay_path, tmp_path, json_data):
+def _load_notebook_html(canvas_id, bkg_path, overlay_path, tmp_path, json_data):
     html = """
     <!DOCTYPE html>
     <html>
@@ -65,28 +65,24 @@ def load_notebook_html(canvas_id, bkg_path, overlay_path, tmp_path, json_data):
     """
     return html.format(canvas_id, bkg_path, overlay_path, tmp_path, json_data)
 
-def make_folder(path, directory):
-    if not os.path.exists(path + directory):
-        os.makedirs(path + directory)
-
-def loadVolume(source_file):
+def _loadVolume(source_file):
     img = nib.load(source_file)
     vol = img.get_data()
 
     # check if its a nii file
-    ext = getExt(source_file)
+    ext = _getExt(source_file)
     if ext == ".nii":
         vol = np.swapaxes(vol, 0, 2)
     return vol
 
-def getspec(vol):
+def _getspec(vol):
     nx, ny, nz = vol.shape
     nrows = int(np.ceil(np.sqrt(nz)))
     ncolumns = int(np.ceil(nz / (1. * nrows)))
     return nrows, ncolumns, nx, ny, nz
 
 
-def getExt(source_file):
+def _getExt(source_file):
     # Getting the extension
     if os.path.splitext(source_file)[1] == '.gz':
         extension = os.path.splitext(os.path.splitext(source_file)[0])[1]
@@ -95,8 +91,8 @@ def getExt(source_file):
 
     return extension
 
-def montage(vol):
-    nrows, ncolumns, nx, ny, nz = getspec(vol)
+def _montage(vol):
+    nrows, ncolumns, nx, ny, nz = _getspec(vol)
 
     mosaic = np.zeros((nrows * nx, ncolumns * ny))
     indx, indy = np.where(np.ones((nrows, ncolumns)))
@@ -107,7 +103,7 @@ def montage(vol):
 
     return mosaic
 
-def saveMosaic(mosaic, output_path, overlay=False, overlay_threshold=0.1):
+def _saveMosaic(mosaic, output_path, overlay=False, overlay_threshold=0.1):
     if overlay:
         mosaic[mosaic < overlay_threshold] = 0
         im = Image.fromarray(np.uint8(plt.cm.hot(mosaic) * 255))
@@ -131,17 +127,17 @@ def transform_package(img_path, output_folder, overlay_path=''):
 def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', out_overlay_path='',
               overlay_threshold=0.1, return_json=False, overlay_interpolation='continuous'):
     # load data
-    bkg_vol = loadVolume(source_bkg_path)
+    bkg_vol = _loadVolume(source_bkg_path)
     bkg_vol = (bkg_vol / float(bkg_vol.max())) * 255.
 
     # populate json
-    params = load_json_template()
+    params = _load_json_template()
     params['nbSlice']['Y'] = bkg_vol.shape[1]
     params['nbSlice']['Z'] = bkg_vol.shape[0]
 
     # make bkg montage save
-    mosa_bkg = montage(bkg_vol)
-    saveMosaic(mosa_bkg, out_bkg_path)
+    mosa_bkg = _montage(bkg_vol)
+    _saveMosaic(mosa_bkg, out_bkg_path)
 
     if source_overlay_path != '':
         # load data
@@ -150,8 +146,8 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
 
         # transform slice order and resample to fit bkimg
         # check if its a nii file
-        ext = getExt(source_overlay_path)
-        ext_bkg = getExt(source_bkg_path)
+        ext = _getExt(source_overlay_path)
+        ext_bkg = _getExt(source_bkg_path)
         if ext == ".nii":
             if ext_bkg == ".mnc":
                 bkimg.affine[:, [0, 2]] = bkimg.affine[:, [2, 0]]
@@ -166,8 +162,8 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
         params['overlay']['nbSlice']['Y'] = overlay_vol.shape[1]
         params['overlay']['nbSlice']['Z'] = overlay_vol.shape[0]
         # make overlay montage and save
-        mosa_overlay = montage(overlay_vol)
-        saveMosaic(mosa_overlay, out_overlay_path, overlay=True, overlay_threshold=overlay_threshold)
+        mosa_overlay = _montage(overlay_vol)
+        _saveMosaic(mosa_overlay, out_overlay_path, overlay=True, overlay_threshold=overlay_threshold)
     else:
         del params['overlay']
 
@@ -189,12 +185,12 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
 def show_sprite(bkg_img, overlay_img, tmp_path):
     # make a tmp folder
     tmp_path = tmp_path + '/brainsprite_tmp/'
-    make_folder(tmp_path)
+    _make_folder(tmp_path)
     copyfile('../brainsprite.js', tmp_path+'brainsprite.js')
     copyfile('../assets/jquery-1.9.1/jquery.min.js', tmp_path + 'jquery.min.js')
 
 
-    hash = gen_file_name()
+    hash = _gen_file_name()
 
     bkgimg_ = tmp_path + hash + '_bkg.jpg'
     overlayimg_ = tmp_path + hash + '_overlay_mosaic.png'
@@ -202,16 +198,16 @@ def show_sprite(bkg_img, overlay_img, tmp_path):
     json_data = transform(bkg_img, bkgimg_, tmp_path + hash + '_params.json', overlay_img, overlayimg_, overlay_threshold=0.3, return_json=True)
     json_data = json_data.replace("3Dviewer", "canvas" + hash)
     print json_data
-    html_code = load_notebook_html('canvas'+hash, 'brainsprite_tmp/'+ hash + '_bkg.jpg', 'brainsprite_tmp/' + hash + '_overlay_mosaic.png', 'brainsprite_tmp/', json_data)
+    html_code = _load_notebook_html('canvas' + hash, 'brainsprite_tmp/' + hash + '_bkg.jpg', 'brainsprite_tmp/' + hash + '_overlay_mosaic.png', 'brainsprite_tmp/', json_data)
     return html_code
 
-def make_folder(path):
+def _make_folder(path):
     if not os.path.exists(path):
         os.makedirs(path)
         return True
     return False
 
-def gen_file_name():
+def _gen_file_name():
     hash_ = hashlib.sha1()
     hash_.update(str(time.time()).encode('utf-8'))
     return hash_.hexdigest()
