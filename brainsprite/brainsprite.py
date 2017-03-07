@@ -41,7 +41,8 @@ def load_json_template():
 
 
 def load_notebook_html(canvas_id, bkg_path, overlay_path, tmp_path, json_data):
-    html = """<!DOCTYPE html>
+    html = """
+    <!DOCTYPE html>
     <html>
     <head>
     </head>
@@ -60,14 +61,13 @@ def load_notebook_html(canvas_id, bkg_path, overlay_path, tmp_path, json_data):
       }});
       </script>
     </body>
-    </html>"""
-
+    </html>
+    """
     return html.format(canvas_id, bkg_path, overlay_path, tmp_path, json_data)
 
 def make_folder(path, directory):
     if not os.path.exists(path + directory):
         os.makedirs(path + directory)
-
 
 def loadVolume(source_file):
     img = nib.load(source_file)
@@ -78,7 +78,6 @@ def loadVolume(source_file):
     if ext == ".nii":
         vol = np.swapaxes(vol, 0, 2)
     return vol
-
 
 def getspec(vol):
     nx, ny, nz = vol.shape
@@ -96,7 +95,6 @@ def getExt(source_file):
 
     return extension
 
-
 def montage(vol):
     nrows, ncolumns, nx, ny, nz = getspec(vol)
 
@@ -108,7 +106,6 @@ def montage(vol):
         mosaic[(indx[ii] * nx):((indx[ii] + 1) * nx), (indy[ii] * ny):((indy[ii] + 1) * ny)] = vol[::-1, :, ii]
 
     return mosaic
-
 
 def saveMosaic(mosaic, output_path, overlay=False, overlay_threshold=0.1):
     if overlay:
@@ -132,7 +129,7 @@ def transform_package(img_path, output_folder, overlay_path=''):
 
 
 def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', out_overlay_path='',
-              overlay_threshold=0.1, return_json=False):
+              overlay_threshold=0.1, return_json=False, overlay_interpolation='continuous'):
     # load data
     bkg_vol = loadVolume(source_bkg_path)
     bkg_vol = (bkg_vol / float(bkg_vol.max())) * 255.
@@ -158,7 +155,7 @@ def transform(source_bkg_path, out_bkg_path, out_json, source_overlay_path='', o
         if ext == ".nii":
             if ext_bkg == ".mnc":
                 bkimg.affine[:, [0, 2]] = bkimg.affine[:, [2, 0]]
-            overimg = resample_img(overimg, bkimg.affine, bkimg.shape[::-1], interpolation='nearest')
+            overimg = resample_img(overimg, bkimg.affine, bkimg.shape[::-1], interpolation=overlay_interpolation)
             overlay_vol = np.swapaxes(overimg.get_data(), 0, 2)
         else:
             overimg = nib.nifti1.Nifti1Image(overimg.get_data(), overimg.get_affine)
