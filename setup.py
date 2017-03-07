@@ -21,6 +21,7 @@ setup(
         'numpy',
         'nibabel',
         'nilearn',
+        'shutil',
         'scipy'
     ],
     classifiers=[
