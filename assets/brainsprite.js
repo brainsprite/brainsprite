@@ -170,13 +170,11 @@ function brainsprite(params) {
     }
   };
 
-  //***************************************//
-  // Draw a particular slice in the canvas //
-  //***************************************//
-  brain.draw = function(slice,type) {
 
-    // Update the slice number
-    brain.numSlice[type] = slice;
+  //***********************//
+  // Initialize the viewer //
+  //***********************//
+  brain.init = function() {
 
     // Update the width of the X, Y and Z slices in the canvas, based on the width of its parent
     brain.widthCanvas.X = Math.floor(brain.canvas.parentElement.clientWidth*(brain.nbSlice.Y/(2*brain.nbSlice.X+brain.nbSlice.Y)));
@@ -196,11 +194,51 @@ function brainsprite(params) {
       brain.context = setNearestNeighbour(brain.context,brain.smooth);
     };
 
-    // Set fill color for the slice
-    brain.context.fillStyle=brain.colorBackground;
-
     // Size for fonts
-    var sizeFontPixels = Math.round(brain.sizeFont*(brain.heightCanvas.max));
+    brain.sizeFontPixels = Math.round(brain.sizeFont*(brain.heightCanvas.max));
+
+    // Size of overlay
+    if (brain.overlay) {
+      // Size of overlay.canvasX
+      brain.overlay.canvasX.width = brain.overlay.nbSlice.Y;
+      brain.overlay.canvasX.height = brain.overlay.nbSlice.Z;
+      brain.overlay.contextX.globalAlpha = brain.overlay.opacity;
+
+      // Size of overlay.canvasY
+      brain.overlay.canvasY.width = brain.overlay.nbSlice.X;
+      brain.overlay.canvasY.height = brain.overlay.nbSlice.Z;
+      brain.overlay.contextY.globalAlpha = brain.overlay.opacity;
+
+      // Size of overlay.canvasZ
+      brain.overlay.canvasZ.width = brain.overlay.nbSlice.X;
+      brain.overlay.canvasZ.height = brain.overlay.nbSlice.Y;
+      brain.overlay.contextZ.rotate(-Math.PI/2);
+      brain.overlay.contextZ.translate(-brain.overlay.nbSlice.Y,0);
+      brain.overlay.contextZ.globalAlpha = brain.overlay.opacity;
+    }
+
+    // Size of canvasY
+    brain.canvasY.width  = brain.nbSlice.X;
+    brain.canvasY.height = brain.nbSlice.Z;
+
+    // Size of canvasZ
+    brain.canvasZ.width = brain.nbSlice.X;
+    brain.canvasZ.height = brain.nbSlice.Y;
+    brain.contextZ.rotate(-Math.PI/2);
+    brain.contextZ.translate(-brain.nbSlice.Y,0);
+
+    // fonts
+    brain.context.font = brain.sizeFontPixels + "px Arial";
+
+  }
+
+  //***************************************//
+  // Draw a particular slice in the canvas //
+  //***************************************//
+  brain.draw = function(slice,type) {
+
+    // Update the slice number
+    brain.numSlice[type] = slice;
 
     // Update slice coordinates
     brain.coordinatesSlice.X = (brain.numSlice.X * brain.voxelSize) - brain.origin.X;
@@ -226,6 +264,8 @@ function brainsprite(params) {
         // Draw a sagital slice
         posW = ((brain.numSlice.X)%brain.nbCol);
         posH = (brain.numSlice.X-posW)/brain.nbCol;
+        // Set fill color for the slice
+        brain.context.fillStyle=brain.colorBackground;
         brain.context.fillRect(0, 0, brain.widthCanvas.X , brain.canvas.height);
         brain.context.drawImage(brain.sprite,
                 posW*brain.nbSlice.Y, posH*brain.nbSlice.Z, brain.nbSlice.Y, brain.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
@@ -233,11 +273,9 @@ function brainsprite(params) {
         // Add overlay
         if (brain.overlay) {
             // Draw a single axial slice at native resolution (for the overlay)
-            brain.overlay.canvasX.width = brain.overlay.nbSlice.Y;
-            brain.overlay.canvasX.height = brain.overlay.nbSlice.Z;
-            brain.overlay.contextX.globalAlpha = brain.overlay.opacity;
             posW = ((Math.round(brain.overlay.ratio*brain.numSlice.X))%brain.overlay.nbCol);
             posH = (Math.round(brain.overlay.ratio*brain.numSlice.X)-posW)/brain.overlay.nbCol;
+            brain.overlay.contextX.clearRect(0, 0, brain.overlay.nbSlice.Y, brain.overlay.nbSlice.Z);
             brain.overlay.contextX.drawImage(brain.overlay.sprite,
                 posW*brain.overlay.nbSlice.Y, posH*brain.overlay.nbSlice.Z, brain.overlay.nbSlice.Y, brain.overlay.nbSlice.Z,0,0,brain.overlay.nbSlice.Y,brain.overlay.nbSlice.Z);
             // Draw the X slice on the main canvas
@@ -247,18 +285,17 @@ function brainsprite(params) {
 
         // Add X coordinates on the slice
         if (brain.flagCoordinates) {
-          brain.context.font = sizeFontPixels + "px Arial";
-          brain.context.fillStyle = brain.colorFont;
           coord = "x="+brain.coordinatesSlice.X;
           coordWidth = brain.context.measureText(coord).width;
-          brain.context.fillText(coord,brain.widthCanvas.X/2-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
+          brain.context.fillStyle = brain.colorFont;
+          brain.context.fillText(coord,brain.widthCanvas.X/2-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
         }
       break;
       case 'Y':
         // Draw a single coronal slice at native resolution
+        brain.context.fillStyle=brain.colorBackground;
         brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y, brain.canvas.height);
-        brain.canvasY.width  = brain.nbSlice.X;
-        brain.canvasY.height = brain.nbSlice.Z;
+
         for (xx=0; xx<brain.nbSlice.X; xx++) {
             posW = (xx%brain.nbCol);
             posH = (xx-posW)/brain.nbCol;
@@ -271,10 +308,8 @@ function brainsprite(params) {
 
         // Add overlay
         if (brain.overlay) {
+          brain.overlay.contextY.clearRect(0, 0, brain.nbSlice.Y, brain.nbSlice.Z);
           // Draw a single coronal slice at native resolution (for the overlay)
-          brain.overlay.canvasY.width = brain.overlay.nbSlice.X;
-          brain.overlay.canvasY.height = brain.overlay.nbSlice.Z;
-          brain.overlay.contextY.globalAlpha = brain.overlay.opacity;
           for (xx=0; xx<brain.overlay.nbSlice.X; xx++) {
             posW = xx%brain.overlay.nbCol;
             posH = (xx-posW)/brain.overlay.nbCol;
@@ -291,28 +326,24 @@ function brainsprite(params) {
           // draw the colorMap on the coronal slice at screen resolution
           brain.context.drawImage(brain.colorMap.img,
                 0, 0, brain.colorMap.img.width, 1, Math.round(brain.widthCanvas.X + brain.widthCanvas.Y*0.2) , Math.round(brain.heightCanvas.max * brain.heightColorBar / 2), Math.round(brain.widthCanvas.Y*0.6) , Math.round(brain.heightCanvas.max * brain.heightColorBar));
-          brain.context.font = sizeFontPixels + "px Arial";
-          brain.context.fillStyle = brain.colorFont;
-          brain.context.fillText(brain.colorMap.min,brain.widthCanvas.X+(brain.widthCanvas.Y*0.2),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(sizeFontPixels) ));
-          brain.context.fillText(brain.colorMap.max,brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(brain.colorMap.max).width,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(sizeFontPixels) ));
+          brain.context.fillText(brain.colorMap.min,brain.widthCanvas.X+(brain.widthCanvas.Y*0.2),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
+          brain.context.fillText(brain.colorMap.max,brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(brain.colorMap.max).width,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
         }
 
         // Add Y coordinates on the slice
         if (brain.flagCoordinates) {
-          brain.context.font = sizeFontPixels + "px Arial";
+          brain.context.font = brain.sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
           coord = "y="+brain.coordinatesSlice.Y;
           coordWidth = brain.context.measureText(coord).width;
-          brain.context.fillText(coord,brain.widthCanvas.X+(brain.widthCanvas.Y/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
+          brain.context.fillText(coord,brain.widthCanvas.X+(brain.widthCanvas.Y/2)-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
         }
 
       case 'Z':
         // Draw a single axial slice at native resolution
+        brain.context.fillStyle=brain.colorBackground;
         brain.context.fillRect(brain.widthCanvas.X+brain.widthCanvas.Y, 0, brain.widthCanvas.Z, brain.canvas.height);
-        brain.canvasZ.width = brain.nbSlice.X;
-        brain.canvasZ.height = brain.nbSlice.Y;
-        brain.contextZ.rotate(-Math.PI/2);
-        brain.contextZ.translate(-brain.nbSlice.Y,0);
+
         for (xx=0; xx<brain.nbSlice.X; xx++) {
             posW = (xx%brain.nbCol);
             posH = (xx-posW)/brain.nbCol;
@@ -326,12 +357,9 @@ function brainsprite(params) {
 
         // Add overlay
         if (brain.overlay) {
+          brain.overlay.contextZ.clearRect(0, 0, brain.nbSlice.Y, brain.nbSlice.X);
+
           // Draw a single axial slice at native resolution (for the overlay)
-          brain.overlay.canvasZ.width = brain.overlay.nbSlice.X;
-          brain.overlay.canvasZ.height = brain.overlay.nbSlice.Y;
-          brain.overlay.contextZ.rotate(-Math.PI/2);
-          brain.overlay.contextZ.translate(-brain.overlay.nbSlice.Y,0);
-          brain.overlay.contextZ.globalAlpha = brain.overlay.opacity;
           for (xx=0; xx<brain.overlay.nbSlice.X; xx++) {
             posW = xx%brain.overlay.nbCol;
             posH = (xx-posW)/brain.overlay.nbCol;
@@ -345,11 +373,10 @@ function brainsprite(params) {
 
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
-          brain.context.font = sizeFontPixels + "px Arial";
-          brain.context.fillStyle = brain.colorFont;
           coord = "z="+brain.coordinatesSlice.Z;
           coordWidth = brain.context.measureText(coord).width;
-          brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(sizeFontPixels/2)));
+          brain.context.fillStyle = brain.colorFont;
+          brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
         }
     }
   };
@@ -413,6 +440,9 @@ function brainsprite(params) {
       brain.drawAll();
     });
   }
+
+  // Init the viewer
+  brain.init();
 
   // Draw all slices
   brain.drawAll();
