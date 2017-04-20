@@ -16,5 +16,5 @@ dependencies:
     - mkdir -p ~/docker; docker save simexp/brainsprite-dev:0.2 > ~/docker/brainsprite-dev_0.2.tar
 test:
   override:
-    - docker run -it -v $PWD:$PWD simexp/brainsprite-dev:0.2 /bin/bash -lic "cd $PWD; cd tests; casperjs test casper_test_all.js":
+    - docker run -it -v $PWD:$PWD simexp/brainsprite-dev:0.2 /bin/bash -lic "export PATH=$PATH:/node_modules/phantomjs/bin/:/node_modules/casperjs/bin/; cd $PWD/tests; casperjs test casper_test_all.js":
        timeout: 21600
