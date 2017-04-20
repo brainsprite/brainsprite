@@ -46,14 +46,7 @@ You can check the full code of the demo [here](https://raw.githubusercontent.com
 The option `flagCoordinates` will turn on a display of each slice number at the bottom of the canvas:
 ```html
  <script>
-  $( window ).load(function() {
-    var brain = brainsprite({
-      canvas: "3Dviewer",
-      sprite: "spriteImg",
       flagCoordinates: true,
-      nbSlice: { 'Y':233 , 'Z':189 }
-    });
-  });
   </script>
   ```
 You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/gh-pages/examples/example_slice_numbers.html) and check a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html).
@@ -62,35 +55,18 @@ You can check the full code of the demo [here](https://raw.githubusercontent.com
 
 It is also possible to specify a voxel size (isotropic, i.e. the same dimension in the X, Y and Z axis), as well as an origin, i.e. which voxel has coordinates 0, 0, 0. Note that no rotations/shears are supported, as the volume is assumed to be resampled in MNI space.
 ```html
-  $( window ).load(function() {
-    // Create brain slices
-    var brain = brainsprite({
-      canvas: "3Dviewer",
-      sprite: "spriteImg",
       flagCoordinates: true,
       origin: {X: 98, Y:134, Z:72},
       voxelSize: 1,
-      nbSlice: { 'Y':233 , 'Z':189 }
-    });
-  });
   ```
 Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/gh-pages/examples/example_slice_numbers.html) that reports MNI coordinates for the voxel associated with the click, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_coordinates.html).
 
 ## Click events
 It is possible to attach a function that will be triggered when the user clicks on the brain viewer. The object passed to the function is called `brain` and contains all the info about the brain viewer, including the current slice coordinates. In this example, an alert is triggered that reports current coordinates:
 ```html
-  $( window ).load(function() {
-    var brain = brainsprite({
-      canvas: "3Dviewer",
-      sprite: "spriteImg",
-      origin: {X: 98, Y:134, Z:72},
-      voxelSize: 1,
       onclick: function showCoordinates(brain) {
         alert("Slice coordinates: x=" + brain.coordinatesSlice.X + " , y=" + brain.coordinatesSlice.Y + " ,z=" + brain.coordinatesSlice.Z);
       },
-      nbSlice: { 'Y':233 , 'Z':189 }
-    });
-  });
   ```
 Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/gh-pages/examples/example_click.html) that pops up an alert with MNI coordinates for the voxel associated with the click, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_click.html).
 
@@ -105,18 +81,10 @@ It is possible to add an overlay to a volume. The overlay is loaded as a sprite 
 ```
 Then, we add the description of the overlay (including the number of voxels in the `Y` and `Z` dimensions) to the call to `brainsprite`. Note that the sprite can have a different organization than the background, in terms of the number of rows and columns.
 ```html
-  $( window ).load(function() {
-    // Create brain slices
-    var brain = brainsprite({
-      canvas: "3Dviewer",
-      sprite: "spriteImg",
       overlay: {
         sprite: "overlayImg",
         nbSlice: {'Y':79 , 'Z':63 }
       },
-      nbSlice: { 'Y':233 , 'Z':189 }
-    });
-  });
   ```
 Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/gh-pages/examples/example_overlay.html) adding a functional connectivity map to a structural MRI, along with a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_overlay.html).
 
