@@ -45,10 +45,8 @@ You can check the full code of the demo [here](https://raw.githubusercontent.com
 ## Slice coordinates
 The option `flagCoordinates` will turn on a display of each slice number at the bottom of the canvas:
 ```html
- <script>
       flagCoordinates: true,
-  </script>
-  ```
+```
 You can check the full code of the demo [here](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/gh-pages/examples/example_slice_numbers.html) and check a [live demo >](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html).
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/gh-pages/examples/example_slice_numbers.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html)
