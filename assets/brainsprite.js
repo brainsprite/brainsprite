@@ -274,23 +274,23 @@ function brainsprite(params) {
     }
 
     // Draw the Z canvas
-    brain.planes.canvasZ.width  = brain.nbSlice.X * brain.nbCol;
-    brain.planes.canvasZ.height = brain.nbSlice.Y * Math.ceil(brain.nbSlice.Z/brain.nbCol);
+    brain.planes.canvasZ.height = Math.max(brain.nbSlice.X * brain.nbCol , brain.nbSlice.Y * Math.ceil(brain.nbSlice.Z/brain.nbCol));
+    brain.planes.canvasZ.width  = brain.planes.canvasZ.height;
     brain.planes.contextZ.rotate(-Math.PI/2);
-    brain.planes.contextZ.translate(-brain.nbSlice.Y,0);
+    brain.planes.contextZ.translate(-brain.planes.canvasZ.width,0);
     var pos = {};
-    for (zz=0; yy<brain.nbSlice.Z; zz++) {
+    for (zz=0; zz<brain.nbSlice.Z; zz++) {
       for (xx=0; xx<brain.nbSlice.X; xx++) {
           pos.XW = (xx%brain.nbCol);
           pos.XH = (xx-pos.XW)/brain.nbCol;
-          pos.ZW = (zz%brain.nbCol);
-          pos.ZH = (zz-pos.ZW)/brain.nbCol;
+          pos.ZH = zz%brain.nbCol;
+          pos.ZW = Math.ceil(brain.nbSlice.Z/brain.nbCol)-1 -((zz-pos.ZH)/brain.nbCol);
           brain.planes.contextZ.drawImage(brain.sprite,
-            pos.XW*brain.nbSlice.Y , pos.XH*brain.nbSlice.Z + zz, brain.nbSlice.Y, 1, pos.YW*brain.nbSlice.Y , pos.YH*brain.nbSlice.X + xx , brain.nbSlice.Y , 1);
+            pos.XW*brain.nbSlice.Y , pos.XH*brain.nbSlice.Z + zz, brain.nbSlice.Y, 1, pos.ZW*brain.nbSlice.Y , pos.ZH*brain.nbSlice.X + xx , brain.nbSlice.Y , 1);
       }
     }
-
   }
+
   //***************************************//
   // Draw a particular slice in the canvas //
   //***************************************//
