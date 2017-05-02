@@ -256,20 +256,11 @@ function brainsprite(params) {
           pos.YH = (yy-pos.YW)/brain.nbCol;
           brain.planes.contextY.drawImage(brain.sprite,
             pos.XW*brain.nbSlice.Y + yy, pos.XH*brain.nbSlice.Z, 1, brain.nbSlice.Z, pos.YW*brain.nbSlice.X + xx, pos.YH*brain.nbSlice.Z, 1, brain.nbSlice.Z );
-      }
-    }
-
-    // Add overlay
-    if (brain.overlay) {
-      for (yy=0; yy<brain.nbSlice.Y; yy++) {
-        for (xx=0; xx<brain.nbSlice.X; xx++) {
-            pos.XW = (xx%brain.nbCol);
-            pos.XH = (xx-pos.XW)/brain.nbCol;
-            pos.YW = (yy%brain.nbCol);
-            pos.YH = (yy-pos.YW)/brain.nbCol;
+          // Add the Y overlay
+          if (brain.overlay) {
             brain.planes.contextY.drawImage(brain.overlay.sprite,
               pos.XW*brain.nbSlice.Y + yy, pos.XH*brain.nbSlice.Z, 1, brain.nbSlice.Z, pos.YW*brain.nbSlice.X + xx, pos.YH*brain.nbSlice.Z, 1, brain.nbSlice.Z );
-        }
+          }
       }
     }
 
@@ -287,6 +278,11 @@ function brainsprite(params) {
           pos.ZW = Math.ceil(brain.nbSlice.Z/brain.nbCol)-1 -((zz-pos.ZH)/brain.nbCol);
           brain.planes.contextZ.drawImage(brain.sprite,
             pos.XW*brain.nbSlice.Y , pos.XH*brain.nbSlice.Z + zz, brain.nbSlice.Y, 1, pos.ZW*brain.nbSlice.Y , pos.ZH*brain.nbSlice.X + xx , brain.nbSlice.Y , 1);
+          // Add the Z overlay
+          if (brain.overlay) {
+            brain.planes.contextZ.drawImage(brain.overlay.sprite,
+              pos.XW*brain.nbSlice.Y , pos.XH*brain.nbSlice.Z + zz, brain.nbSlice.Y, 1, pos.ZW*brain.nbSlice.Y , pos.ZH*brain.nbSlice.X + xx , brain.nbSlice.Y , 1);
+          }
       }
     }
   }
