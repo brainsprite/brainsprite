@@ -112,18 +112,6 @@ function brainsprite(params) {
         Y: params.overlay.nbSlice.Y,
         Z: params.overlay.nbSlice.Z
       };
-      // An in-memory canvas to draw intermediate reconstruction
-      // of the axial slice, at native resolution
-      brain.overlay.canvasX = document.createElement('canvas');
-      brain.overlay.contextX = brain.overlay.canvasX.getContext('2d');
-      // An in-memory canvas to draw intermediate reconstruction
-      // of the coronal slice, at native resolution
-      brain.overlay.canvasY = document.createElement('canvas');
-      brain.overlay.contextY = brain.overlay.canvasY.getContext('2d');
-      // An in-memory canvas to draw intermediate reconstruction
-      // of the axial slice, at native resolution
-      brain.overlay.canvasZ = document.createElement('canvas');
-      brain.overlay.contextZ = brain.overlay.canvasZ.getContext('2d');
       // opacity
       brain.overlay.opacity = typeof params.overlay.opacity !== 'undefined' ? params.overlay.opacity : 1;
   };
@@ -154,10 +142,11 @@ function brainsprite(params) {
                 0,0,brain.colorMap.img.width, brain.colorMap.img.height);
   };
 
-  //********************************************//
-  // Extract the value associated with on voxel //
-  //********************************************//
+  //*******************************************//
+  // Extract the value associated with o voxel //
+  //*******************************************//
   brain.getValue = function(rgb,colorMap) {
+    return NaN
     if (!colorMap) {
       return NaN;
     }
@@ -210,36 +199,18 @@ function brainsprite(params) {
     // Size for fonts
     brain.sizeFontPixels = Math.round(brain.sizeFont*(brain.heightCanvas.max));
 
-    // Size of overlay
-    if (brain.overlay) {
-      // Size of overlay.canvasX
-      brain.overlay.canvasX.width = brain.overlay.nbSlice.Y;
-      brain.overlay.canvasX.height = brain.overlay.nbSlice.Z;
-      brain.overlay.contextX.globalAlpha = brain.overlay.opacity;
-
-      // Size of overlay.canvasY
-      brain.overlay.canvasY.width = brain.overlay.nbSlice.X;
-      brain.overlay.canvasY.height = brain.overlay.nbSlice.Z;
-      brain.overlay.contextY.globalAlpha = brain.overlay.opacity;
-
-      // Size of overlay.canvasZ
-      brain.overlay.canvasZ.width = brain.overlay.nbSlice.X;
-      brain.overlay.canvasZ.height = brain.overlay.nbSlice.Y;
-      brain.overlay.contextZ.rotate(-Math.PI/2);
-      brain.overlay.contextZ.translate(-brain.overlay.nbSlice.Y,0);
-      brain.overlay.contextZ.globalAlpha = brain.overlay.opacity;
-    }
-
     // fonts
     brain.context.font = brain.sizeFontPixels + "px Arial";
 
     // Draw the X canvas
     brain.planes.canvasX.width = brain.sprite.width;
     brain.planes.canvasX.height = brain.sprite.height;
+    brain.planes.contextX.globalAlpha = 1;
     brain.planes.contextX.drawImage(brain.sprite,
             0, 0, brain.sprite.width, brain.sprite.height,0, 0, brain.sprite.width, brain.sprite.height );
     if (brain.overlay) {
         // Draw the overlay on a canvas
+        brain.planes.contextX.globalAlpha = brain.overlay.opacity;
         brain.planes.contextX.drawImage(brain.overlay.sprite,
             0, 0, brain.overlay.sprite.width, brain.overlay.sprite.height,0,0,brain.sprite.width,brain.sprite.height);
     };
@@ -254,10 +225,12 @@ function brainsprite(params) {
           pos.XH = (xx-pos.XW)/brain.nbCol;
           pos.YW = (yy%brain.nbCol);
           pos.YH = (yy-pos.YW)/brain.nbCol;
+          brain.planes.contextY.globalAlpha = 1;
           brain.planes.contextY.drawImage(brain.sprite,
             pos.XW*brain.nbSlice.Y + yy, pos.XH*brain.nbSlice.Z, 1, brain.nbSlice.Z, pos.YW*brain.nbSlice.X + xx, pos.YH*brain.nbSlice.Z, 1, brain.nbSlice.Z );
           // Add the Y overlay
           if (brain.overlay) {
+            brain.planes.contextY.globalAlpha = brain.overlay.opacity;
             brain.planes.contextY.drawImage(brain.overlay.sprite,
               pos.XW*brain.nbSlice.Y + yy, pos.XH*brain.nbSlice.Z, 1, brain.nbSlice.Z, pos.YW*brain.nbSlice.X + xx, pos.YH*brain.nbSlice.Z, 1, brain.nbSlice.Z );
           }
@@ -276,10 +249,12 @@ function brainsprite(params) {
           pos.XH = (xx-pos.XW)/brain.nbCol;
           pos.ZH = zz%brain.nbCol;
           pos.ZW = Math.ceil(brain.nbSlice.Z/brain.nbCol)-1 -((zz-pos.ZH)/brain.nbCol);
+          brain.planes.contextZ.globalAlpha = 1;
           brain.planes.contextZ.drawImage(brain.sprite,
             pos.XW*brain.nbSlice.Y , pos.XH*brain.nbSlice.Z + zz, brain.nbSlice.Y, 1, pos.ZW*brain.nbSlice.Y , pos.ZH*brain.nbSlice.X + xx , brain.nbSlice.Y , 1);
           // Add the Z overlay
           if (brain.overlay) {
+            brain.planes.contextZ.globalAlpha = brain.overlay.opacity;
             brain.planes.contextZ.drawImage(brain.overlay.sprite,
               pos.XW*brain.nbSlice.Y , pos.XH*brain.nbSlice.Z + zz, brain.nbSlice.Y, 1, pos.ZW*brain.nbSlice.Y , pos.ZH*brain.nbSlice.X + xx , brain.nbSlice.Y , 1);
           }
