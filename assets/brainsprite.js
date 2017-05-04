@@ -9,8 +9,14 @@ function brainsprite(params) {
   // Initialize the brain object
   var brain = {};
 
+  // Flag for "NaN" image values, i.e. unable to read values
+  brain.nanValue = false;
+
   // Smoothing of the main slices
   brain.smooth = typeof params.smooth !== 'undefined' ? params.smooth: false;
+
+  // drawing mode
+  brain.fastDraw = typeof params.fastDraw !== 'undefined' ? params.fastDraw: false;
 
   // The main canvas, where the three slices are drawn
   brain.canvas = document.getElementById(params.canvas);
@@ -26,6 +32,12 @@ function brainsprite(params) {
   // of the axial slice, at native resolution
   brain.canvasZ = document.createElement('canvas');
   brain.contextZ = brain.canvasZ.getContext('2d');
+
+  // An in-memory canvas to read the value of pixels
+  brain.canvasRead = document.createElement('canvas');
+  brain.contextRead = brain.canvasRead.getContext('2d');
+  brain.canvasRead.width = 1;
+  brain.canvasRead.height = 1;
 
   // Onclick events
   brain.onclick = typeof params.onclick !== 'undefined' ? params.onclick : "";
@@ -86,12 +98,6 @@ function brainsprite(params) {
   // plane X: sagital;
   brain.planes.canvasX = document.createElement('canvas');
   brain.planes.contextX = brain.planes.canvasX.getContext('2d');
-  // plane X Y: coronal;
-  brain.planes.canvasY = document.createElement('canvas');
-  brain.planes.contextY = brain.planes.canvasY.getContext('2d');
-  // plane Z: axial;
-  brain.planes.canvasZ = document.createElement('canvas');
-  brain.planes.contextZ = brain.planes.canvasZ.getContext('2d');
 
   //*************//
   // The overlay //
@@ -143,10 +149,9 @@ function brainsprite(params) {
   };
 
   //*******************************************//
-  // Extract the value associated with o voxel //
+  // Extract the value associated with a voxel //
   //*******************************************//
   brain.getValue = function(rgb,colorMap) {
-    return NaN
     if (!colorMap) {
       return NaN;
     }
@@ -154,22 +159,16 @@ function brainsprite(params) {
     nbColor = colorMap.canvas.width;
     ind = NaN;
     val = Infinity;
-    try {
-      for (xx=0; xx<nbColor; xx++) {
-        cv = colorMap.context.getImageData(xx,0,1,1).data;
-        dist = Math.pow(cv[0]-rgb[0],2)+Math.pow(cv[1]-rgb[1],2)+Math.pow(cv[2]-rgb[2],2);
-        if (dist<val) {
-          ind = xx;
-          val = dist;
-        }
+    for (xx=0; xx<nbColor; xx++) {
+      cv = colorMap.context.getImageData(xx,0,1,1).data;
+      dist = Math.pow(cv[0]-rgb[0],2)+Math.pow(cv[1]-rgb[1],2)+Math.pow(cv[2]-rgb[2],2);
+      if (dist<val) {
+        ind = xx;
+        val = dist;
       }
-      voxelValue = (ind*(colorMap.max - colorMap.min)/(nbColor-1)) + colorMap.min;
-      return voxelValue;
     }
-    catch (err) {
-      console.warn(err.message);
-      return NaN;
-    }
+    voxelValue = (ind*(colorMap.max - colorMap.min)/(nbColor-1)) + colorMap.min;
+    return voxelValue;
   };
 
 
@@ -216,11 +215,14 @@ function brainsprite(params) {
     };
 
     // Draw the Y canvas
-    brain.planes.canvasY.width  = brain.nbSlice.X * brain.nbCol;
-    brain.planes.canvasY.height = brain.nbSlice.Z * Math.ceil(brain.nbSlice.Y/brain.nbCol);
-    var pos = {};
-    for (yy=0; yy<brain.nbSlice.Y; yy++) {
-      for (xx=0; xx<brain.nbSlice.X; xx++) {
+    brain.planes.canvasY = document.createElement('canvas');
+    brain.planes.contextY = brain.planes.canvasY.getContext('2d');
+    if (brain.fastDraw) {
+      brain.planes.canvasY.width  = brain.nbSlice.X * brain.nbCol;
+      brain.planes.canvasY.height = brain.nbSlice.Z * Math.ceil(brain.nbSlice.Y/brain.nbCol);
+      var pos = {};
+      for (yy=0; yy<brain.nbSlice.Y; yy++) {
+        for (xx=0; xx<brain.nbSlice.X; xx++) {
           pos.XW = (xx%brain.nbCol);
           pos.XH = (xx-pos.XW)/brain.nbCol;
           pos.YW = (yy%brain.nbCol);
@@ -234,17 +236,24 @@ function brainsprite(params) {
             brain.planes.contextY.drawImage(brain.overlay.sprite,
               pos.XW*brain.nbSlice.Y + yy, pos.XH*brain.nbSlice.Z, 1, brain.nbSlice.Z, pos.YW*brain.nbSlice.X + xx, pos.YH*brain.nbSlice.Z, 1, brain.nbSlice.Z );
           }
+        }
       }
+    } else {
+      brain.planes.canvasY.width  = brain.nbSlice.X;
+      brain.planes.canvasY.height = brain.nbSlice.Z;
     }
 
     // Draw the Z canvas
-    brain.planes.canvasZ.height = Math.max(brain.nbSlice.X * brain.nbCol , brain.nbSlice.Y * Math.ceil(brain.nbSlice.Z/brain.nbCol));
-    brain.planes.canvasZ.width  = brain.planes.canvasZ.height;
-    brain.planes.contextZ.rotate(-Math.PI/2);
-    brain.planes.contextZ.translate(-brain.planes.canvasZ.width,0);
-    var pos = {};
-    for (zz=0; zz<brain.nbSlice.Z; zz++) {
-      for (xx=0; xx<brain.nbSlice.X; xx++) {
+    brain.planes.canvasZ = document.createElement('canvas');
+    brain.planes.contextZ = brain.planes.canvasZ.getContext('2d');
+    if (brain.fastDraw) {
+      brain.planes.canvasZ.height = Math.max(brain.nbSlice.X * brain.nbCol , brain.nbSlice.Y * Math.ceil(brain.nbSlice.Z/brain.nbCol));
+      brain.planes.canvasZ.width  = brain.planes.canvasZ.height;
+      brain.planes.contextZ.rotate(-Math.PI/2);
+      brain.planes.contextZ.translate(-brain.planes.canvasZ.width,0);
+      var pos = {};
+      for (zz=0; zz<brain.nbSlice.Z; zz++) {
+        for (xx=0; xx<brain.nbSlice.X; xx++) {
           pos.XW = (xx%brain.nbCol);
           pos.XH = (xx-pos.XW)/brain.nbCol;
           pos.ZH = zz%brain.nbCol;
@@ -258,7 +267,13 @@ function brainsprite(params) {
             brain.planes.contextZ.drawImage(brain.overlay.sprite,
               pos.XW*brain.nbSlice.Y , pos.XH*brain.nbSlice.Z + zz, brain.nbSlice.Y, 1, pos.ZW*brain.nbSlice.Y , pos.ZH*brain.nbSlice.X + xx , brain.nbSlice.Y , 1);
           }
+        }
       }
+    } else {
+      brain.planes.canvasZ.width = brain.nbSlice.X;
+      brain.planes.canvasZ.height = brain.nbSlice.Y;
+      brain.planes.contextZ.rotate(-Math.PI/2);
+      brain.planes.contextZ.translate(-brain.nbSlice.Y,0);
     }
   }
 
@@ -266,6 +281,9 @@ function brainsprite(params) {
   // Draw a particular slice in the canvas //
   //***************************************//
   brain.draw = function(slice,type) {
+
+    // Init variables
+    var pos={}, coord, coordWidth;
 
     // Update the slice number
     brain.numSlice[type] = slice;
@@ -276,18 +294,23 @@ function brainsprite(params) {
     brain.coordinatesSlice.Z = ((brain.nbSlice.Z-brain.numSlice.Z-1) * brain.voxelSize) - brain.origin.Z;
 
     // Update voxel value
-    if (brain.overlay) {
+    if (brain.overlay && !brain.nanValue) {
       try {
-        rgb = brain.overlay.contextX.getImageData(brain.numSlice.Y,brain.numSlice.Z,1,1).data;
+        pos.XW = ((brain.numSlice.X)%brain.nbCol);
+        pos.XH = (brain.numSlice.X-pos.XW)/brain.nbCol;
+        brain.contextRead.drawImage(brain.overlay.sprite,pos.XW*brain.nbSlice.Y+brain.numSlice.Y, pos.XH*brain.nbSlice.Z+brain.numSlice.Z, 1, 1,0, 0, 1, 1 );
+        rgb = brain.contextRead.getImageData(0,0,1,1).data;
+        brain.voxelValue = brain.getValue(rgb,brain.colorMap);
       }
-      catch(e) {
+      catch(err) {
+        console.warn(err.message);
         rgb = 0;
+        brain.nanValue = true;
+        brain.voxelValue = NaN;
       }
-      brain.voxelValue = brain.getValue(rgb,brain.colorMap);
     } else {
       brain.voxelValue = NaN;
     };
-    var pos={}, coord, coordWidth;
     // Now draw the slice
     switch(type) {
       case 'X':
@@ -312,16 +335,29 @@ function brainsprite(params) {
         // Draw a single coronal slice at native resolution
         brain.context.fillStyle=brain.colorBackground;
         brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y, brain.canvas.height);
-        pos.YW = (brain.numSlice.Y%brain.nbCol);
-        pos.YH = (brain.numSlice.Y-pos.YW)/brain.nbCol;
-        brain.context.drawImage(brain.planes.canvasY,
-                pos.YW*brain.nbSlice.X, pos.YH*brain.nbSlice.Z, brain.nbSlice.X, brain.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max-brain.heightCanvas.Y)/2, brain.widthCanvas.Y, brain.heightCanvas.Y );
+        if (brain.fastDraw) {
+          pos.YW = (brain.numSlice.Y%brain.nbCol);
+          pos.YH = (brain.numSlice.Y-pos.YW)/brain.nbCol;
+          brain.context.drawImage(brain.planes.canvasY,
+            pos.YW*brain.nbSlice.X, pos.YH*brain.nbSlice.Z, brain.nbSlice.X, brain.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max-brain.heightCanvas.Y)/2, brain.widthCanvas.Y, brain.heightCanvas.Y );
+        } else {
+          for (xx=0; xx<brain.nbSlice.X; xx++) {
+            posW = (xx%brain.nbCol);
+            posH = (xx-posW)/brain.nbCol;
+            brain.planes.contextY.drawImage(brain.planes.canvasX,
+                posW*brain.nbSlice.Y + brain.numSlice.Y, posH*brain.nbSlice.Z, 1, brain.nbSlice.Z, xx, 0, 1, brain.nbSlice.Z );
+          }
+          // Redraw the coronal slice in the canvas at screen resolution
+          brain.context.drawImage(brain.planes.canvasY,
+            0, 0, brain.nbSlice.X, brain.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max-brain.heightCanvas.Y)/2, brain.widthCanvas.Y, brain.heightCanvas.Y );
+        }
 
         // Add colorbar
         if ((brain.colorMap)&&(!brain.colorMap.hide)) {
           // draw the colorMap on the coronal slice at screen resolution
           brain.context.drawImage(brain.colorMap.img,
                 0, 0, brain.colorMap.img.width, 1, Math.round(brain.widthCanvas.X + brain.widthCanvas.Y*0.2) , Math.round(brain.heightCanvas.max * brain.heightColorBar / 2), Math.round(brain.widthCanvas.Y*0.6) , Math.round(brain.heightCanvas.max * brain.heightColorBar));
+          brain.context.fillStyle = brain.colorFont;
           brain.context.fillText(brain.colorMap.min,brain.widthCanvas.X+(brain.widthCanvas.Y*0.2),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
           brain.context.fillText(brain.colorMap.max,brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(brain.colorMap.max).width,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
         }
@@ -339,11 +375,24 @@ function brainsprite(params) {
         // Draw a single axial slice at native resolution
         brain.context.fillStyle=brain.colorBackground;
         brain.context.fillRect(brain.widthCanvas.X+brain.widthCanvas.Y, 0, brain.widthCanvas.Z, brain.canvas.height);
-        pos.ZW = (brain.numSlice.Z%brain.nbCol);
-        pos.ZH = (brain.numSlice.Z-pos.ZW)/brain.nbCol;
-        brain.context.drawImage(brain.planes.canvasZ,
-                pos.ZW*brain.nbSlice.X, pos.ZH*brain.nbSlice.Y, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X+brain.widthCanvas.Y, (brain.heightCanvas.max-brain.heightCanvas.Z)/2, brain.widthCanvas.Z, brain.heightCanvas.Z );
 
+        if (brain.fastDraw) {
+          pos.ZW = (brain.numSlice.Z%brain.nbCol);
+          pos.ZH = (brain.numSlice.Z-pos.ZW)/brain.nbCol;
+          brain.context.drawImage(brain.planes.canvasZ,
+                pos.ZW*brain.nbSlice.X, pos.ZH*brain.nbSlice.Y, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X+brain.widthCanvas.Y, (brain.heightCanvas.max-brain.heightCanvas.Z)/2, brain.widthCanvas.Z, brain.heightCanvas.Z );
+        } else {
+          for (xx=0; xx<brain.nbSlice.X; xx++) {
+            posW = (xx%brain.nbCol);
+            posH = (xx-posW)/brain.nbCol;
+            brain.planes.contextZ.drawImage(brain.planes.canvasX,
+                posW*brain.nbSlice.Y , posH*brain.nbSlice.Z + brain.numSlice.Z, brain.nbSlice.Y, 1, 0, xx, brain.nbSlice.Y, 1 );
+
+          }
+          // Redraw the axial slice in the canvas at screen resolution
+          brain.context.drawImage(brain.planes.canvasZ,
+            0, 0, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X+brain.widthCanvas.Y, (brain.heightCanvas.max-brain.heightCanvas.Z)/2, brain.widthCanvas.Z, brain.heightCanvas.Z );
+        }
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
           coord = "z="+brain.coordinatesSlice.Z;
@@ -406,10 +455,12 @@ function brainsprite(params) {
 
   // Draw all slices when background/overlay are loaded
   brain.sprite.addEventListener('load', function(){
+    brain.init();
     brain.drawAll();
   });
   if (brain.overlay) {
     brain.overlay.sprite.addEventListener('load', function(){
+      brain.init();
       brain.drawAll();
     });
   }
