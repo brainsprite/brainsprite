@@ -132,8 +132,8 @@ setup_args = {
     'include_package_data': True,
     'data_files': [
         ('share/jupyter/nbextensions/brainsprite', [
-            'brainsprite/extension.js',
-            'brainsprite/widget.js',
+            'brainsprite/static/extension.js',
+            'brainsprite/static/widget.js',
         ]),
     ],
     'install_requires': [
