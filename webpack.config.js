@@ -1,10 +1,15 @@
 const path = require('path');
 const version = require('./package.json').version;
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 const loaders = [
     {
         test: /\.js$/,
         exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015'],
+        },
     }
 ];
 
@@ -32,6 +37,9 @@ module.exports = [
             filename: 'brainsprite.js',
             path: path.resolve(process.cwd(), './dist/'),
         },
+        plugins: process.env.NODE_ENV == 'prod' ? [
+            new UglifyJSPlugin(),
+        ] : [],
         target: 'web',
     },
     {
