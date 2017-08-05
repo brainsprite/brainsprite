@@ -1,0 +1,24 @@
+{
+  "name": "brainsprite",
+  "version": "0.1.0",
+  "description": "Brainsprite.js turns a stack of brain slices into a 3D interactive viewer",
+  "author": "Christian Dansereau",
+  "main": "lib/brainsprite.js",
+  "repository": "https://github.com/SIMEXP/brainsprite.git",
+  "keywords": [
+    "jupyter",
+    "widgets",
+    "ipython",
+    "ipywidgets"
+  ],
+  "scripts": {
+    "prepublish": "webpack",
+    "watch": "webpack --progress --colors --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@jupyter-widgets/base": "^0.6.4",
+    "webpack": "^3.4.1"
+  },
+  "license": "MIT"
+}

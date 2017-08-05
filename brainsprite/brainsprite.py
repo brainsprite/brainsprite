@@ -1,13 +1,14 @@
-# Christian Dansereau 2016 Copyright
 import os
+import json
+import hashlib
+import time
 import numpy as np
 import nibabel as nib
 from PIL import Image
-import json
 from nilearn.image import resample_img
-import hashlib, time
 import matplotlib.pyplot as plt
 from shutil import copyfile
+
 
 def _load_json_template():
     data_file = """{
@@ -75,7 +76,7 @@ def _loadVolume(source_file):
         vol = np.swapaxes(vol, 0, 2)
     return vol
 
-def _getspec(vol):
+def _getSpec(vol):
     nx, ny, nz = vol.shape
     nrows = int(np.ceil(np.sqrt(nz)))
     ncolumns = int(np.ceil(nz / (1. * nrows)))
@@ -188,7 +189,6 @@ def show_sprite(bkg_img, overlay_img, tmp_path):
     _make_folder(tmp_path)
     copyfile('../brainsprite.js', tmp_path+'brainsprite.js')
     copyfile('../assets/jquery-1.9.1/jquery.min.js', tmp_path + 'jquery.min.js')
-
 
     hash = _gen_file_name()
 
