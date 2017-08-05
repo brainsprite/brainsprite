@@ -1,15 +1,16 @@
 from __future__ import print_function
+import os
+import sys
+import platform
 from setuptools import setup, find_packages, Command
 from setuptools.command.sdist import sdist
 from setuptools.command.build_py import build_py
 from setuptools.command.egg_info import egg_info
 from subprocess import check_call
-import os
-import sys
-import platform
+from distutils import log
 
 here = os.path.dirname(os.path.abspath(__file__))
-node_root = os.path.join(here)
+node_root = os.path.join(here, 'js')
 is_repo = os.path.exists(os.path.join(here, '.git'))
 
 npm_path = os.pathsep.join([
@@ -17,7 +18,6 @@ npm_path = os.pathsep.join([
                 os.environ.get('PATH', os.defpath),
 ])
 
-from distutils import log
 log.set_verbosity(log.DEBUG)
 log.info('setup.py entered')
 log.info('$PATH=%s' % os.environ['PATH'])

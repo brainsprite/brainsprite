@@ -15,27 +15,27 @@ const loaders = [
 
 module.exports = [
     {
-        entry: path.resolve(process.cwd(), 'lib/extension.js'),
+        entry: path.resolve(process.cwd(), './src/extension.js'),
         output: {
             filename: 'extension.js',
-            path: path.resolve(process.cwd(), 'brainsprite/static'),
+            path: path.resolve(process.cwd(), '../brainsprite/static'),
             libraryTarget: 'amd'
         }
     },
     {
-        entry: path.resolve(process.cwd(), './lib/widget.js'),
+        entry: path.resolve(process.cwd(), './src/widget.js'),
         output: {
             filename: 'widget.js',
-            path: path.resolve(process.cwd(), './brainsprite/static'),
+            path: path.resolve(process.cwd(), '../brainsprite/static'),
             libraryTarget: 'amd'
         },
         externals: ['@jupyter-widgets/base']
     },
     {
-        entry: path.resolve(process.cwd(), './lib/brainsprite.js'),
+        entry: path.resolve(process.cwd(), './src/brainsprite.js'),
         output: {
             filename: 'brainsprite.js',
-            path: path.resolve(process.cwd(), './dist/'),
+            path: path.resolve(process.cwd(), '../dist/'),
         },
         plugins: process.env.NODE_ENV == 'prod' ? [
             new UglifyJSPlugin(),
@@ -43,7 +43,7 @@ module.exports = [
         target: 'web',
     },
     {
-        entry: path.resolve(process.cwd(), './lib/embed.js'),
+        entry: path.resolve(process.cwd(), './src/embed.js'),
         output: {
             filename: 'embed.js',
             path: path.resolve(process.cwd(), './dist/'),
