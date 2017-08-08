@@ -18,28 +18,33 @@ export class BrainSpriteView extends widgets.DOMWidgetView {
 
   initialize(parameters) {
     this.canvas = $('<canvas moz-opaque height="10" />');
+    this.label = $('<p />');
     $(this.el).append(this.canvas);
+    $(this.el).append(this.label);
   }
 
   render() {
     var image = this.model.get('image');
     this.sprite = document.createElement('img');
     this.sprite.src = 'data:image/png;base64,' + image.data;
-    this.sprite.onload = function() {
-      this.brain = BrainSprite.default({
-        canvas: this.canvas[0],
-        sprite: this.sprite,
-        fastDraw: false,
-        flagCoordinates: true,
-        nbSlice: { 'Y': image.nbSliceY, 'Z': image.nbSliceZ },
-      });
-      $(window).resize(function(){
-        this.canvas.width('100%');
-        this.brain.resize();
-        this.brain.drawAll();
-      }.bind(this));
-    }.bind(this);
+    
+    this.brain = BrainSprite.default({
+      canvas: this.canvas[0],
+      sprite: this.sprite,
+      fastDraw: false,
+      nbSlice: { 'Y': image.nbSliceY, 'Z': image.nbSliceZ },
+    });
+    
+    this.brain.addEventListener('change', function(e){
+      $(this.el).find('p').html(JSON.stringify(e.newCoords));
+    }.bind(this));
 
+    $(window).resize(function(){
+      this.canvas.width('100%');
+      this.brain.resize();
+      this.brain.drawAll();
+    }.bind(this));
+    
     this.canvas.width('100%');
     // this.model.on('change:value', this.value_changed, this)
   }
