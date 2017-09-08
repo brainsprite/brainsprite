@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>brainsprite</title>
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<link rel="stylesheet" href="//unpkg.com/docsify/themes/dark.css">
+</head>
+<body>
+  <div id="app"></div>
+</body>
+<script type="text/javascript" src="assets/jquery-1.9.1/jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js -->
+<script type="text/javascript" src="assets/brainsprite.js"></script>
+<script>
+  function viewer() {
+    if (spriteImg.complete && overlayImg.complete ) {
+      var brain = brainsprite({
+        canvas: "3Dviewer", // That is the ID of the canvas to build slices into
+        sprite: "spriteImg", // That is the ID of the sprite image that includes all (sagital) brain slices
+        overlay: {
+          sprite: "overlayImg", // That is the ID of the sprite image to overlay on the brain
+          nbSlice: {'Y':233 , 'Z':189 },
+          opacity: 0.5
+        },
+        nbSlice: { 'Y':233 , 'Z':189 }
+      });
+    }
+  };
+  window.$docsify = {
+    name: 'brainsprite',
+    repo: 'https://github.com/SIMEXP/brainsprite.js',
+    coverpage: true,
+    subMaxLevel: 2,
+    autoHeader: true,
+    plugins: [
+    function (hook) {
+      hook.ready(function() {
+          var imgLogo=$('img[alt="logo"]');
+          var p = imgLogo.parent(0);
+          imgLogo.remove();
+          p.append('<canvas id="3Dviewer">');
+          p.append('<img id="spriteImg" src="tests/sprite.jpg">');
+          p.append('<img id="overlayImg" src="tests/dmnSprite.png">');
+          p.width('50%');
+          p.css('margin-left',"25%");
+          var spriteImg=$('#spriteImg');
+          var overlayImg=$('#overlayImg');
+          spriteImg.hide();
+          spriteImg.on('load',function () {viewer()});
+          overlayImg.hide();
+          overlayImg.on('load',function () {viewer()});
+          viewer();
+      });
+      hook.ready(function() {
+
+        });
+    }
+   ]
+  }
+</script>
+<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+</html>
