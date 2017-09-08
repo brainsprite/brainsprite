@@ -1,4 +1,6 @@
-# brainsprite.js
+# Getting started
+
+## Overview
 
 The brainsprite javascript library turns an image that includes a stack of brain slices in sagital plane, like this one:
 
@@ -8,7 +10,10 @@ into three brain slices in different planes (sagital, coronal, axial) that can b
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/gh-pages/examples/brainSlices.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_basic.html)
 
-A key feature of the brainsprite viewer is that it is fast to load, because it relies on .jpg images. The slice rendering is also generated with html5 canvas, enabling smooth animations between slices. For brainsprite to work, you will need to generate a sprite image (also known as mosaic) such as the one above, and specify the size of each slice (in pixel). The sagital slices are assumed to be in the same orientation as the MNI space (X: left to right, Y: posterior to anterior, Z: ventral to dorsal), and stacked from left to right row by row. The number of slices per row can be anything, but generating a sprite image that is roughly square will work best. A full example of sprite image (MNI space at 1 mm isotropic) can be found [here](https://github.com/SIMEXP/brainsprite.js/blob/gh-pages/examples/sprite.jpg).
+A key feature of the brainsprite viewer is that it is fast to load, because it relies on .jpg images. The slice rendering is also generated with html5 canvas, enabling smooth animations between slices.
+
+## Sprites
+For brainsprite to work, you will need to generate a sprite image (also known as mosaic) such as the one above, and specify the size of each slice (in pixel). The sagital slices are assumed to be in the same orientation as the MNI space (X: left to right, Y: posterior to anterior, Z: ventral to dorsal), and stacked from left to right row by row. The number of slices per row can be anything, but generating a sprite image that is roughly square will work best. A full example of sprite image (MNI space at 1 mm isotropic) can be found [here](https://github.com/SIMEXP/brainsprite.js/blob/gh-pages/examples/sprite.jpg).
 
 ## Basic example
 The first thing to do is to add a div in your html with an empty canvas as well as the sprite image, which will be hidden:
@@ -41,7 +46,9 @@ You can check the full code of the demo [here](https://raw.githubusercontent.com
 
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/gh-pages/examples/brainSlices.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_basic.html)
 
-## Slice coordinates
+# API
+
+## Coordinates
 The option `flagCoordinates` will turn on a display of each slice number at the bottom of the canvas:
 ```html
  <script>
@@ -60,7 +67,7 @@ You can check the full code of the demo [here](https://raw.githubusercontent.com
 >[<img src="https://github.com/SIMEXP/brainsprite.js/raw/gh-pages/examples/example_slice_numbers.png" width="300px" />](http://simexp.github.io/brainsprite.js/examples/example_slice_numbers.html)
 
 It is also possible to specify a voxel size (isotropic, i.e. the same dimension in the X, Y and Z axis), as well as an origin, i.e. which voxel has coordinates 0, 0, 0. Note that no rotations/shears are supported, as the volume is assumed to be resampled in MNI space.
-```html
+```javascript
   $( window ).load(function() {
     // Create brain slices
     var brain = brainsprite({
@@ -77,7 +84,7 @@ Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js
 
 ## Click events
 It is possible to attach a function that will be triggered when the user clicks on the brain viewer. The object passed to the function is called `brain` and contains all the info about the brain viewer, including the current slice coordinates. In this example, an alert is triggered that reports current coordinates:
-```html
+```javascript
   $( window ).load(function() {
     var brain = brainsprite({
       canvas: "3Dviewer",
@@ -103,7 +110,7 @@ It is possible to add an overlay to a volume. The overlay is loaded as a sprite 
 </div>
 ```
 Then, we add the description of the overlay (including the number of voxels in the `Y` and `Z` dimensions) to the call to `brainsprite`. Note that the sprite can have a different organization than the background, in terms of the number of rows and columns.
-```html
+```javascript
   $( window ).load(function() {
     // Create brain slices
     var brain = brainsprite({
@@ -123,7 +130,7 @@ Here is a [full example](https://raw.githubusercontent.com/SIMEXP/brainsprite.js
 
 ## Colors
 It is possible to tweak the color of the background that is applied behind the slices, as well as the color of the text being applied, using properties passed to brainSprite.
-```html
+```javascript
       colorBackground: "#FFFFFF",
       colorFont: "#000000"
 ```
