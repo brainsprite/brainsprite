@@ -35,7 +35,8 @@
     autoHeader: true,
     plugins: [
     function (hook) {
-      hook.ready(function() {
+      hook.afterEach(function() {
+        if ((typeof brain == 'undefined') && (typeof $('img[alt="logo"]') !== 'undefined')) {
           var imgLogo=$('img[alt="logo"]');
           var p = imgLogo.parent(0);
           p.append('<canvas id="3Dviewer">');
@@ -51,6 +52,7 @@
           overlayImg.on('load',function () {viewer()});
           viewer();
           imgLogo.remove();
+        }
       });
       hook.ready(function() {
 
