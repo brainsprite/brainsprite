@@ -1,6 +1,6 @@
 <!-- _coverpage.md -->
 
-![logo](tests/example_overlay.png)
+![logo](https://raw.githubusercontent.com/SIMEXP/brainsprite.js/master/tests/example_overlay.jpg)
 
 
 # BrainSprite
