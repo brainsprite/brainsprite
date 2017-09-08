@@ -38,7 +38,6 @@
       hook.ready(function() {
           var imgLogo=$('img[alt="logo"]');
           var p = imgLogo.parent(0);
-          imgLogo.remove();
           p.append('<canvas id="3Dviewer">');
           p.append('<img id="spriteImg" src="tests/sprite.jpg">');
           p.append('<img id="overlayImg" src="tests/dmnSprite.png">');
@@ -51,6 +50,7 @@
           overlayImg.hide();
           overlayImg.on('load',function () {viewer()});
           viewer();
+          imgLogo.remove();
       });
       hook.ready(function() {
 
