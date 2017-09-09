@@ -81,9 +81,9 @@ function initViewer() {
       hook.ready(function() {
         var imgLogo=$('img[alt="logo"]');
         if (isImageOk(imgLogo)) {
-          initViewer();  
+          initViewer();
         } else {
-          imgLogo.on('load',function () {initViewer()});
+          $( window ).load(function() {initViewer()});
         }
 
       });
