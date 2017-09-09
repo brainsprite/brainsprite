@@ -14,7 +14,7 @@
 <script type="text/javascript" src="assets/brainsprite.js"></script>
 <script>
   function viewer() {
-    if ( (typeof spriteImg !== 'undefined') && (typeof overlayImg !== 'undefined') && spriteImg.complete && overlayImg.complete ) {
+    if ( isImageOk(spriteImg) && isImageOk(overlayImg) ) {
       var brain = brainsprite({
         canvas: "3Dviewer", // That is the ID of the canvas to build slices into
         sprite: "spriteImg", // That is the ID of the sprite image that includes all (sagital) brain slices
@@ -27,6 +27,49 @@
       });
     }
   };
+  // From https://stackoverflow.com/questions/1977871/check-if-an-image-is-loaded-no-errors-in-javascript
+  function isImageOk(img) {
+    if (typeof img == 'undefined') {
+      return false;
+    }
+
+    // During the onload event, IE correctly identifies any images that
+    // weren’t downloaded as not complete. Others should too. Gecko-based
+    // browsers act like NS4 in that they report this incorrectly.
+    if (!img.complete) {
+        return false;
+    }
+
+    // However, they do have two very useful properties: naturalWidth and
+    // naturalHeight. These give the true size of the image. If it failed
+    // to load, either of these should be zero.
+
+    if (typeof img.naturalWidth !== "undefined" && img.naturalWidth === 0) {
+        return false;
+    }
+
+    // No other way of checking: assume it’s ok.
+    return true;
+}
+function initViewer() {
+  var imgLogo=$('img[alt="logo"]');
+  if (typeof brain == 'undefined') {
+    var p = imgLogo.parent(0);
+    p.append('<canvas id="3Dviewer">');
+    p.append('<img id="spriteImg" src="tests/sprite.jpg">');
+    p.append('<img id="overlayImg" src="tests/dmnSprite.png">');
+    p.width('50%');
+    p.css('margin-left',"25%");
+    var spriteImg=$('#spriteImg');
+    var overlayImg=$('#overlayImg');
+    spriteImg.hide();
+    spriteImg.on('load',function () {viewer()});
+    overlayImg.hide();
+    overlayImg.on('load',function () {viewer()});
+    viewer();
+    imgLogo.remove();
+  }
+}
   window.$docsify = {
     name: 'brainsprite',
     repo: 'https://github.com/SIMEXP/brainsprite.js',
@@ -35,28 +78,10 @@
     autoHeader: true,
     plugins: [
     function (hook) {
-      hook.afterEach(function() {
-        var imgLogo=$('img[alt="logo"]');
-        if ((typeof brain == 'undefined') && (typeof imgLogo !== 'undefined')) {
-          var p = imgLogo.parent(0);
-          p.append('<canvas id="3Dviewer">');
-          p.append('<img id="spriteImg" src="tests/sprite.jpg">');
-          p.append('<img id="overlayImg" src="tests/dmnSprite.png">');
-          p.width('50%');
-          p.css('margin-left',"25%");
-          var spriteImg=$('#spriteImg');
-          var overlayImg=$('#overlayImg');
-          spriteImg.hide();
-          spriteImg.on('load',function () {viewer()});
-          overlayImg.hide();
-          overlayImg.on('load',function () {viewer()});
-          viewer();
-          imgLogo.remove();
-        }
-      });
       hook.ready(function() {
-
-        });
+        var imgLogo=$('img[alt="logo"]');
+        imgLogo.on('load',function () {initViewer()});
+      });
     }
    ]
   }
