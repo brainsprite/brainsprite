@@ -80,7 +80,12 @@ function initViewer() {
     function (hook) {
       hook.ready(function() {
         var imgLogo=$('img[alt="logo"]');
-        imgLogo.on('load',function () {initViewer()});
+        if (isImageOk(imgLogo)) {
+          initViewer();  
+        } else {
+          imgLogo.on('load',function () {initViewer()});
+        }
+
       });
     }
    ]
