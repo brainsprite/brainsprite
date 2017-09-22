@@ -1,7 +1,7 @@
 # Getting started
 
 ## Overview
-[![CircleCI](https://circleci.com/gh/SIMEXP/brainsprite.js/tree/master.svg?style=shield)](https://circleci.com/gh/SIMEXP/brainsprite.js/tree/master)
+[![CircleCI](https://circleci.com/gh/SIMEXP/brainsprite.js/tree/master.svg?style=shield)](https://circleci.com/gh/SIMEXP/brainsprite.js/tree/master) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 The brainsprite javascript library turns an image that includes a stack of brain slices in sagital plane, like this one:
 
