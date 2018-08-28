@@ -368,8 +368,10 @@ function brainsprite(params) {
           brain.context.drawImage(brain.colorMap.img,
                 0, 0, brain.colorMap.img.width, 1, Math.round(brain.widthCanvas.X + brain.widthCanvas.Y*0.2) , Math.round(brain.heightCanvas.max * brain.heightColorBar / 2), Math.round(brain.widthCanvas.Y*0.6) , Math.round(brain.heightCanvas.max * brain.heightColorBar));
           brain.context.fillStyle = brain.colorFont;
-          brain.context.fillText(Number.parseFloat(brain.colorMap.min).toPrecision(brain.nbDecimals).replace(/0+$/,""),brain.widthCanvas.X+(brain.widthCanvas.Y*0.2),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
-          brain.context.fillText(Number.parseFloat(brain.colorMap.max).toPrecision(brain.nbDecimals).replace(/0+$/,""),brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(brain.colorMap.max).width,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
+          label_min = Number.parseFloat(brain.colorMap.min).toPrecision(brain.nbDecimals).replace(/0+$/,"")
+          label_max = Number.parseFloat(brain.colorMap.max).toPrecision(brain.nbDecimals).replace(/0+$/,"")
+          brain.context.fillText(label_min,brain.widthCanvas.X+(brain.widthCanvas.Y*0.2),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
+          brain.context.fillText(label_max,brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(label_max).width,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
         }
 
         // Add Y coordinates on the slice
