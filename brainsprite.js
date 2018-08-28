@@ -9,14 +9,35 @@ function brainsprite(params) {
   // Initialize the brain object
   var brain = {};
 
-  // Flag for "NaN" image values, i.e. unable to read values
-  brain.nanValue = false;
 
-  // Smoothing of the main slices
-  brain.smooth = typeof params.smooth !== 'undefined' ? params.smooth: false;
+  // Initialize the brain object
+  var defaultParams = {
+     // Flag for "NaN" image values, i.e. unable to read values
+    nanValue: false,
+     // Smoothing of the main slices
+    smooth: false,
+     // drawing mode
+    fastDraw: false,
 
-  // drawing mode
-  brain.fastDraw = typeof params.fastDraw !== 'undefined' ? params.fastDraw: false;
+     // Background color for the canvas
+    colorBackground: '#000000',
+
+    // Flag to turn on/off slice numbers
+    flagCoordinates: false,
+
+    // Origins and voxel size
+    origin: { X: 0, Y: 0, Z: 0 },
+    voxelSize: 1,
+
+    // Colorbar size parameters
+    heightColorBar: 0.04,
+
+    // Font parameters
+    sizeFont: 0.075,
+    colorFont: '#FFFFFF',
+  }// Flag for "NaN" image values, i.e. unable to read values
+
+  var brain = Object.assign({}, defaultParams, params);
 
   // The main canvas, where the three slices are drawn
   brain.canvas = document.getElementById(params.canvas);
@@ -42,22 +63,7 @@ function brainsprite(params) {
   // Onclick events
   brain.onclick = typeof params.onclick !== 'undefined' ? params.onclick : "";
 
-  // Background color for the canvas
-  brain.colorBackground = typeof params.colorBackground !== 'undefined' ? params.colorBackground : "#000000";
-
-  // Flag to turn on/off slice numbers
-  brain.flagCoordinates = typeof params.flagCoordinates !== 'undefined' ? params.flagCoordinates : false;
-
-  // Origins and voxel size
-  brain.origin = typeof params.origin !== 'undefined' ? params.origin : {X: 0, Y: 0, Z: 0};
-  brain.voxelSize = typeof params.voxelSize !== 'undefined' ? params.voxelSize : 1;
-
-  // Colorbar size parameters
-  brain.heightColorBar = 0.04;
-
   // Font parameters
-  brain.sizeFont = 0.075;
-  brain.colorFont = typeof params.colorFont !== 'undefined' ? params.colorFont : "#FFFFFF";
   if (brain.flagCoordinates) {
     brain.spaceFont = 0.1;
   } else {
