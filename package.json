@@ -1,0 +1,27 @@
+{
+  "name": "brainsprite.js",
+  "version": "0.6.0",
+  "description": "Brainsprite.js turns a sprite of brain slices into a 3D interactive web viewer",
+  "main": "brainsprite.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SIMEXP/brainsprite.js.git"
+  },
+  "keywords": [
+    "brain",
+    "viewer",
+    "javascript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SIMEXP/brainsprite.js/issues"
+  },
+  "homepage": "https://simexp.github.io/brainsprite.js"
+}

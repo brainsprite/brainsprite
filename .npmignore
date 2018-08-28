@@ -1,0 +1,7 @@
+assets/
+circle.yml
+_coverpage.md
+docker/
+index.html
+_sidebar.md
+tests/
