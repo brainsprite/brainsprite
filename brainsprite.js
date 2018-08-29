@@ -83,8 +83,9 @@ function brainsprite(params) {
   brain.nbCol = brain.sprite.width/params.nbSlice.Y;
   brain.nbRow = brain.sprite.height/params.nbSlice.Z;
   // Number of slices
+
   brain.nbSlice = {
-    X: brain.nbCol*brain.nbRow,
+    X: typeof params.nbSlice.X !== 'undefined' ? params.nbSlice.X : brain.nbCol*brain.nbRow,
     Y: params.nbSlice.Y,
     Z: params.nbSlice.Z
   };
@@ -124,7 +125,7 @@ function brainsprite(params) {
       brain.overlay.nbRow = brain.overlay.sprite.height/params.overlay.nbSlice.Z;
       // Number of slices in the overlay
       brain.overlay.nbSlice = {
-        X: brain.overlay.nbCol*brain.overlay.nbRow,
+        X: typeof params.overlay.nbSlice.X !== 'undefined' ? params.overlay.nbSlice.X : brain.overlay.nbCol*brain.overlay.nbRow,
         Y: params.overlay.nbSlice.Y,
         Z: params.overlay.nbSlice.Z
       };
