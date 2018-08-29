@@ -39,7 +39,7 @@ function brainsprite(params) {
     nbDecimals: 3,
 
     // Flag to turn on/off the crosshair
-    crosshair: true,
+    crosshair: false,
 
     // Color of the crosshair
     colorCrosshair: "#0000FF",
