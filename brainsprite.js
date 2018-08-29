@@ -39,6 +39,12 @@ function brainsprite(params) {
     // Number of decimals displayed
     nbDecimals: 3,
 
+    // Flag to turn on/off the crosshair
+    crosshair: true,
+
+    // Color of the crosshair
+    colorCrosshair: "#0000FF"
+
   }// Flag for "NaN" image values, i.e. unable to read values
 
   var brain = Object.assign({}, defaultParams, params);
@@ -321,6 +327,7 @@ function brainsprite(params) {
     } else {
       brain.voxelValue = NaN;
     };
+
     // Now draw the slice
     switch(type) {
       case 'X':
@@ -332,6 +339,13 @@ function brainsprite(params) {
         brain.context.fillRect(0, 0, brain.widthCanvas.X , brain.canvas.height);
         brain.context.drawImage(brain.planes.canvasX,
                 pos.XW*brain.nbSlice.Y, pos.XH*brain.nbSlice.Z, brain.nbSlice.Y, brain.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
+
+        // Add a cross hair
+        if (brain.crosshair) {
+          brain.context.fillStyle = brain.colorCrosshair;
+          brain.context.fillRect( brain.widthCanvas.X*brain.numSlice.Y/brain.nbSlice.Y, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X/brain.nbSlice.Y ,brain.heightCanvas.X);
+          brain.context.fillRect( 0, (brain.heightCanvas.max-brain.heightCanvas.X)/2 + brain.heightCanvas.X*brain.numSlice.Z/brain.nbSlice.Z, brain.widthCanvas.X ,brain.heightCanvas.X/brain.nbSlice.Z);
+        }
 
         // Add X coordinates on the slice
         if (brain.flagCoordinates) {
@@ -427,6 +441,7 @@ function brainsprite(params) {
       sz = Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.X)/2))/brain.heightCanvas.X);
       brain.draw(Math.max(Math.min(sy,brain.nbSlice.Y-1),0),'Y');
       brain.draw(Math.max(Math.min(sz,brain.nbSlice.Z-1),0),'Z');
+      brain.draw(brain.numSlice.X,'X');
     } else if (xx<(brain.widthCanvas.X+brain.widthCanvas.Y)) {
       xx = xx-brain.widthCanvas.X;
       sx = Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Y));
