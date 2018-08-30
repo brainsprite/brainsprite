@@ -7,9 +7,9 @@
 
 > A fast MRI brain viewer (click on it!)
 
-- Lightweight (500 lines of code, ~14kB minified)
-- Easy integration with other data visualization tools
-
+- Lightweight library (500 lines of javascript code, ~14kB minified)
+- API for easy integration with other data visualization tools
+- brain data stored in jpg/png images - small files, fast to load
 [GitHub](https://github.com/simexp/brainsprite.js)
 [Get Started](#overview)
 

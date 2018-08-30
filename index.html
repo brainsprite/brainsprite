@@ -6,69 +6,23 @@
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <link rel="stylesheet" href="//unpkg.com/docsify/themes/dark.css">
+<link rel="stylesheet" href="assets/style_website.css">
 </head>
 <body>
   <div id="app"></div>
 </body>
-<script type="text/javascript" src="assets/jquery-1.9.1/jquery.min.js"></script>  <!-- JQuery is used in this example, line 18, but is not actually used in brainsprite.js -->
-<script type="text/javascript" src="brainsprite.js"></script>
+
+<script type="text/javascript" src="assets/jquery-1.9.1/jquery.min.js"> </script>
+
 <script>
-  function viewer() {
-    if ( isImageOk(spriteImg) && isImageOk(overlayImg) ) {
-      var brain = brainsprite({
-        canvas: "3Dviewer", // That is the ID of the canvas to build slices into
-        sprite: "spriteImg", // That is the ID of the sprite image that includes all (sagital) brain slices
-        overlay: {
-          sprite: "overlayImg", // That is the ID of the sprite image to overlay on the brain
-          nbSlice: {'Y':233 , 'Z':189 },
-          opacity: 0.5
-        },
-        nbSlice: { 'Y':233 , 'Z':189 }
-      });
-    }
-  };
-  // From https://stackoverflow.com/questions/1977871/check-if-an-image-is-loaded-no-errors-in-javascript
-  function isImageOk(img) {
-    if (typeof img == 'undefined') {
-      return false;
-    }
 
-    // During the onload event, IE correctly identifies any images that
-    // weren’t downloaded as not complete. Others should too. Gecko-based
-    // browsers act like NS4 in that they report this incorrectly.
-    if (!img.complete) {
-        return false;
-    }
-
-    // However, they do have two very useful properties: naturalWidth and
-    // naturalHeight. These give the true size of the image. If it failed
-    // to load, either of these should be zero.
-
-    if (typeof img.naturalWidth !== "undefined" && img.naturalWidth === 0) {
-        return false;
-    }
-
-    // No other way of checking: assume it’s ok.
-    return true;
-}
 function initViewer() {
   var imgLogo=$('img[alt="logo"]');
-  if (typeof brain == 'undefined') {
-    var p = imgLogo.parent(0);
-    p.append('<canvas id="3Dviewer">');
-    p.append('<img id="spriteImg" src="tests/sprite.jpg">');
-    p.append('<img id="overlayImg" src="tests/dmnSprite.png">');
-    p.width('50%');
-    p.css('margin-left',"25%");
-    var spriteImg=$('#spriteImg');
-    var overlayImg=$('#overlayImg');
-    spriteImg.hide();
-    spriteImg.on('load',function () {viewer()});
-    overlayImg.hide();
-    overlayImg.on('load',function () {viewer()});
-    viewer();
-    imgLogo.remove();
-  }
+  var p = imgLogo.parent(0);
+  p.width('50%');
+  p.css('margin-left',"25%");
+  p.append('<div class="brainsprite"><iframe src="tests/demo.html" id="3Dviewer" frameborder="0"> </iframe></div>');
+  imgLogo.remove();
 }
   window.$docsify = {
     name: 'brainsprite',
