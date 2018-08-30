@@ -9,7 +9,6 @@
 
 - Lightweight library (500 lines of javascript code, ~14kB minified)
 - API for easy integration with other data visualization tools
-- brain data stored in jpg/png images - small files, fast to load
 [GitHub](https://github.com/simexp/brainsprite.js)
 [Get Started](#overview)
 
