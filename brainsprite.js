@@ -412,26 +412,22 @@ function brainsprite(params) {
     if (xx<brain.widthCanvas.X){
       sy = Math.round(brain.nbSlice.Y*(xx/brain.widthCanvas.X));
       sz = Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.X)/2))/brain.heightCanvas.X);
-      brain.draw(Math.max(Math.min(sy,brain.nbSlice.Y-1),0),'Y');
-      brain.draw(Math.max(Math.min(sz,brain.nbSlice.Z-1),0),'Z');
-      brain.draw(brain.numSlice.X,'X');
+      brain.numSlice.Y = Math.max(Math.min(sy,brain.nbSlice.Y-1),0);
+      brain.numSlice.Z = Math.max(Math.min(sz,brain.nbSlice.Z-1),0);
     } else if (xx<(brain.widthCanvas.X+brain.widthCanvas.Y)) {
       xx = xx-brain.widthCanvas.X;
       sx = Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Y));
-      // We use the same formula for sz in the coronal and sagital planes,
-      // for consistency
       sz = Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.X)/2))/brain.heightCanvas.X);
-      brain.draw(Math.max(Math.min(sx,brain.nbSlice.X-1),0),'X');
-      brain.draw(Math.max(Math.min(sz,brain.nbSlice.Z-1),0),'Z');
-      brain.draw(brain.numSlice.Y,'Y');
+      brain.numSlice.X = Math.max(Math.min(sx,brain.nbSlice.X-1),0);
+      brain.numSlice.Z = Math.max(Math.min(sz,brain.nbSlice.Z-1),0);
     } else {
       xx = xx-brain.widthCanvas.X-brain.widthCanvas.Y;
       sx = Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Z));
       sy = Math.round(brain.nbSlice.Y*(1-((yy-((brain.heightCanvas.max-brain.heightCanvas.Z)/2))/brain.heightCanvas.Z)));
-      brain.draw(Math.max(Math.min(sx,brain.nbSlice.X-1),0),'X');
-      brain.draw(Math.max(Math.min(sy,brain.nbSlice.Y-1),0),'Y');
-      brain.draw(brain.numSlice.Z,'Z');
+      brain.numSlice.X = Math.max(Math.min(sx,brain.nbSlice.X-1),0);
+      brain.numSlice.Y = Math.max(Math.min(sy,brain.nbSlice.Y-1),0);
     };
+    brain.drawAll()
     if (brain.onclick) {
       brain.onclick(e);
     };
