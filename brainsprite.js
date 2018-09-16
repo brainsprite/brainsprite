@@ -28,6 +28,9 @@ function brainsprite(params) {
     origin: { X: 0, Y: 0, Z: 0 },
     voxelSize: 1,
 
+    // Affine transformation
+    affine: false,
+
     // Colorbar size parameters
     heightColorBar: 0.04,
 
@@ -50,6 +53,15 @@ function brainsprite(params) {
   }// Flag for "NaN" image values, i.e. unable to read values
 
   var brain = Object.assign({}, defaultParams, params);
+
+  // Build affine, if not specified
+  if (typeof brain.affine === 'boolean' && brain.affine === false) {
+    brain.affine = [[brain.voxelSize , 0 , 0 , -brain.origin.X],
+                    [0 , brain.voxelSize , 0 , -brain.origin.Y],
+                    [0 , 0 , brain.voxelSize , -brain.origin.Z],
+                    [0 , 0 , 0               , 1]]
+
+  }
 
   // The main canvas, where the three slices are drawn
   brain.canvas = document.getElementById(params.canvas);
@@ -255,6 +267,27 @@ function brainsprite(params) {
   }
 
   //***************************************//
+  // Define a function to multiply matrix  //
+  //***************************************//
+  // A bit of an overkill, but avoid adding a dependency just for that
+  // Snippet copied from https://stackoverflow.com/questions/27205018/multiply-2-matrices-in-javascript
+  brain.multiply = function (a, b) {
+    var aNumRows = a.length, aNumCols = a[0].length,
+        bNumRows = b.length, bNumCols = b[0].length,
+        m = new Array(aNumRows);  // initialize array of rows
+    for (var r = 0; r < aNumRows; ++r) {
+      m[r] = new Array(bNumCols); // initialize the current row
+      for (var c = 0; c < bNumCols; ++c) {
+        m[r][c] = 0;             // initialize the current cell
+        for (var i = 0; i < aNumCols; ++i) {
+          m[r][c] += a[r][i] * b[i][c];
+        }
+      }
+    }
+    return m;
+  }
+
+  //***************************************//
   // Draw a particular slice in the canvas //
   //***************************************//
   brain.draw = function(slice,type) {
@@ -269,9 +302,10 @@ function brainsprite(params) {
     brain.numSlice[type] = slice;
 
     // Update slice coordinates
-    brain.coordinatesSlice.X = (brain.numSlice.X * brain.voxelSize) - brain.origin.X;
-    brain.coordinatesSlice.Y = (brain.numSlice.Y * brain.voxelSize) - brain.origin.Y;
-    brain.coordinatesSlice.Z = ((brain.nbSlice.Z-brain.numSlice.Z-1) * brain.voxelSize) - brain.origin.Z;
+    coordVoxel = brain.multiply(brain.affine,[ [brain.numSlice.X+1] , [brain.numSlice.Y+1] , [brain.nbSlice.Z-brain.numSlice.Z] , [1] ])
+    brain.coordinatesSlice.X = coordVoxel[0];
+    brain.coordinatesSlice.Y = coordVoxel[1];
+    brain.coordinatesSlice.Z = coordVoxel[2];
 
     // Update voxel value
     if (brain.overlay && !brain.nanValue) {
