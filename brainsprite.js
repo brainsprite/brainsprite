@@ -18,6 +18,9 @@ function brainsprite(params) {
      // Smoothing of the main slices
     smooth: false,
 
+     // Draw (or not) the current value
+     flagValue: false,
+
      // Background color for the canvas
     colorBackground: '#000000',
 
@@ -350,6 +353,13 @@ function brainsprite(params) {
         brain.context.drawImage(brain.planes.canvasX,
                 0, 0, brain.nbSlice.Y, brain.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
 
+        // Draw the value at current voxel
+        if (brain.flagValue) {
+          value = "value="+Number.parseFloat(brain.voxelValue).toPrecision(brain.nbDecimals).replace(/0+$/,"")
+          valueWidth = brain.context.measureText(value).width;
+          brain.context.fillStyle = brain.colorFont;
+          brain.context.fillText(value,Math.round(brain.widthCanvas.X/10),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels)));
+        }
 
         // Add X coordinates on the slice
         if (brain.flagCoordinates) {
