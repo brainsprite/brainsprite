@@ -51,7 +51,10 @@ function brainsprite(params) {
     colorCrosshair: "#0000FF",
 
     // Size crosshair - percentage of the field of view
-    sizeCrosshair: 0.9
+    sizeCrosshair: 0.9,
+
+    // Optional title for the viewer
+    title: false
 
   }// Flag for "NaN" image values, i.e. unable to read values
 
@@ -352,6 +355,12 @@ function brainsprite(params) {
         // Draw on the main canvas
         brain.context.drawImage(brain.planes.canvasX,
                 0, 0, brain.nbSlice.Y, brain.nbSlice.Z,0, (brain.heightCanvas.max-brain.heightCanvas.X)/2, brain.widthCanvas.X, brain.heightCanvas.X );
+
+        // Draw the title
+        if (brain.title) {
+          brain.context.fillStyle = brain.colorFont;
+          brain.context.fillText(brain.title,Math.round(brain.widthCanvas.X/10),Math.round( (brain.heightCanvas.max*brain.heightColorBar) + (1/4)*(brain.sizeFontPixels)));
+        }
 
         // Draw the value at current voxel
         if (brain.flagValue) {
