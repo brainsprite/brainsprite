@@ -54,9 +54,11 @@ function brainsprite(params) {
     sizeCrosshair: 0.9,
 
     // Optional title for the viewer
-    title: false
+    title: false,
 
-  }// Flag for "NaN" image values, i.e. unable to read values
+    // Coordinates for the initial cut
+    numSlice: false,
+  }
 
   var brain = Object.assign({}, defaultParams, params);
 
@@ -115,15 +117,19 @@ function brainsprite(params) {
     Y: params.nbSlice.Y,
     Z: params.nbSlice.Z
   };
+
   // width and height for the canvas
   brain.widthCanvas  = {'X':0 , 'Y':0 , 'Z':0 };
   brain.heightCanvas = {'X':0 , 'Y':0 , 'Z':0 , 'max':0};
-  // Default for current slices
-  brain.numSlice = {
-    'X': Math.floor(brain.nbSlice.X/2),
-    'Y': Math.floor(brain.nbSlice.Y/2),
-    'Z': Math.floor(brain.nbSlice.Z/2)
+
+  // the slice numbers
+  if (brain.numSlice == false) {
+    brain.numSlice = { X: Math.floor(brain.nbSlice.X/2),
+                       Y: Math.floor(brain.nbSlice.Y/2),
+                       Z: Math.floor(brain.nbSlice.Z/2)}
   };
+  brain.numSlice.Z = brain.nbSlice.Z-brain.numSlice.Z;
+
   // Coordinates for current slices - these will get updated when drawing the slices
   brain.coordinatesSlice = {'X': 0, 'Y': 0, 'Z': 0 };
 
@@ -308,7 +314,11 @@ function brainsprite(params) {
     brain.numSlice[type] = slice;
 
     // Update slice coordinates
-    coordVoxel = brain.multiply(brain.affine,[ [brain.numSlice.X+1] , [brain.numSlice.Y+1] , [brain.nbSlice.Z-brain.numSlice.Z] , [1] ])
+    coordVoxel = brain.multiply(brain.affine,
+                  [ [brain.numSlice.X] ,
+                    [brain.numSlice.Y] ,
+                    [brain.nbSlice.Z-brain.numSlice.Z] ,
+                    [1] ]);
     brain.coordinatesSlice.X = coordVoxel[0];
     brain.coordinatesSlice.Y = coordVoxel[1];
     brain.coordinatesSlice.Z = coordVoxel[2];
