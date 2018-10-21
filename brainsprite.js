@@ -221,7 +221,7 @@ function brainsprite(params) {
       try {
         pos.XW = ((brain.numSlice.X)%brain.nbCol);
         pos.XH = (brain.numSlice.X-pos.XW)/brain.nbCol;
-        brain.contextRead.drawImage(brain.overlay.sprite,pos.XW*brain.nbSlice.Y+brain.numSlice.Y, pos.XH*brain.nbSlice.Z-brain.numSlice.Z-1, 1, 1,0, 0, 1, 1 );
+        brain.contextRead.drawImage(brain.overlay.sprite,pos.XW*brain.nbSlice.Y+brain.numSlice.Y, pos.XH*brain.nbSlice.Z+brain.nbSlice.Z-brain.numSlice.Z-1, 1, 1,0, 0, 1, 1 );
         rgb = brain.contextRead.getImageData(0,0,1,1).data;
         brain.voxelValue = brain.getValue(rgb,brain.colorMap);
       }
