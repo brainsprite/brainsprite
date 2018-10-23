@@ -497,8 +497,8 @@ function brainsprite(params) {
 
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
-          coordWidth = brain.context.measureText(coord).width;
           coord = "z = "+Math.round(brain.coordinatesSlice.Z);
+          coordWidth = brain.context.measureText(coord).width;
           brain.context.fillStyle = brain.colorFont;
           brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
         }
