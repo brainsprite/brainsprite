@@ -217,13 +217,34 @@ function brainsprite(params) {
   //***************************************//
   brain.updateValue = function() {
     var pos={};
+    var test1=[];
+    var test2=[];
     if (brain.overlay && !brain.nanValue) {
       try {
         pos.XW = ((brain.numSlice.X)%brain.nbCol);
         pos.XH = (brain.numSlice.X-pos.XW)/brain.nbCol;
-        brain.contextRead.drawImage(brain.overlay.sprite,pos.XW*brain.nbSlice.Y+brain.numSlice.Y, pos.XH*brain.nbSlice.Z+brain.nbSlice.Z-brain.numSlice.Z-1, 1, 1,0, 0, 1, 1 );
+        brain.contextRead.fillStyle='#FFFFFF';
+        brain.contextRead.fillRect(0, 0, 1, 1);
+        brain.contextRead.drawImage(brain.overlay.sprite,
+                                    pos.XW*brain.nbSlice.Y+brain.numSlice.Y,
+                                    pos.XH*brain.nbSlice.Z+brain.nbSlice.Z-brain.numSlice.Z-1,
+                                    1, 1, 0, 0, 1, 1 );
         rgb = brain.contextRead.getImageData(0,0,1,1).data;
-        brain.voxelValue = brain.getValue(rgb,brain.colorMap);
+        test1 = ( (rgb[0] == 255) && (rgb[1]==255) && (rgb[2]==255));
+        brain.contextRead.fillStyle='#000000';
+        brain.contextRead.fillRect(0, 0, 1, 1);
+        brain.contextRead.drawImage(brain.overlay.sprite,
+                                    pos.XW*brain.nbSlice.Y+brain.numSlice.Y,
+                                    pos.XH*brain.nbSlice.Z+brain.nbSlice.Z-brain.numSlice.Z-1,
+                                    1, 1, 0, 0, 1, 1 );
+        rgb = brain.contextRead.getImageData(0,0,1,1).data;
+        test2 = ( (rgb[0] == 0) && (rgb[1]==0) && (rgb[2]==0));
+        if (test1&&test2){
+          brain.voxelValue = NaN
+        }
+        else {
+          brain.voxelValue = brain.getValue(rgb,brain.colorMap);
+        }
       }
       catch(err) {
         console.warn(err.message);
@@ -476,8 +497,8 @@ function brainsprite(params) {
 
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
-          coord = "z = "+Math.round(brain.coordinatesSlice.Z);
           coordWidth = brain.context.measureText(coord).width;
+          coord = "z = "+Math.round(brain.coordinatesSlice.Z);
           brain.context.fillStyle = brain.colorFont;
           brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
         }
