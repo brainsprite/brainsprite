@@ -9,7 +9,6 @@ function brainsprite(params) {
   // Initialize the brain object
   var brain = {};
 
-
   // Initialize the brain object
   var defaultParams = {
      // Flag for "NaN" image values, i.e. unable to read values
@@ -128,7 +127,6 @@ function brainsprite(params) {
                        Y: Math.floor(brain.nbSlice.Y/2),
                        Z: Math.floor(brain.nbSlice.Z/2)}
   };
-  brain.numSlice.Z = brain.nbSlice.Z-brain.numSlice.Z;
 
   // Coordinates for current slices - these will get updated when drawing the slices
   brain.coordinatesSlice = {'X': 0, 'Y': 0, 'Z': 0 };
@@ -214,6 +212,67 @@ function brainsprite(params) {
   };
 
 
+  //***************************************//
+  // Update voxel value                    //
+  //***************************************//
+  brain.updateValue = function() {
+    var pos={};
+    if (brain.overlay && !brain.nanValue) {
+      try {
+        pos.XW = ((brain.numSlice.X)%brain.nbCol);
+        pos.XH = (brain.numSlice.X-pos.XW)/brain.nbCol;
+        brain.contextRead.drawImage(brain.overlay.sprite,pos.XW*brain.nbSlice.Y+brain.numSlice.Y, pos.XH*brain.nbSlice.Z+brain.nbSlice.Z-brain.numSlice.Z-1, 1, 1,0, 0, 1, 1 );
+        rgb = brain.contextRead.getImageData(0,0,1,1).data;
+        brain.voxelValue = brain.getValue(rgb,brain.colorMap);
+      }
+      catch(err) {
+        console.warn(err.message);
+        rgb = 0;
+        brain.nanValue = true;
+        brain.voxelValue = NaN;
+      }
+    } else {
+      brain.voxelValue = NaN;
+    };
+  };
+
+
+  //***************************************//
+  // Multiply two matrices                 //
+  //***************************************//
+  // Snippet copied from https://stackoverflow.com/questions/27205018/multiply-2-matrices-in-javascript
+  brain.multiply = function (a, b) {
+    var aNumRows = a.length, aNumCols = a[0].length,
+        bNumRows = b.length, bNumCols = b[0].length,
+        m = new Array(aNumRows);  // initialize array of rows
+    for (var r = 0; r < aNumRows; ++r) {
+      m[r] = new Array(bNumCols); // initialize the current row
+      for (var c = 0; c < bNumCols; ++c) {
+        m[r][c] = 0;             // initialize the current cell
+        for (var i = 0; i < aNumCols; ++i) {
+          m[r][c] += a[r][i] * b[i][c];
+        }
+      }
+    }
+    return m;
+  }
+
+
+  //***************************************//
+  // Update slice coordinates              //
+  //***************************************//
+  brain.updateCoordinates = function() {
+    coordVoxel = brain.multiply(brain.affine,
+                  [ [brain.numSlice.X+1] ,
+                    [brain.numSlice.Y+1] ,
+                    [brain.numSlice.Z+1] ,
+                    [1] ]);
+    brain.coordinatesSlice.X = coordVoxel[0];
+    brain.coordinatesSlice.Y = coordVoxel[1];
+    brain.coordinatesSlice.Z = coordVoxel[2];
+  };
+
+
   //***********************//
   // Initialize the viewer //
   //***********************//
@@ -276,28 +335,20 @@ function brainsprite(params) {
     brain.planes.canvasZ.height = brain.nbSlice.Y;
     brain.planes.contextZ.rotate(-Math.PI/2);
     brain.planes.contextZ.translate(-brain.nbSlice.Y,0);
+
+    // Update value
+    brain.updateValue()
+
+    // Update coordinates
+    brain.updateCoordinates()
+
+    // Round up slice coordinates
+    brain.numSlice.X = Math.round(brain.numSlice.X)
+    brain.numSlice.Y = Math.round(brain.numSlice.Y)
+    brain.numSlice.Z = Math.round(brain.numSlice.Z)
+
   }
 
-  //***************************************//
-  // Define a function to multiply matrix  //
-  //***************************************//
-  // A bit of an overkill, but avoid adding a dependency just for that
-  // Snippet copied from https://stackoverflow.com/questions/27205018/multiply-2-matrices-in-javascript
-  brain.multiply = function (a, b) {
-    var aNumRows = a.length, aNumCols = a[0].length,
-        bNumRows = b.length, bNumCols = b[0].length,
-        m = new Array(aNumRows);  // initialize array of rows
-    for (var r = 0; r < aNumRows; ++r) {
-      m[r] = new Array(bNumCols); // initialize the current row
-      for (var c = 0; c < bNumCols; ++c) {
-        m[r][c] = 0;             // initialize the current cell
-        for (var i = 0; i < aNumCols; ++i) {
-          m[r][c] += a[r][i] * b[i][c];
-        }
-      }
-    }
-    return m;
-  }
 
   //***************************************//
   // Draw a particular slice in the canvas //
@@ -309,38 +360,6 @@ function brainsprite(params) {
     offset.X = Math.ceil((1-brain.sizeCrosshair)*brain.nbSlice.X/2)
     offset.Y = Math.ceil((1-brain.sizeCrosshair)*brain.nbSlice.Y/2)
     offset.Z = Math.ceil((1-brain.sizeCrosshair)*brain.nbSlice.Z/2)
-
-    // Update the slice number
-    brain.numSlice[type] = slice;
-
-    // Update slice coordinates
-    coordVoxel = brain.multiply(brain.affine,
-                  [ [brain.numSlice.X] ,
-                    [brain.numSlice.Y] ,
-                    [brain.nbSlice.Z-brain.numSlice.Z] ,
-                    [1] ]);
-    brain.coordinatesSlice.X = coordVoxel[0];
-    brain.coordinatesSlice.Y = coordVoxel[1];
-    brain.coordinatesSlice.Z = coordVoxel[2];
-
-    // Update voxel value
-    if (brain.overlay && !brain.nanValue) {
-      try {
-        pos.XW = ((brain.numSlice.X)%brain.nbCol);
-        pos.XH = (brain.numSlice.X-pos.XW)/brain.nbCol;
-        brain.contextRead.drawImage(brain.overlay.sprite,pos.XW*brain.nbSlice.Y+brain.numSlice.Y, pos.XH*brain.nbSlice.Z+brain.numSlice.Z, 1, 1,0, 0, 1, 1 );
-        rgb = brain.contextRead.getImageData(0,0,1,1).data;
-        brain.voxelValue = brain.getValue(rgb,brain.colorMap);
-      }
-      catch(err) {
-        console.warn(err.message);
-        rgb = 0;
-        brain.nanValue = true;
-        brain.voxelValue = NaN;
-      }
-    } else {
-      brain.voxelValue = NaN;
-    };
 
     // Now draw the slice
     switch(type) {
@@ -355,7 +374,7 @@ function brainsprite(params) {
         if (brain.crosshair) {
           brain.planes.contextX.fillStyle = brain.colorCrosshair;
           brain.planes.contextX.fillRect( brain.numSlice.Y, offset.Z , 1 , brain.nbSlice.Z-2*offset.Z );
-          brain.planes.contextX.fillRect( offset.Y, brain.numSlice.Z , brain.nbSlice.Y-2*offset.Y , 1 );
+          brain.planes.contextX.fillRect( offset.Y, brain.nbSlice.Z-brain.numSlice.Z-1, brain.nbSlice.Y-2*offset.Y , 1 );
         }
 
         // fill the slice with background color
@@ -382,7 +401,7 @@ function brainsprite(params) {
 
         // Add X coordinates on the slice
         if (brain.flagCoordinates) {
-          coord = "x="+brain.coordinatesSlice.X;
+          coord = "x="+Math.round(brain.coordinatesSlice.X);
           coordWidth = brain.context.measureText(coord).width;
           brain.context.fillStyle = brain.colorFont;
           brain.context.fillText(coord,brain.widthCanvas.X/2-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
@@ -404,7 +423,7 @@ function brainsprite(params) {
         if (brain.crosshair) {
           brain.planes.contextY.fillStyle = brain.colorCrosshair;
           brain.planes.contextY.fillRect( brain.numSlice.X, offset.Z , 1 , brain.nbSlice.Z-2*offset.Z );
-          brain.planes.contextY.fillRect( offset.X, brain.numSlice.Z , brain.nbSlice.X-2*offset.X , 1 );
+          brain.planes.contextY.fillRect( offset.X, brain.nbSlice.Z-brain.numSlice.Z-1 , brain.nbSlice.X-2*offset.X , 1 );
         }
 
         // Redraw the coronal slice in the canvas at screen resolution
@@ -427,7 +446,7 @@ function brainsprite(params) {
         if (brain.flagCoordinates) {
           brain.context.font = brain.sizeFontPixels + "px Arial";
           brain.context.fillStyle = brain.colorFont;
-          coord = "y="+brain.coordinatesSlice.Y;
+          coord = "y="+Math.round(brain.coordinatesSlice.Y);
           coordWidth = brain.context.measureText(coord).width;
           brain.context.fillText(coord,brain.widthCanvas.X+(brain.widthCanvas.Y/2)-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
         }
@@ -441,7 +460,7 @@ function brainsprite(params) {
           posW = (xx%brain.nbCol);
           posH = (xx-posW)/brain.nbCol;
           brain.planes.contextZ.drawImage(brain.planes.canvasMaster,
-              posW*brain.nbSlice.Y , posH*brain.nbSlice.Z + brain.numSlice.Z, brain.nbSlice.Y, 1, 0, xx, brain.nbSlice.Y, 1 );
+              posW*brain.nbSlice.Y , posH*brain.nbSlice.Z + brain.nbSlice.Z-brain.numSlice.Z-1, brain.nbSlice.Y, 1, 0, xx, brain.nbSlice.Y, 1 );
         }
 
         // Add a crosshair
@@ -457,7 +476,7 @@ function brainsprite(params) {
 
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
-          coord = "z="+brain.coordinatesSlice.Z;
+          coord = "z="+Math.round(brain.coordinatesSlice.Z);
           coordWidth = brain.context.measureText(coord).width;
           brain.context.fillStyle = brain.colorFont;
           brain.context.fillText(coord,brain.widthCanvas.X+brain.widthCanvas.Y+(brain.widthCanvas.Z/2)-coordWidth/2,Math.round(brain.canvas.height-(brain.sizeFontPixels/2)));
@@ -473,23 +492,30 @@ function brainsprite(params) {
     var sy, sz;
 
     if (xx<brain.widthCanvas.X){
-      sy = Math.round(brain.nbSlice.Y*(xx/brain.widthCanvas.X));
-      sz = Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.X)/2))/brain.heightCanvas.X);
+      sy = Math.round((brain.nbSlice.Y-1)*(xx/brain.widthCanvas.X));
+      sz = Math.round((brain.nbSlice.Z-1)*(((brain.heightCanvas.max+brain.heightCanvas.X)/2)-yy)/brain.heightCanvas.X);
       brain.numSlice.Y = Math.max(Math.min(sy,brain.nbSlice.Y-1),0);
       brain.numSlice.Z = Math.max(Math.min(sz,brain.nbSlice.Z-1),0);
     } else if (xx<(brain.widthCanvas.X+brain.widthCanvas.Y)) {
       xx = xx-brain.widthCanvas.X;
-      sx = Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Y));
-      sz = Math.round(brain.nbSlice.Z*(yy-((brain.heightCanvas.max-brain.heightCanvas.X)/2))/brain.heightCanvas.X);
+      sx = Math.round((brain.nbSlice.X-1)*(xx/brain.widthCanvas.Y));
+      sz = Math.round((brain.nbSlice.Z-1)*(((brain.heightCanvas.max+brain.heightCanvas.X)/2)-yy)/brain.heightCanvas.X);
       brain.numSlice.X = Math.max(Math.min(sx,brain.nbSlice.X-1),0);
       brain.numSlice.Z = Math.max(Math.min(sz,brain.nbSlice.Z-1),0);
     } else {
       xx = xx-brain.widthCanvas.X-brain.widthCanvas.Y;
-      sx = Math.round(brain.nbSlice.X*(xx/brain.widthCanvas.Z));
-      sy = Math.round(brain.nbSlice.Y*(1-((yy-((brain.heightCanvas.max-brain.heightCanvas.Z)/2))/brain.heightCanvas.Z)));
+      sx = Math.round((brain.nbSlice.X-1)*(xx/brain.widthCanvas.Z));
+      sy = Math.round((brain.nbSlice.Y-1)*(((brain.heightCanvas.max+brain.heightCanvas.Z)/2)-yy)/brain.heightCanvas.Z);
       brain.numSlice.X = Math.max(Math.min(sx,brain.nbSlice.X-1),0);
       brain.numSlice.Y = Math.max(Math.min(sy,brain.nbSlice.Y-1),0);
     };
+    // Update value
+    brain.updateValue()
+
+    // Update coordinates
+    brain.updateCoordinates()
+
+    // Redraw slices
     brain.drawAll()
     if (brain.onclick) {
       brain.onclick(e);
