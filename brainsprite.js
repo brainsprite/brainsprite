@@ -459,8 +459,8 @@ function brainsprite(params) {
           brain.context.fillStyle = brain.colorFont;
           label_min = Number.parseFloat(brain.colorMap.min).toPrecision(brain.nbDecimals).replace(/0+$/,"")
           label_max = Number.parseFloat(brain.colorMap.max).toPrecision(brain.nbDecimals).replace(/0+$/,"")
-          brain.context.fillText(label_min,brain.widthCanvas.X+(brain.widthCanvas.Y*0.2),Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
-          brain.context.fillText(label_max,brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(label_max).width,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
+          brain.context.fillText(label_min,brain.widthCanvas.X+(brain.widthCanvas.Y*0.2)-brain.context.measureText(label_min).width/2,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
+          brain.context.fillText(label_max,brain.widthCanvas.X+(brain.widthCanvas.Y*0.8)-brain.context.measureText(label_max).width/2,Math.round( (brain.heightCanvas.max*brain.heightColorBar*2) + (3/4)*(brain.sizeFontPixels) ));
         }
 
         // Add Y coordinates on the slice
