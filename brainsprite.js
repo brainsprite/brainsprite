@@ -11,16 +11,16 @@ function brainsprite(params) {
 
   // Initialize the brain object
   var defaultParams = {
-     // Flag for "NaN" image values, i.e. unable to read values
+    // Flag for "NaN" image values, i.e. unable to read values
     nanValue: false,
 
-     // Smoothing of the main slices
+    // Smoothing of the main slices
     smooth: false,
 
-     // Draw (or not) the current value
-     flagValue: false,
+    // Draw (or not) the current value
+    flagValue: false,
 
-     // Background color for the canvas
+    // Background color for the canvas
     colorBackground: "#000000",
 
     // Flag to turn on/off slice numbers
@@ -57,6 +57,10 @@ function brainsprite(params) {
 
     // Coordinates for the initial cut
     numSlice: false,
+
+    // Add an overlay
+    overlay: false,
+
   }
 
   var brain = Object.assign({}, defaultParams, params);
@@ -125,7 +129,8 @@ function brainsprite(params) {
   if (brain.numSlice == false) {
     brain.numSlice = { X: Math.floor(brain.nbSlice.X/2),
                        Y: Math.floor(brain.nbSlice.Y/2),
-                       Z: Math.floor(brain.nbSlice.Z/2)}
+                       Z: Math.floor(brain.nbSlice.Z/2)
+                     }
   };
 
   // Coordinates for current slices - these will get updated when drawing the slices
@@ -142,7 +147,6 @@ function brainsprite(params) {
   //*************//
   // The overlay //
   //*************//
-  params.overlay = typeof params.overlay !== "undefined" ? params.overlay : false;
   if (params.overlay) {
       // Initialize the overlay
       brain.overlay = {};
