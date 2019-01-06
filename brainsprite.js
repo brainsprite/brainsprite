@@ -1,36 +1,36 @@
 function brainsprite(params) {
-
-  // Function to add nearest neighbour interpolation to a canvas
-  function setNearestNeighbour(context,flag){
-    context.imageSmoothingEnabled = flag;
-    return context;
-  }
-
+  // Create and activate a brainsprite viewer object.
+  //
+  // Parameters
+  // ----------
+  //  nanValue : (boolean) unable to read values.
+  //  smooth : (boolean) turn on/off smoothing of the main slices.
+  //  flagValue : (boolean) turn on/off display of the current value.
+  //  colorBackground : (str) the color for background.
+  //  colorFont : (str) the color for the fonts.
+  //  colorCrosshair : (str) the color of the crosshair.
+  //  flagCoordinates : (bool) turn on/off slice coordinates.
+  //  origin : ({"X","Y","Z"}) coordinates of the origin.
+  //  voxelSize : (float) the size of one voxel (assumed to be isotropic)
+  //  affine : (3x4 array, or false) the voxel-to-world transform.
+  //    false will trigger isotropic diagonal using origin and voxelSize.
+  //  heightColorBar : (float) height of the text for the colorbar.
+  //  sizeFont : (float) the size of other texts.
+  //  nbDecimals : (int) the number of decimals when showing the value.
+  //  crosshair : (bool) turns on/off the crosshair.
+  //  sizeCrosshair: (float) the size of the crosshair, expressed as a
+  //    fraction of the slice (comprised between 0 and 1).
+  //  title : (str or false) the title for the viewer.
+  //    false will use no title.
+  //  numSlice : ({"X", "Y", "Z"}, or false): the coordinates of the initial
+  //    cut. false will use the middle of the volume.
+  //
+  // Returns
+  // -------
+  // brain : a brainsprite viewer object.
 
   function initBrain(params) {
-    // Initialize the brain viewer object
-    //  nanValue: (boolean) unable to read values.
-    //  smooth: (boolean) turn on/off smoothing of the main slices.
-    //  flagValue: (boolean) turn on/off display of the current value.
-    //  colorBackground: (str) the color for background.
-    //  colorFont: (str) the color for the fonts.
-    //  colorCrosshair: (str) the color of the crosshair.
-    //  flagCoordinates: (bool) turn on/off slice coordinates.
-    //  origin: ({"X","Y","Z"}) coordinates of the origin.
-    //  voxelSize: (float) the size of one voxel (assumed to be isotropic)
-    //  affine: (3x4 array, or false) the voxel-to-world transform.
-    //    false: isotropic diagonal using origin and voxelSize.
-    //  heightColorBar: (float) height of the text for the colorbar.
-    //  sizeFont: (float) the size of other texts.
-    //  nbDecimals: (int) the number of decimals when showing the value.
-    //  crosshair: (bool) turns on/off the crosshair.
-    //  sizeCrosshair: (float) the size of the crosshair, expressed as a
-    //    fraction of the slice (comprised between 0 and 1).
-    //  title: (str or false) the title for the viewer.
-    //    false: use no title.
-    //  numSlice: ({"X", "Y", "Z"}, or false): the coordinates of the initial
-    //    cut. false: use the middle of the volume.
-
+    // Parameter initialization
     var defaultParams = {
       nanValue: false, smooth: false, flagValue: false,
       colorBackground: "#000000", flagCoordinates: false,
