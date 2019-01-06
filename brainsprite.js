@@ -1,5 +1,134 @@
+function initBrain(params) {
+  // Parameter initialization - for internal use
+
+  var defaultParams = {
+    nanValue: false, smooth: false, flagValue: false,
+    colorBackground: "#000000", flagCoordinates: false,
+    origin: { X: 0, Y: 0, Z: 0 }, voxelSize: 1, affine: false,
+    heightColorBar: 0.04, sizeFont: 0.075, colorFont: "#FFFFFF",
+    nbDecimals: 3, crosshair: false, colorCrosshair: "#0000FF",
+    sizeCrosshair: 0.9, title: false, numSlice: false, onclick: "", opacity: 1
+  }
+  var brain = Object.assign({}, defaultParams, params);
+
+  // Build affine, if not specified
+  if (typeof brain.affine === "boolean" && brain.affine === false) {
+    brain.affine = [[brain.voxelSize, 0, 0, -brain.origin.X],
+                    [0, brain.voxelSize, 0, -brain.origin.Y],
+                    [0, 0, brain.voxelSize, -brain.origin.Z],
+                    [0, 0, 0, 1]]
+  }
+  // Font parameters
+  if (brain.flagCoordinates) {
+    brain.spaceFont = 0.1;
+  } else {
+    brain.spaceFont = 0;
+  };
+
+  // Coordinates for current slices -
+  // these will get updated when drawing the slices
+  brain.coordinatesSlice = {"X": 0, "Y": 0, "Z": 0 };
+
+  // width and height for the canvas
+  brain.widthCanvas  = {"X":0 , "Y":0 , "Z":0 };
+  brain.heightCanvas = {"X":0 , "Y":0 , "Z":0 , "max":0};
+
+  return brain
+}
+
+
+function initCanvas(brain,canvas){
+  // Initialize a series of canvas to store individual slices and the viewer
+  // - for internal use
+
+  // The main canvas, where the three slices are drawn
+  brain.canvas = document.getElementById(canvas);
+  brain.context = brain.canvas.getContext("2d");
+  brain.context.imageSmoothingEnabled = brain.smooth;
+
+  // An in-memory canvas to draw intermediate reconstruction
+  // of the coronal slice, at native resolution
+  brain.canvasY = document.createElement("canvas");
+  brain.contextY = brain.canvasY.getContext("2d");
+
+  // An in-memory canvas to draw intermediate reconstruction
+  // of the axial slice, at native resolution
+  brain.canvasZ = document.createElement("canvas");
+  brain.contextZ = brain.canvasZ.getContext("2d");
+
+  // An in-memory canvas to read the value of pixels
+  brain.canvasRead = document.createElement("canvas");
+  brain.contextRead = brain.canvasRead.getContext("2d");
+  brain.canvasRead.width = 1;
+  brain.canvasRead.height = 1;
+
+  // A master sagital canvas for the merge of background and overlay
+  brain.planes = {};
+  brain.planes.canvasMaster = document.createElement("canvas");
+  brain.planes.contextMaster = brain.planes.canvasMaster.getContext("2d");
+
+  return brain
+}
+
+
+function initSprite(brain,sprite,nbSlice){
+  // Init the sprite and associated dimensions - for internal use
+
+  brain.sprite = document.getElementById(sprite);
+  brain.nbCol = brain.sprite.width/nbSlice.Y;
+  brain.nbRow = brain.sprite.height/nbSlice.Z;
+  brain.nbSlice = {
+    X: typeof nbSlice.X !== "undefined" ? nbSlice.X : brain.nbCol*brain.nbRow,
+    Y: nbSlice.Y,
+    Z: nbSlice.Z
+  };
+  if (brain.numSlice == false) {
+    brain.numSlice = {
+      X: Math.floor(brain.nbSlice.X/2),
+      Y: Math.floor(brain.nbSlice.Y/2),
+      Z: Math.floor(brain.nbSlice.Z/2)
+    }
+  };
+  return brain
+}
+
+
+function initOverlay(brain, sprite, nbSlice){
+  // Initialize the overlay canvas - for internal use
+
+  brain.overlay = {};
+  brain.overlay.sprite = document.getElementById(sprite);
+  brain.overlay.nbCol = brain.overlay.sprite.width / nbSlice.Y;
+  brain.overlay.nbRow = brain.overlay.sprite.height / nbSlice.Z;
+  brain.overlay.nbSlice = {
+    X: typeof nbSlice.X !== "undefined" ? nbSlice.X :
+      brain.overlay.nbCol*brain.overlay.nbRow,
+    Y: nbSlice.Y,
+    Z: nbSlice.Z
+  };
+
+  return brain
+}
+
+
+function initColorMap(colorMap){
+  // Initialize the color map - for internal use.
+  colorMap.img = document.getElementById(colorMap.img);
+  colorMap.hide =
+    typeof colorMap.hide !== "undefined" ? colorMap.hide: false;
+  colorMap.canvas = document.createElement("canvas");
+  colorMap.context = colorMap.canvas.getContext("2d");
+  colorMap.canvas.width  = colorMap.img.width;
+  colorMap.canvas.height = colorMap.img.height;
+  colorMap.context.drawImage(colorMap.img,
+            0,0,colorMap.img.width, colorMap.img.height,
+            0,0,colorMap.img.width, colorMap.img.height);
+  return colorMap
+}
+
+
 function brainsprite(params) {
-  // Create and activate a brainsprite viewer object.
+  // Create and activate a brainsprite viewer object
   //
   // Parameters
   // ----------
@@ -24,159 +153,23 @@ function brainsprite(params) {
   //    false will use no title.
   //  numSlice : ({"X", "Y", "Z"}, or false): the coordinates of the initial
   //    cut. false will use the middle of the volume.
+  //  overlay: (object or false) if false, no overlay.
+  //  opacity: (float) the opacity of the overlay.
+  //  onclick: (string) command to call on click.
+  //  colormap: (object or false) if false, no colormap.
   //
   // Returns
   // -------
   // brain : a brainsprite viewer object.
 
-  function initBrain(params) {
-    // Parameter initialization
-    var defaultParams = {
-      nanValue: false, smooth: false, flagValue: false,
-      colorBackground: "#000000", flagCoordinates: false,
-      origin: { X: 0, Y: 0, Z: 0 }, voxelSize: 1, affine: false,
-      heightColorBar: 0.04, sizeFont: 0.075, colorFont: "#FFFFFF",
-      nbDecimals: 3, crosshair: false, colorCrosshair: "#0000FF",
-      sizeCrosshair: 0.9, title: false, numSlice: false, overlay: false,
-      onclick: ""
-    }
-    var brain = Object.assign({}, defaultParams, params);
-
-    // Build affine, if not specified
-    if (typeof brain.affine === "boolean" && brain.affine === false) {
-      brain.affine = [[brain.voxelSize, 0, 0, -brain.origin.X],
-                      [0, brain.voxelSize, 0, -brain.origin.Y],
-                      [0, 0, brain.voxelSize, -brain.origin.Z],
-                      [0, 0, 0, 1]]
-    }
-
-    // Font parameters
-    if (brain.flagCoordinates) {
-      brain.spaceFont = 0.1;
-    } else {
-      brain.spaceFont = 0;
-    };
-
-    return brain
-  }
-
-
-  function initCanvas(brain,params){
-    // Initialize a series of canvas to store individual slices and the viewer
-
-    // The main canvas, where the three slices are drawn
-    brain.canvas = document.getElementById(params.canvas);
-    brain.context = brain.canvas.getContext("2d");
-    brain.context.imageSmoothingEnabled = brain.smooth;
-
-    // An in-memory canvas to draw intermediate reconstruction
-    // of the coronal slice, at native resolution
-    brain.canvasY = document.createElement("canvas");
-    brain.contextY = brain.canvasY.getContext("2d");
-
-    // An in-memory canvas to draw intermediate reconstruction
-    // of the axial slice, at native resolution
-    brain.canvasZ = document.createElement("canvas");
-    brain.contextZ = brain.canvasZ.getContext("2d");
-
-    // An in-memory canvas to read the value of pixels
-    brain.canvasRead = document.createElement("canvas");
-    brain.contextRead = brain.canvasRead.getContext("2d");
-    brain.canvasRead.width = 1;
-    brain.canvasRead.height = 1;
-
-    return brain
-  }
-
-  // In this section, we actually build the viewer object
   let brain = initBrain(params);
-  brain = initCanvas(brain,params);
-  
-  //******************//
-  // The sprite image //
-  //******************//
-  brain.sprite = document.getElementById(params.sprite);
-
-  // Number of columns and rows in the sprite
-  brain.nbCol = brain.sprite.width/params.nbSlice.Y;
-  brain.nbRow = brain.sprite.height/params.nbSlice.Z;
-  // Number of slices
-
-  brain.nbSlice = {
-    X: typeof params.nbSlice.X !== "undefined" ? params.nbSlice.X : brain.nbCol*brain.nbRow,
-    Y: params.nbSlice.Y,
-    Z: params.nbSlice.Z
-  };
-
-  // width and height for the canvas
-  brain.widthCanvas  = {"X":0 , "Y":0 , "Z":0 };
-  brain.heightCanvas = {"X":0 , "Y":0 , "Z":0 , "max":0};
-
-  // the slice numbers
-  if (brain.numSlice == false) {
-    brain.numSlice = { X: Math.floor(brain.nbSlice.X/2),
-                       Y: Math.floor(brain.nbSlice.Y/2),
-                       Z: Math.floor(brain.nbSlice.Z/2)
-                     }
-  };
-
-  // Coordinates for current slices - these will get updated when drawing the slices
-  brain.coordinatesSlice = {"X": 0, "Y": 0, "Z": 0 };
-
-  //*************//
-  // The planes  //
-  //*************//
-  brain.planes = {};
-  // A master sagital canvas for the merge of background and overlay
-  brain.planes.canvasMaster = document.createElement("canvas");
-  brain.planes.contextMaster = brain.planes.canvasMaster.getContext("2d");
-
-  //*************//
-  // The overlay //
-  //*************//
+  brain = initCanvas(brain, params.canvas);
+  brain = initSprite(brain, params.sprite, params.nbSlice);
   if (params.overlay) {
-      // Initialize the overlay
-      brain.overlay = {};
-      // Get the sprite
-      brain.overlay.sprite = document.getElementById(params.overlay.sprite);
-      // Ratio between the resolution of the foreground and background
-      // Number of columns and rows in the overlay
-      brain.overlay.nbCol = brain.overlay.sprite.width/params.overlay.nbSlice.Y;
-      brain.overlay.nbRow = brain.overlay.sprite.height/params.overlay.nbSlice.Z;
-      // Number of slices in the overlay
-      brain.overlay.nbSlice = {
-        X: typeof params.overlay.nbSlice.X !== "undefined" ? params.overlay.nbSlice.X : brain.overlay.nbCol*brain.overlay.nbRow,
-        Y: params.overlay.nbSlice.Y,
-        Z: params.overlay.nbSlice.Z
-      };
-      // opacity
-      brain.overlay.opacity = typeof params.overlay.opacity !== "undefined" ? params.overlay.opacity : 1;
+    brain = initOverlay(brain, params.overlay.sprite, params.overlay.nbSlice);
   };
-
-  //**************//
-  // The colormap //
-  //**************//
-  params.colorMap = typeof params.colorMap !== "undefined" ? params.colorMap: false;
   if (params.colorMap) {
-      // Initialize the color map
-      brain.colorMap = {};
-      // Get the sprite
-      brain.colorMap.img = document.getElementById(params.colorMap.img);
-      // Set min / max
-      brain.colorMap.min = params.colorMap.min;
-      brain.colorMap.max = params.colorMap.max;
-      // Set visibility
-      params.colorMap.hide = typeof params.colorMap.hide !== "undefined" ? params.colorMap.hide: false;
-      // An in-memory canvas to store the colormap
-      brain.colorMap.canvas = document.createElement("canvas");
-      brain.colorMap.context = brain.colorMap.canvas.getContext("2d");
-      brain.colorMap.canvas.width  = brain.colorMap.img.width;
-      brain.colorMap.canvas.height = brain.colorMap.img.height;
-
-      // Copy the color map in an in-memory canvas
-      brain.colorMap.context.drawImage(brain.colorMap.img,
-                0,0,brain.colorMap.img.width, brain.colorMap.img.height,
-                0,0,brain.colorMap.img.width, brain.colorMap.img.height);
+    brain.colorMap = initColorMap(params.colorMap);
   };
 
   //*******************************************//
@@ -323,7 +316,7 @@ function brainsprite(params) {
             0, 0, brain.sprite.width, brain.sprite.height,0, 0, brain.sprite.width, brain.sprite.height );
     if (brain.overlay) {
         // Draw the overlay on a canvas
-        brain.planes.contextMaster.globalAlpha = brain.overlay.opacity;
+        brain.planes.contextMaster.globalAlpha = brain.opacity;
         brain.planes.contextMaster.drawImage(brain.overlay.sprite,
             0, 0, brain.overlay.sprite.width, brain.overlay.sprite.height,0,0,brain.sprite.width,brain.sprite.height);
     };
