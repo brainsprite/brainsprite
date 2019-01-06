@@ -39,8 +39,8 @@ function brainsprite(params) {
       nbDecimals: 3, crosshair: false, colorCrosshair: "#0000FF",
       sizeCrosshair: 0.9, title: false, numSlice: false, overlay: false,
       onclick: ""
-    }}
-    brain = Object.assign({}, defaultParams, params);
+    }
+    var brain = Object.assign({}, defaultParams, params);
 
     // Build affine, if not specified
     if (typeof brain.affine === "boolean" && brain.affine === false) {
@@ -90,8 +90,8 @@ function brainsprite(params) {
 
   // In this section, we actually build the viewer object
   let brain = initBrain(params);
-
-
+  brain = initCanvas(brain,params);
+  
   //******************//
   // The sprite image //
   //******************//
