@@ -60,28 +60,37 @@ function brainsprite(params) {
     return brain
   }
 
+
+  function initCanvas(brain,params){
+    // Initialize a series of canvas to store individual slices and the viewer
+
+    // The main canvas, where the three slices are drawn
+    brain.canvas = document.getElementById(params.canvas);
+    brain.context = brain.canvas.getContext("2d");
+    brain.context.imageSmoothingEnabled = brain.smooth;
+
+    // An in-memory canvas to draw intermediate reconstruction
+    // of the coronal slice, at native resolution
+    brain.canvasY = document.createElement("canvas");
+    brain.contextY = brain.canvasY.getContext("2d");
+
+    // An in-memory canvas to draw intermediate reconstruction
+    // of the axial slice, at native resolution
+    brain.canvasZ = document.createElement("canvas");
+    brain.contextZ = brain.canvasZ.getContext("2d");
+
+    // An in-memory canvas to read the value of pixels
+    brain.canvasRead = document.createElement("canvas");
+    brain.contextRead = brain.canvasRead.getContext("2d");
+    brain.canvasRead.width = 1;
+    brain.canvasRead.height = 1;
+
+    return brain
+  }
+
+  // In this section, we actually build the viewer object
   let brain = initBrain(params);
 
-  // The main canvas, where the three slices are drawn
-  brain.canvas = document.getElementById(params.canvas);
-  brain.context = brain.canvas.getContext("2d");
-  brain.context = setNearestNeighbour(brain.context,brain.smooth);
-
-  // An in-memory canvas to draw intermediate reconstruction
-  // of the coronal slice, at native resolution
-  brain.canvasY = document.createElement("canvas");
-  brain.contextY = brain.canvasY.getContext("2d");
-
-  // An in-memory canvas to draw intermediate reconstruction
-  // of the axial slice, at native resolution
-  brain.canvasZ = document.createElement("canvas");
-  brain.contextZ = brain.canvasZ.getContext("2d");
-
-  // An in-memory canvas to read the value of pixels
-  brain.canvasRead = document.createElement("canvas");
-  brain.contextRead = brain.canvasRead.getContext("2d");
-  brain.canvasRead.width = 1;
-  brain.canvasRead.height = 1;
 
   //******************//
   // The sprite image //
@@ -297,7 +306,7 @@ function brainsprite(params) {
     if (brain.canvas.width!=(brain.widthCanvas.X+brain.widthCanvas.Y+brain.widthCanvas.Z)) {
       brain.canvas.width = brain.widthCanvas.X+brain.widthCanvas.Y+brain.widthCanvas.Z;
       brain.canvas.height = Math.round((1+brain.spaceFont)*(brain.heightCanvas.max));
-      brain.context = setNearestNeighbour(brain.context,brain.smooth);
+      brain.context.imageSmoothingEnabled = brain.smooth;
     };
 
     // Size for fonts
