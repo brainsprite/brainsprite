@@ -72,7 +72,7 @@ function initCanvas(brain,canvas){
 
 
 function initSprite(brain,sprite,nbSlice){
-  // Init the sprite and associated dimensions - for internal use
+  // Initialize the sprite and associated dimensions - for internal use
 
   brain.sprite = document.getElementById(sprite);
   brain.nbCol = brain.sprite.width/nbSlice.Y;
@@ -172,10 +172,9 @@ function brainsprite(params) {
     brain.colorMap = initColorMap(params.colorMap);
   };
 
-  //*******************************************//
-  // Extract the value associated with a voxel //
-  //*******************************************//
+
   brain.getValue = function(rgb,colorMap) {
+  // Extract the value associated with a voxel by looking up in a colormap.
     if (!colorMap) {
       return NaN;
     }
@@ -185,49 +184,52 @@ function brainsprite(params) {
     val = Infinity;
     for (xx=0; xx<nbColor; xx++) {
       cv = colorMap.context.getImageData(xx,0,1,1).data;
-      dist = Math.pow(cv[0]-rgb[0],2)+Math.pow(cv[1]-rgb[1],2)+Math.pow(cv[2]-rgb[2],2);
+      dist =    Math.pow(cv[0] - rgb[0], 2)
+              + Math.pow(cv[1] - rgb[1], 2)
+              + Math.pow(cv[2] - rgb[2], 2);
       if (dist<val) {
         ind = xx;
         val = dist;
       }
     }
-    voxelValue = (ind*(colorMap.max - colorMap.min)/(nbColor-1)) + colorMap.min;
+    voxelValue =
+        (ind * (colorMap.max - colorMap.min) / (nbColor - 1)) + colorMap.min;
     return voxelValue;
   };
 
 
-  //***************************************//
-  // Update voxel value                    //
-  //***************************************//
   brain.updateValue = function() {
-    var pos={};
-    var test1=[];
-    var test2=[];
+    // Update voxel value
+    var pos = {};
+    var test1 = [];
+    var test2 = [];
     if (brain.overlay && !brain.nanValue) {
       try {
         pos.XW = Math.round((brain.numSlice.X) % brain.nbCol);
         pos.XH = Math.round((brain.numSlice.X - pos.XW) / brain.nbCol);
         brain.contextRead.fillStyle="#FFFFFF";
         brain.contextRead.fillRect(0, 0, 1, 1);
-        brain.contextRead.drawImage(brain.overlay.sprite,
-                                    pos.XW*brain.nbSlice.Y+brain.numSlice.Y,
-                                    pos.XH*brain.nbSlice.Z+brain.nbSlice.Z-brain.numSlice.Z-1,
-                                    1, 1, 0, 0, 1, 1);
+        brain.contextRead.drawImage(
+            brain.overlay.sprite,
+            pos.XW * brain.nbSlice.Y + brain.numSlice.Y,
+            pos.XH * brain.nbSlice.Z + brain.nbSlice.Z - brain.numSlice.Z - 1,
+            1, 1, 0, 0, 1, 1);
         rgb = brain.contextRead.getImageData(0,0,1,1).data;
-        test1 = ( (rgb[0] == 255) && (rgb[1]==255) && (rgb[2]==255));
+        test1 = ((rgb[0] === 255) && (rgb[1] === 255) && (rgb[2] === 255));
         brain.contextRead.fillStyle="#000000";
         brain.contextRead.fillRect(0, 0, 1, 1);
-        brain.contextRead.drawImage(brain.overlay.sprite,
-                                    pos.XW*brain.nbSlice.Y+brain.numSlice.Y,
-                                    pos.XH*brain.nbSlice.Z+brain.nbSlice.Z-brain.numSlice.Z-1,
-                                    1, 1, 0, 0, 1, 1 );
+        brain.contextRead.drawImage(
+            brain.overlay.sprite,
+            pos.XW * brain.nbSlice.Y + brain.numSlice.Y,
+            pos.XH * brain.nbSlice.Z + brain.nbSlice.Z - brain.numSlice.Z - 1,
+            1, 1, 0, 0, 1, 1 );
         rgb = brain.contextRead.getImageData(0,0,1,1).data;
-        test2 = ( (rgb[0] == 0) && (rgb[1]==0) && (rgb[2]==0));
-        if (test1&&test2){
+        test2 = ( (rgb[0] === 0) && (rgb[1] === 0) && (rgb[2] === 0));
+        if (test1 && test2){
           brain.voxelValue = NaN
         }
         else {
-          brain.voxelValue = brain.getValue(rgb,brain.colorMap);
+          brain.voxelValue = brain.getValue(rgb, brain.colorMap);
         }
       }
       catch(err) {
@@ -242,11 +244,8 @@ function brainsprite(params) {
   };
 
 
-  //***************************************//
-  // Multiply two matrices                 //
-  //***************************************//
-  // Snippet copied from https://stackoverflow.com/questions/27205018/multiply-2-matrices-in-javascript
   brain.multiply = function (a, b) {
+    // Multiply two matrices A and B
     var aNumRows = a.length, aNumCols = a[0].length,
         bNumRows = b.length, bNumCols = b[0].length,
         m = new Array(aNumRows);  // initialize array of rows
