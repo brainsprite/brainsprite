@@ -173,7 +173,7 @@ function brainsprite(params) {
   };
 
 
-  brain.getValue = function(rgb,colorMap) {
+  let getValue = function(rgb,colorMap) {
   // Extract the value associated with a voxel by looking up in a colormap.
     if (!colorMap) {
       return NaN;
@@ -198,7 +198,7 @@ function brainsprite(params) {
   };
 
 
-  brain.updateValue = function() {
+  let updateValue = function() {
     // Update voxel value
     var pos = {};
     var test1 = [];
@@ -229,7 +229,7 @@ function brainsprite(params) {
           brain.voxelValue = NaN
         }
         else {
-          brain.voxelValue = brain.getValue(rgb, brain.colorMap);
+          brain.voxelValue = getValue(rgb, brain.colorMap);
         }
       }
       catch(err) {
@@ -341,7 +341,7 @@ function brainsprite(params) {
     brain.planes.contextZ.translate(-brain.nbSlice.Y,0);
 
     // Update value
-    brain.updateValue()
+    updateValue()
 
     // Update coordinates
     brain.updateCoordinates()
@@ -514,7 +514,7 @@ function brainsprite(params) {
       brain.numSlice.Y = Math.max(Math.min(sy,brain.nbSlice.Y-1),0);
     };
     // Update value
-    brain.updateValue()
+    updateValue()
 
     // Update coordinates
     brain.updateCoordinates()
