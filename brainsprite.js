@@ -377,7 +377,7 @@ function brainsprite (params) {
     let offX = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.X / 2)
     let offY = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Y / 2)
     let offZ = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Z / 2)
-    let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z
+    let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z; let xx
 
     // Now draw the slice
     switch (type) {
@@ -418,7 +418,9 @@ function brainsprite (params) {
 
         // Draw the value at current voxel
         if (brain.flagValue) {
-          let value = 'value = ' + Number.parseFloat(brain.voxelValue).toPrecision(brain.nbDecimals).replace(/0+$/, '')
+          let value = 'value = ' +
+            Number.parseFloat(brain.voxelValue).toPrecision(brain.nbDecimals)
+              .replace(/0+$/, '')
           brain.context.fillStyle = brain.colorFont
           brain.context.fillText(value, Math.round(brain.widthCanvas.X / 10),
             Math.round((brain.heightCanvas.max * brain.heightColorBar * 2) +
@@ -438,7 +440,6 @@ function brainsprite (params) {
         // Draw a single coronal slice at native resolution
         brain.context.fillStyle = brain.colorBackground
         brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y, brain.canvas.height)
-        let xx = 0
         for (xx = 0; xx < brain.nbSlice.X; xx++) {
           let posW = (xx % brain.nbCol)
           let posH = (xx - posW) / brain.nbCol
@@ -493,7 +494,6 @@ function brainsprite (params) {
         // Draw a single axial slice at native resolution
         brain.context.fillStyle = brain.colorBackground
         brain.context.fillRect(brain.widthCanvas.X + brain.widthCanvas.Y, 0, brain.widthCanvas.Z, brain.canvas.height)
-
         for (xx = 0; xx < brain.nbSlice.X; xx++) {
           let posW = (xx % brain.nbCol)
           let posH = (xx - posW) / brain.nbCol
