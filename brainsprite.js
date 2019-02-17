@@ -1,22 +1,35 @@
-function initBrain(params) {
+function initBrain (params) {
   // Parameter initialization - for internal use
 
   var defaultParams = {
-    nanValue: false, smooth: false, flagValue: false,
-    colorBackground: "#000000", flagCoordinates: false,
-    origin: { X: 0, Y: 0, Z: 0 }, voxelSize: 1, affine: false,
-    heightColorBar: 0.04, sizeFont: 0.075, colorFont: "#FFFFFF",
-    nbDecimals: 3, crosshair: false, colorCrosshair: "#0000FF",
-    sizeCrosshair: 0.9, title: false, numSlice: false, onclick: "", opacity: 1
+    nanValue: false,
+    smooth: false,
+    flagValue: false,
+    colorBackground: '#000000',
+    flagCoordinates: false,
+    origin: { X: 0, Y: 0, Z: 0 },
+    voxelSize: 1,
+    affine: false,
+    heightColorBar: 0.04,
+    sizeFont: 0.075,
+    colorFont: '#FFFFFF',
+    nbDecimals: 3,
+    crosshair: false,
+    colorCrosshair: '#0000FF',
+    sizeCrosshair: 0.9,
+    title: false,
+    numSlice: false,
+    onclick: '',
+    opacity: 1
   }
-  var brain = Object.assign({}, defaultParams, params);
+  var brain = Object.assign({}, defaultParams, params)
 
   // Build affine, if not specified
-  if (typeof brain.affine === "boolean" && brain.affine === false) {
+  if (typeof brain.affine === 'boolean' && brain.affine === false) {
     brain.affine = [[brain.voxelSize, 0, 0, -brain.origin.X],
-                    [0, brain.voxelSize, 0, -brain.origin.Y],
-                    [0, 0, brain.voxelSize, -brain.origin.Z],
-                    [0, 0, 0, 1]]
+      [0, brain.voxelSize, 0, -brain.origin.Y],
+      [0, 0, brain.voxelSize, -brain.origin.Z],
+      [0, 0, 0, 1]]
   }
   // Font parameters
   if (brain.flagCoordinates) {
