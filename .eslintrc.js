@@ -6,11 +6,14 @@ module.exports = {
   'extends': 'standard',
   'globals': {
     'Atomics': 'readonly',
-    'SharedArrayBuffer': 'readonly'
+    'SharedArrayBuffer': 'readonly',
+    'brainsprite': 'readonly'
   },
   'parserOptions': {
     'ecmaVersion': 2018
   },
   'rules': {
+    'no-unused-vars': ['warn', { 'vars': 'local', 'args': 'after-used',
+      'ignoreRestSiblings': false }]
   }
 }

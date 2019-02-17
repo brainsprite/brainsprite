@@ -134,8 +134,7 @@ function initColorMap (colorMap) {
   return colorMap
 }
 
-/* exported brainsprite */
-function brainsprite (params) {
+var brainsprite = function (params) {
   // Create and activate a brainsprite viewer object
   //
   // Parameters
@@ -497,8 +496,8 @@ function brainsprite (params) {
           coord = 'y = ' + Math.round(brain.coordinatesSlice.Y)
           coordWidth = brain.context.measureText(coord).width
           brain.context.fillText(coord, brain.widthCanvas.X +
-            (brain.widthCanvas.Y / 2) - coordWidth / 2,
-            Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
+          (brain.widthCanvas.Y / 2) - coordWidth / 2,
+          Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
         }
         break
 
@@ -528,8 +527,7 @@ function brainsprite (params) {
         brain.context.drawImage(brain.planes.canvasZ,
           0, 0, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X +
           brain.widthCanvas.Y, (brain.heightCanvas.max -
-            brain.heightCanvas.Z) / 2, brain.widthCanvas.Z,
-            brain.heightCanvas.Z)
+          brain.heightCanvas.Z) / 2, brain.widthCanvas.Z, brain.heightCanvas.Z)
 
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
@@ -537,8 +535,8 @@ function brainsprite (params) {
           coordWidth = brain.context.measureText(coord).width
           brain.context.fillStyle = brain.colorFont
           brain.context.fillText(coord, brain.widthCanvas.X +
-            brain.widthCanvas.Y + (brain.widthCanvas.Z / 2) - coordWidth / 2,
-            Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
+          brain.widthCanvas.Y + (brain.widthCanvas.Z / 2) - coordWidth / 2,
+          Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
         }
     }
   }
@@ -594,12 +592,12 @@ function brainsprite (params) {
   brain.canvas.addEventListener('click', brain.clickBrain, false)
 
   // Attach a listener on mouse down
-  brain.canvas.addEventListener('mousedown', function (e) {
+  brain.canvas.addEventListener('mousedown', function () {
     brain.canvas.addEventListener('mousemove', brain.clickBrain, false)
   }, false)
 
   // Detach the listener on mouse up
-  brain.canvas.addEventListener('mouseup', function (e) {
+  brain.canvas.addEventListener('mouseup', function () {
     brain.canvas.removeEventListener('mousemove', brain.clickBrain, false)
   }, false)
 
@@ -622,4 +620,4 @@ function brainsprite (params) {
   brain.drawAll()
 
   return brain
-};
+}
