@@ -432,37 +432,47 @@ function brainsprite (params) {
           coord = 'x = ' + Math.round(brain.coordinatesSlice.X)
           coordWidth = brain.context.measureText(coord).width
           brain.context.fillStyle = brain.colorFont
-          brain.context.fillText(coord, brain.widthCanvas.X / 2 - coordWidth / 2, Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
+          brain.context.fillText(coord, brain.widthCanvas.X / 2 - coordWidth /
+            2, Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
         }
         break
 
       case 'Y':
         // Draw a single coronal slice at native resolution
         brain.context.fillStyle = brain.colorBackground
-        brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y, brain.canvas.height)
+        brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y,
+          brain.canvas.height)
         for (xx = 0; xx < brain.nbSlice.X; xx++) {
           let posW = (xx % brain.nbCol)
           let posH = (xx - posW) / brain.nbCol
           brain.planes.contextY.drawImage(brain.planes.canvasMaster,
-            posW * brain.nbSlice.Y + brain.numSlice.Y, posH * brain.nbSlice.Z, 1, brain.nbSlice.Z, xx, 0, 1, brain.nbSlice.Z)
+            posW * brain.nbSlice.Y + brain.numSlice.Y, posH * brain.nbSlice.Z,
+            1, brain.nbSlice.Z, xx, 0, 1, brain.nbSlice.Z)
         }
 
         // Add a crosshair
         if (brain.crosshair) {
           brain.planes.contextY.fillStyle = brain.colorCrosshair
-          brain.planes.contextY.fillRect(brain.numSlice.X, offZ, 1, brain.nbSlice.Z - 2 * offZ)
-          brain.planes.contextY.fillRect(offX, brain.nbSlice.Z - brain.numSlice.Z - 1, brain.nbSlice.X - 2 * offX, 1)
+          brain.planes.contextY.fillRect(brain.numSlice.X, offZ, 1,
+            brain.nbSlice.Z - 2 * offZ)
+          brain.planes.contextY.fillRect(offX, brain.nbSlice.Z -
+            brain.numSlice.Z - 1, brain.nbSlice.X - 2 * offX, 1)
         }
 
         // Redraw the coronal slice in the canvas at screen resolution
         brain.context.drawImage(brain.planes.canvasY,
-          0, 0, brain.nbSlice.X, brain.nbSlice.Z, brain.widthCanvas.X, (brain.heightCanvas.max - brain.heightCanvas.Y) / 2, brain.widthCanvas.Y, brain.heightCanvas.Y)
+          0, 0, brain.nbSlice.X, brain.nbSlice.Z, brain.widthCanvas.X,
+          (brain.heightCanvas.max - brain.heightCanvas.Y) / 2,
+          brain.widthCanvas.Y, brain.heightCanvas.Y)
 
         // Add colorbar
         if ((brain.colorMap) && (!brain.colorMap.hide)) {
           // draw the colorMap on the coronal slice at screen resolution
           brain.context.drawImage(brain.colorMap.img,
-            0, 0, brain.colorMap.img.width, 1, Math.round(brain.widthCanvas.X + brain.widthCanvas.Y * 0.2), Math.round(brain.heightCanvas.max * brain.heightColorBar / 2), Math.round(brain.widthCanvas.Y * 0.6), Math.round(brain.heightCanvas.max * brain.heightColorBar))
+            0, 0, brain.colorMap.img.width, 1, Math.round(brain.widthCanvas.X +
+            brain.widthCanvas.Y * 0.2), Math.round(brain.heightCanvas.max *
+            brain.heightColorBar / 2), Math.round(brain.widthCanvas.Y * 0.6),
+            Math.round(brain.heightCanvas.max * brain.heightColorBar))
           brain.context.fillStyle = brain.colorFont
           let labelMin = Number.parseFloat(brain.colorMap.min).toPrecision(
             brain.nbDecimals).replace(/0+$/, '')
@@ -486,38 +496,49 @@ function brainsprite (params) {
           brain.context.fillStyle = brain.colorFont
           coord = 'y = ' + Math.round(brain.coordinatesSlice.Y)
           coordWidth = brain.context.measureText(coord).width
-          brain.context.fillText(coord, brain.widthCanvas.X + (brain.widthCanvas.Y / 2) - coordWidth / 2, Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
+          brain.context.fillText(coord, brain.widthCanvas.X +
+            (brain.widthCanvas.Y / 2) - coordWidth / 2,
+            Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
         }
         break
 
       case 'Z':
         // Draw a single axial slice at native resolution
         brain.context.fillStyle = brain.colorBackground
-        brain.context.fillRect(brain.widthCanvas.X + brain.widthCanvas.Y, 0, brain.widthCanvas.Z, brain.canvas.height)
+        brain.context.fillRect(brain.widthCanvas.X + brain.widthCanvas.Y, 0,
+          brain.widthCanvas.Z, brain.canvas.height)
         for (xx = 0; xx < brain.nbSlice.X; xx++) {
           let posW = (xx % brain.nbCol)
           let posH = (xx - posW) / brain.nbCol
           brain.planes.contextZ.drawImage(brain.planes.canvasMaster,
-            posW * brain.nbSlice.Y, posH * brain.nbSlice.Z + brain.nbSlice.Z - brain.numSlice.Z - 1, brain.nbSlice.Y, 1, 0, xx, brain.nbSlice.Y, 1)
+            posW * brain.nbSlice.Y, posH * brain.nbSlice.Z + brain.nbSlice.Z -
+            brain.numSlice.Z - 1, brain.nbSlice.Y, 1, 0, xx, brain.nbSlice.Y, 1)
         }
 
         // Add a crosshair
         if (brain.crosshair) {
           brain.planes.contextZ.fillStyle = brain.colorCrosshair
-          brain.planes.contextZ.fillRect(offY, brain.numSlice.X, brain.nbSlice.Y - 2 * offY, 1)
-          brain.planes.contextZ.fillRect(brain.numSlice.Y, offX, 1, brain.nbSlice.X - 2 * offX)
+          brain.planes.contextZ.fillRect(offY, brain.numSlice.X,
+            brain.nbSlice.Y - 2 * offY, 1)
+          brain.planes.contextZ.fillRect(brain.numSlice.Y, offX, 1,
+            brain.nbSlice.X - 2 * offX)
         }
 
         // Redraw the axial slice in the canvas at screen resolution
         brain.context.drawImage(brain.planes.canvasZ,
-          0, 0, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X + brain.widthCanvas.Y, (brain.heightCanvas.max - brain.heightCanvas.Z) / 2, brain.widthCanvas.Z, brain.heightCanvas.Z)
+          0, 0, brain.nbSlice.X, brain.nbSlice.Y, brain.widthCanvas.X +
+          brain.widthCanvas.Y, (brain.heightCanvas.max -
+            brain.heightCanvas.Z) / 2, brain.widthCanvas.Z,
+            brain.heightCanvas.Z)
 
         // Add Z coordinates on the slice
         if (brain.flagCoordinates) {
           coord = 'z = ' + Math.round(brain.coordinatesSlice.Z)
           coordWidth = brain.context.measureText(coord).width
           brain.context.fillStyle = brain.colorFont
-          brain.context.fillText(coord, brain.widthCanvas.X + brain.widthCanvas.Y + (brain.widthCanvas.Z / 2) - coordWidth / 2, Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
+          brain.context.fillText(coord, brain.widthCanvas.X +
+            brain.widthCanvas.Y + (brain.widthCanvas.Z / 2) - coordWidth / 2,
+            Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
         }
     }
   }
@@ -531,19 +552,22 @@ function brainsprite (params) {
 
     if (xx < brain.widthCanvas.X) {
       sy = Math.round((brain.nbSlice.Y - 1) * (xx / brain.widthCanvas.X))
-      sz = Math.round((brain.nbSlice.Z - 1) * (((brain.heightCanvas.max + brain.heightCanvas.X) / 2) - yy) / brain.heightCanvas.X)
+      sz = Math.round((brain.nbSlice.Z - 1) * (((brain.heightCanvas.max +
+        brain.heightCanvas.X) / 2) - yy) / brain.heightCanvas.X)
       brain.numSlice.Y = Math.max(Math.min(sy, brain.nbSlice.Y - 1), 0)
       brain.numSlice.Z = Math.max(Math.min(sz, brain.nbSlice.Z - 1), 0)
     } else if (xx < (brain.widthCanvas.X + brain.widthCanvas.Y)) {
       xx = xx - brain.widthCanvas.X
       let sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Y))
-      let sz = Math.round((brain.nbSlice.Z - 1) * (((brain.heightCanvas.max + brain.heightCanvas.X) / 2) - yy) / brain.heightCanvas.X)
+      let sz = Math.round((brain.nbSlice.Z - 1) * (((brain.heightCanvas.max +
+        brain.heightCanvas.X) / 2) - yy) / brain.heightCanvas.X)
       brain.numSlice.X = Math.max(Math.min(sx, brain.nbSlice.X - 1), 0)
       brain.numSlice.Z = Math.max(Math.min(sz, brain.nbSlice.Z - 1), 0)
     } else {
       xx = xx - brain.widthCanvas.X - brain.widthCanvas.Y
       let sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Z))
-      let sy = Math.round((brain.nbSlice.Y - 1) * (((brain.heightCanvas.max + brain.heightCanvas.Z) / 2) - yy) / brain.heightCanvas.Z)
+      let sy = Math.round((brain.nbSlice.Y - 1) * (((brain.heightCanvas.max +
+        brain.heightCanvas.Z) / 2) - yy) / brain.heightCanvas.Z)
       brain.numSlice.X = Math.max(Math.min(sx, brain.nbSlice.X - 1), 0)
       brain.numSlice.Y = Math.max(Math.min(sy, brain.nbSlice.Y - 1), 0)
     };
