@@ -4,7 +4,7 @@
 
 The brainsprite javascript library turns an image that includes a stack of brain slices in sagital plane, like this one:
 
->[<img src="https://github.com/SIMEXP/brainsprite.js/raw/master/tests/sprite_small.jpg" width="300px" />](https://github.com/SIMEXP/brainsprite.js/blob/master/tests/sprite.jpg)
+![sprite](https://github.com/SIMEXP/brainsprite.js/raw/master/tests/sprite_small.jpg)
 
 into an interactive brain viewer with three brain slices in different planes (sagital, coronal, axial)  - click here for a [live demo >](http://simexp.github.io/brainsprite.js/tests/example_basic.html). A key feature of the brainsprite viewer is that it is fast to load, because it relies on .jpg images. The slice rendering is also generated with html5 canvas, enabling smooth animations between slices.
 
