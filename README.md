@@ -1,7 +1,7 @@
 # Getting started
 
 ## Overview
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8ad58f155f3544209fa01fb4ed87eadc)](https://www.codacy.com/gh/brainsprite/brainsprite?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=brainsprite/brainsprite&amp;utm_campaign=Badge_Grade) [![CircleCI](https://circleci.com/gh/SIMEXP/brainsprite.js/tree/master.svg?style=shield)](https://circleci.com/gh/SIMEXP/brainsprite.js/tree/master) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8ad58f155f3544209fa01fb4ed87eadc)](https://www.codacy.com/gh/brainsprite/brainsprite?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=brainsprite/brainsprite&amp;utm_campaign=Badge_Grade) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 The brainsprite javascript library turns an image that includes a stack of brain slices in sagital plane, like this one:
 
