@@ -3,4 +3,5 @@
    :maxdepth: 1
    :caption: Contents:
 
+   INSTALL
    QUICKSTART
