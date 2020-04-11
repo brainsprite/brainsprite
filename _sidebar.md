@@ -1,2 +1,0 @@
-- [Getting started](docs/getting_started.md)
-- [API](docs/API.md)

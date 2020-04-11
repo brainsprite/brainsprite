@@ -5,3 +5,4 @@
 
    INSTALL
    QUICKSTART
+   auto_examples/index.rst

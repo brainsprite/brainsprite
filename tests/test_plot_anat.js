@@ -5,7 +5,7 @@ describe('index page', () => {
     http.request({
       hostname: 'localhost',
       port: 8080,
-      path: '/'
+      path: '/tests/plot_anat.html'
     }, (response) => {
       expect(response.statusCode).toBe(200);
       done();

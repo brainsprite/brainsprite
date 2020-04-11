@@ -33,7 +33,11 @@
     "eslint-plugin-standard": "^4.0.0"
   },
   "dependencies": {
+    "bufferutil": "^4.0.1",
+    "canvas": "^2.6.1",
     "express": "^4.17.1",
-    "jest": "^25.2.7"
+    "jest": "^25.3.0",
+    "node.js": "0.0.1-security",
+    "utf-8-validate": "^5.0.2"
   }
 }
