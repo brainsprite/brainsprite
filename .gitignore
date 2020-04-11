@@ -1,4 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
+### Sphinx gallery
+docs/source/auto_examples
+
 ### ExtJs template
 .architect
 bootstrap.css
