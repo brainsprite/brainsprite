@@ -1,3 +1,8 @@
+function displayFloat (v, nbDecimals) {
+  var str = parseFloat(v).toFixed(nbDecimals)
+  return str.indexOf('.') === -1 ? str : str.replace(/0+$/, '')
+}
+
 function initBrain (params) {
   // Parameter initialization - for internal use
 
@@ -417,9 +422,7 @@ var brainsprite = function (params) {
 
         // Draw the value at current voxel
         if (brain.flagValue) {
-          let value = 'value = ' +
-            Number.parseFloat(brain.voxelValue).toPrecision(brain.nbDecimals)
-              .replace(/0+$/, '')
+          let value = isNaN(brain.voxelValue) ? 'no value' : 'value = ' + displayFloat(brain.voxelValue, brain.nbDecimals)
           brain.context.fillStyle = brain.colorFont
           brain.context.fillText(value, Math.round(brain.widthCanvas.X / 10),
             Math.round((brain.heightCanvas.max * brain.heightColorBar * 2) +
@@ -473,10 +476,8 @@ var brainsprite = function (params) {
             brain.heightColorBar / 2), Math.round(brain.widthCanvas.Y * 0.6),
             Math.round(brain.heightCanvas.max * brain.heightColorBar))
           brain.context.fillStyle = brain.colorFont
-          let labelMin = Number.parseFloat(brain.colorMap.min).toPrecision(
-            brain.nbDecimals).replace(/0+$/, '')
-          let labelMax = Number.parseFloat(brain.colorMap.max).toPrecision(
-            brain.nbDecimals).replace(/0+$/, '')
+          let labelMin = displayFloat(brain.colorMap.min, brain.nbDecimals)
+          let labelMax = displayFloat(brain.colorMap.max, brain.nbDecimals)
           brain.context.fillText(labelMin, brain.widthCanvas.X +
             (brain.widthCanvas.Y * 0.2) -
             brain.context.measureText(labelMin).width / 2,
