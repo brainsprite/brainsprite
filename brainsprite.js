@@ -1,6 +1,6 @@
 function displayFloat (v, nbDecimals) {
   var str = parseFloat(v).toFixed(nbDecimals)
-  return str.indexOf('.') === -1 ? str : str.replace(/0+$/, '')
+  return str.indexOf('.') === -1 ? str + '.' : str.replace(/0+$/, '')
 }
 
 function initBrain (params) {
