@@ -44,7 +44,9 @@ exclude_patterns = []
 sphinx_gallery_conf = {
      'examples_dirs': '../../tests',   # path to your example scripts
      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+     'thumbnail_size': (500, 300),
 }
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -65,3 +67,8 @@ html_favicon = 'img/logo_brainsprite_small.png'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# Custom css
+html_css_files = [
+    'css/custom.css',
+]
