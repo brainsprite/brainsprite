@@ -1,4 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
+### Puppeteer tests
+tests/.puppeteerEndpoint
+
 ### Sphinx gallery
 docs/source/auto_examples
 

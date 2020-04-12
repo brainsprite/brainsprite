@@ -12,7 +12,7 @@ class TestEnvironment extends JestNodeEnvironment {
     await super.setup();
 
     const wsEndpoint = fs.readFileSync(
-      path.join(__dirname, '..', 'tmp', 'puppeteerEndpoint'),
+      path.join(__dirname, '.puppeteerEndpoint'),
       'utf8',
     );
     if (!wsEndpoint) {

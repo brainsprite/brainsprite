@@ -11,7 +11,7 @@ module.exports = async function() {
   const browser = await puppeteer.launch({});
   global.__BROWSER__ = browser;
   fs.writeFileSync(
-    path.join(__dirname, '..', 'tmp', 'puppeteerEndpoint'),
+    path.join(__dirname, '.puppeteerEndpoint'),
     browser.wsEndpoint(),
   );
 };
