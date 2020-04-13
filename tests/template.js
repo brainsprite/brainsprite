@@ -1,24 +1,22 @@
 const path = require('path');
 const http = require('http');
+const fs = require('fs');
+const PNG = require('pngjs').PNG;
+const pixelmatch = require('pixelmatch');
 
-const build_out = function (file, prefix, suffix) {
-  const file_base = file.split('.')[0]
-  return `${path.resolve(__dirname)}/` + prefix + file_base + suffix + '.png'
+const buildFilePNG = function (file, prefix, suffix) {
+  return `${path.resolve(__dirname)}/` + prefix + file.split('.')[0] + suffix + '.png'
 }
 
-module.exports.screenshot = (file, clip, file_out) => {
+module.exports.fullTest = (file, clip) => {
 
   describe('index page', () => {
     let page;
+    let fileCurrent = buildFilePNG(file, '', '')
+
     beforeAll(async () => {
       page = await __BROWSER__.newPage();
       await page.goto('http://localhost:8080/' + file);
-
-      await page.screenshot({
-        clip: clip,
-        path: file_out,
-      });
-
     }, 5000);
 
     afterAll(async () => {
@@ -26,31 +24,34 @@ module.exports.screenshot = (file, clip, file_out) => {
     });
 
     it(
-      'loads the index page HTTP',
-      (done) => {
-        http.request({
-          hostname: 'localhost',
-          port: 8080,
-          path: '/' + file
+      'visual regression test',
+      async () => {
+        // take a screenshot of the page
+        const fileCurrent = buildFilePNG(file, '', '');
+        await page.screenshot({ clip: clip, path: fileCurrent });
+
+        // copy the screenshot as a thumbnail in the docs
+        // also archive a copy of the screenshot as future reference, if specified
+        const fileThumb = buildFilePNG(file, '../docs/build/html/_images/sphx_glr_', '_thumb')
+        fs.copyFileSync(fileCurrent, fileThumb)
+        const fileReference = buildFilePNG(file, '', '_reference')
+        if ('TEST_RUN' in process.env && process.env.TEST_RUN === 'init') {
+          fs.copyFileSync(fileCurrent, fileReference)
+        }
+
+        // Compare the current and reference snapshots.
+        // Trigger an error if there is any difference
+        // and create a difference image
+        const fileDiff = buildFilePNG(file, '', '_diff')
+        const imgCurrent = PNG.sync.read(fs.readFileSync(fileCurrent));
+        const imgReference = PNG.sync.read(fs.readFileSync(fileReference));
+        const {width, height} = imgCurrent;
+        const imgDiff = new PNG({width, height});
+        const numDiffPixels = pixelmatch(imgCurrent.data, imgReference.data, imgDiff.data, width, height, {threshold: 0})
+        fs.writeFileSync(fileDiff, PNG.sync.write(imgDiff));
+        expect(numDiffPixels).toBe(0);
       },
-      (response) => {
-        expect(response.statusCode).toBe(200);
-        done();
-      }).end();
-    });
+      5000,
+    );
   });
-}
-
-
-module.exports.fullTest = (file, clip) => {
-  if ('TEST_RUN' in process.env && process.env.TEST_RUN === 'init') {
-    let img_ref = build_out(file, '', '_reference')
-    module.exports.screenshot(file, clip, img_ref)
-  }
-
-  let img = build_out(file, '', '')
-  module.exports.screenshot(file, clip, img)
-
-  let img_thumb = build_out(file, '../docs/build/html/_images/sphx_glr_', '_thumb')
-  module.exports.screenshot(file, clip, img_thumb)
 }

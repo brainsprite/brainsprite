@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Slice viewer</title>
+    <title>anatomical scan</title>
     <meta charset="UTF-8" />
 </head>
 <body>
@@ -31,7 +31,7 @@
   $( window ).on('load',function() {
     // Create brain slices
     var brain = brainsprite(
-    {"canvas": "3Dviewer", "sprite": "spriteImg", "nbSlice": {"X": 91, "Y": 109, "Z": 91}, "overlay": {"sprite": "overlayImg", "nbSlice": {"X": 91, "Y": 109, "Z": 91}, "opacity": 1}, "colorBackground": "#000000", "colorFont": "#FFFFFF", "crosshair": true, "affine": [[2.0, 0.0, 0.0, -90.0], [0.0, 2.0, 0.0, -126.0], [0.0, 0.0, 2.0, -72.0], [0.0, 0.0, 0.0, 1.0]], "flagCoordinates": true, "title": null, "flagValue": false, "numSlice": {"X": 44.27998002925761, "Y": 54.75765183769774, "Z": 47.211285200099915}, "colorMap": {"img": "colorMap", "min": 0, "max": 250.0}}
+    {"canvas": "3Dviewer", "sprite": "spriteImg", "nbSlice": {"X": 91, "Y": 109, "Z": 91}, "overlay": {"sprite": "overlayImg", "nbSlice": {"X": 91, "Y": 109, "Z": 91}, "opacity": 1}, "colorBackground": "#000000", "colorFont": "#FFFFFF", "crosshair": true, "affine": [[2.0, 0.0, 0.0, -90.0], [0.0, 2.0, 0.0, -126.0], [0.0, 0.0, 2.0, -72.0], [0.0, 0.0, 0.0, 1.0]], "flagCoordinates": true, "title": "anatomical scan", "flagValue": false, "numSlice": {"X": 44.27998002925761, "Y": 54.75765183769774, "Z": 47.211285200099915}, "colorMap": {"img": "colorMap", "min": 0, "max": 250.0}}
     );
   });
   </script>

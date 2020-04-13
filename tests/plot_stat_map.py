@@ -40,7 +40,7 @@ view.save_as_html('plot_stat_map.html')
 #
 # .. code-block:: html
 #
-#   <iframe src="plot_anat.html"></iframe>
+#   <iframe src="plot_stat_map.html"></iframe>
 #
 # Note that the style of the iframe may need to be modified in
 # order to, e.g. center the iframe in the page.
@@ -49,6 +49,6 @@ view.save_as_html('plot_stat_map.html')
 #
 # .. code-block:: html
 #
-#   <iframe src="plot_anat.html" width=500 height=200
+#   <iframe src="plot_stat_map.html" width=500 height=200
 #       style="padding:0; border:0; display: block;
 #       margin-left: auto; margin-right: auto"></iframe>

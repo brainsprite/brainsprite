@@ -21,11 +21,12 @@ haxby_anat_filename = haxby_dataset.anat[0]
 #  * do not to a symmetric colormap, centered around zero (using :code:`symmetric_cmap`)
 #  * pick colors matching a black background (using :code:`black_bg`)
 #  * set the maximum value displayed in the image to increase contrast (using :code:`vmax`)
+#  * add a title to the viewer (using :code:`title`)
 from nilearn import plotting
 
 view = plotting.view_img(haxby_anat_filename, cmap='gray',
                          symmetric_cmap=False, black_bg=True,
-                         threshold=None, vmax=250)
+                         threshold=None, vmax=250, title="anatomical scan")
 # In a Jupyter notebook, if ``view`` is the output of a cell, it will
 # be displayed below the cell
 view
