@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SIMEXP/brainsprite.js.git"
+    "url": "git+https://github.com/brainsprite/brainsprite.git"
   },
   "keywords": [
     "brain",
@@ -21,9 +21,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/SIMEXP/brainsprite.js/issues"
+    "url": "https://github.com/brainsprite/brainsprite/issues"
   },
-  "homepage": "https://simexp.github.io/brainsprite.js",
+  "homepage": "https://brainsprite.github.io/brainsprite",
   "devDependencies": {
     "eslint": "^5.14.0",
     "eslint-config-standard": "^12.0.0",
@@ -37,8 +37,8 @@
     "canvas": "^2.6.1",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "image-diff": "^2.0.0",
     "jest": "^25.3.0",
+    "jquery": "^3.5.0",
     "looks-same": "^7.2.2",
     "node.js": "0.0.1-security",
     "pixelmatch": "^5.1.0",
