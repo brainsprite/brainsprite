@@ -36,6 +36,7 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "jest": "^25.3.0",
+    "looks-same": "^7.2.2",
     "node.js": "0.0.1-security",
     "pixelmatch": "^5.1.0",
     "pngjs": "^4.0.0",
@@ -43,6 +44,6 @@
     "utf-8-validate": "^5.0.2"
   },
   "dependencies": {
-    "jquery": "^3.5.0",
+    "jquery": "^3.5.0"
   }
 }
