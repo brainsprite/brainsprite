@@ -6,8 +6,9 @@ Brainsprite viewer for an activation map with an anatomical scan in the backgrou
 """
 
 #%%
-# We first download an anatomical scan through one of nilearn's fetcher
+# fetch the MNI high-resolution template
 from nilearn import datasets
+anat = datasets.MNI152_FILE_PATH
 
 # one motor contrast map from NeuroVault
 motor_images = datasets.fetch_neurovault_motor_task()
@@ -23,7 +24,9 @@ stat_img = motor_images.images[0]
 #  * set the maximum value displayed in the image to increase contrast (using :code:`vmax`)
 from nilearn import plotting
 
-view = plotting.view_img(stat_img, threshold=3, title="plot_stat_map", cut_coords=[36, -27, 66])
+view = plotting.view_img(stat_img, bg_img=anat, threshold=3,
+                         opacity=0.5, title="plot_stat_map",
+                         cut_coords=[36, -27, 66])
 
 # In a Jupyter notebook, if ``view`` is the output of a cell, it will
 # be displayed below the cell
