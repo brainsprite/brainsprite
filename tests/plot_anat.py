@@ -1,6 +1,6 @@
 """
-Anatomical scan
-===============
+Anatomical scan - Python
+========================
 
 This example generates a brainsprite viewer for an anatomical scan using python, and then explains how to embed the viewer in an html document.
 """
