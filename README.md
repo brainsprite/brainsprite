@@ -8,7 +8,7 @@ The brainsprite javascript library turns an image that includes a stack of brain
 
 into an interactive brain viewer with three brain slices in different planes (sagital, coronal, axial)  - click here for a [live demo >](http://brainsprite.github.io/brainsprite/tests/example_basic.html). A key feature of the brainsprite viewer is that it is fast to load, because it relies on .jpg images. The slice rendering is also generated with html5 canvas, enabling smooth animations between slices.
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8ad58f155f3544209fa01fb4ed87eadc)](https://www.codacy.com/gh/brainsprite/brainsprite?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=brainsprite/brainsprite&amp;utm_campaign=Badge_Grade) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![collaborate brainhack](https://img.shields.io/badge/collaborate-brainhack-FF69A4.svg)](https://mattermost.brainhack.org/brainhack/channels/brainsprite)
+[![CircleCI](https://circleci.com/gh/brainsprite/brainsprite.svg?style=svg)](https://circleci.com/gh/brainsprite/brainsprite) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8ad58f155f3544209fa01fb4ed87eadc)](https://www.codacy.com/gh/brainsprite/brainsprite?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=brainsprite/brainsprite&amp;utm_campaign=Badge_Grade) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![collaborate brainhack](https://img.shields.io/badge/collaborate-brainhack-FF69A4.svg)](https://mattermost.brainhack.org/brainhack/channels/brainsprite)
 
 
 
