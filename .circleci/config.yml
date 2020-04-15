@@ -11,14 +11,21 @@ jobs:
             cd docs
             pip install --progress-bar off -r requirements.txt
             make html
+      - persist_to_workspace:
+          root: .
+          paths:
+            - tests
+            - docs
   run-tests:
     docker:
       - image: circleci/node:10-browsers
     steps:
+      - checkout
+      - attach_workspace
+        at: .
       - run:
           name: Run tests and update thumbnails
           command: |
-            ls -alsh
             npm install .
             npm test
 
