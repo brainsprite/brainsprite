@@ -29,7 +29,11 @@ jobs:
             npm install .
             npm test
       - store_artifacts:
-          path: tests/plot_*.png
+          path: tests
+          destination: circleci-tests
+      - store_artifacts:
+          path: docs/build/html
+          destination: circleci-docs
 
 workflows:
   version: 2
