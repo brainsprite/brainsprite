@@ -28,12 +28,11 @@ jobs:
           command: |
             npm install .
             npm test
+            mkdir /tmp/test_report
+            cp tests/plot_*.png /tmp/test_report
       - store_artifacts:
-          path: tests
+          path: /tmp/test_report
           destination: circleci-tests
-      - store_artifacts:
-          path: docs/build/html
-          destination: circleci-docs
 
 workflows:
   version: 2
