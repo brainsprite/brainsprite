@@ -18,6 +18,7 @@ jobs:
       - run:
           name: Run tests and update thumbnails
           command: |
+            ls -alsh
             npm install .
             npm test
 
