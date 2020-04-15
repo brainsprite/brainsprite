@@ -47,7 +47,7 @@ module.exports.fullTest = (file, clip) => {
         const imgReference = PNG.sync.read(fs.readFileSync(fileReference));
         const {width, height} = imgCurrent;
         const imgDiff = new PNG({width, height});
-        const numDiffPixels = pixelmatch(imgCurrent.data, imgReference.data, imgDiff.data, width, height, {threshold: 0.1})
+        const numDiffPixels = pixelmatch(imgCurrent.data, imgReference.data, imgDiff.data, width, height, {threshold: 0.2})
         fs.writeFileSync(fileDiff, PNG.sync.write(imgDiff));
         expect(numDiffPixels).toBe(0);
       },
