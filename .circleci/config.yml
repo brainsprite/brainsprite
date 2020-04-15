@@ -18,7 +18,6 @@ jobs:
       - run:
           name: Run tests and update thumbnails
           command: |
-            cd ..
             npm install .
             npm test
 
