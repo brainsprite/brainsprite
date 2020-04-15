@@ -1,17 +1,23 @@
 version: 2.1
 jobs:
-  build:
+  build-docs:
     docker:
       - image: alpine:3.7
     steps:
       - checkout
       - run:
-          name: The First Step
+          name: Build docs
           command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+            cd docs
+            pip install -r requirements.txt
+            make html
+  run-tests:
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
       - run:
-          name: Code Has Arrived
+          name: Run tests and update thumbnails
           command: |
-            ls -al
-            echo '^^^That should look familiar^^^'
+            cd ..
+            npm install .
+            npm test
