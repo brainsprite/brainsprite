@@ -21,3 +21,11 @@ jobs:
             cd ..
             npm install .
             npm test
+
+workflows:
+  full_build:
+    jobs:
+      - build-docs
+      - run-tests:
+        requires:
+          build-docs
