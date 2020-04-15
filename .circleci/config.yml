@@ -23,9 +23,10 @@ jobs:
             npm test
 
 workflows:
-  full_build:
+  version: 2
+  Full_Build:
     jobs:
       - build-docs
       - run-tests:
         requires:
-          build-docs
+          - build-docs
