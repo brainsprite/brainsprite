@@ -3,3 +3,4 @@ recommonmark
 sphinx_rtd_theme
 sphinx-gallery
 nilearn
+matplotlib
