@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build-docs:
     docker:
-      - image: alpine:3.7
+      - image: circleci/python:latest
     steps:
       - checkout
       - run:
