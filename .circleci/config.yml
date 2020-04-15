@@ -28,5 +28,5 @@ workflows:
     jobs:
       - build-docs
       - run-tests:
-        requires:
-          - build-docs
+          requires:
+            - build-docs
