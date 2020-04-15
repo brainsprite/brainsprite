@@ -9,7 +9,7 @@ jobs:
           name: Build docs
           command: |
             cd docs
-            pip install -r requirements.txt
+            pip install --progress-bar off -r requirements.txt
             make html
   run-tests:
     docker:
