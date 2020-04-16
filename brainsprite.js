@@ -139,41 +139,32 @@ function initColorMap (colorMap) {
   return colorMap
 }
 
-var brainsprite = function (params) {
-  // Create and activate a brainsprite viewer object
-  //
-  // Parameters
-  // ----------
-  //  nanValue : (boolean) unable to read values.
-  //  smooth : (boolean) turn on/off smoothing of the main slices.
-  //  flagValue : (boolean) turn on/off display of the current value.
-  //  colorBackground : (str) the color for background.
-  //  colorFont : (str) the color for the fonts.
-  //  colorCrosshair : (str) the color of the crosshair.
-  //  flagCoordinates : (bool) turn on/off slice coordinates.
-  //  origin : ({"X","Y","Z"}) coordinates of the origin.
-  //  voxelSize : (float) the size of one voxel (assumed to be isotropic)
-  //  affine : (3x4 array, or false) the voxel-to-world transform.
-  //    false will trigger isotropic diagonal using origin and voxelSize.
-  //  heightColorBar : (float) height of the text for the colorbar.
-  //  sizeFont : (float) the size of other texts.
-  //  nbDecimals : (int) the number of decimals when showing the value.
-  //  crosshair : (bool) turns on/off the crosshair.
-  //  sizeCrosshair: (float) the size of the crosshair, expressed as a
-  //    fraction of the slice (comprised between 0 and 1).
-  //  title : (str or false) the title for the viewer.
-  //    false will use no title.
-  //  numSlice : ({"X", "Y", "Z"}, or false): the coordinates of the initial
-  //    cut. false will use the middle of the volume.
-  //  overlay: (object or false) if false, no overlay.
-  //  opacity: (float) the opacity of the overlay.
-  //  onclick: (string) command to call on click.
-  //  colormap: (object or false) if false, no colormap.
-  //
-  // Returns
-  // -------
-  // brain : a brainsprite viewer object.
-
+/**
+ * Brainsprite viewer object prototype
+ * @param {boolean} params.smooth turn on/off smoothing of the main slices.
+ * @param {boolean} params.flagValue turn on/off display of the current value.
+ * @param {string} params.colorBackground the color for background.
+ * @param {string} params.colorFont the color for the fonts.
+ * @param {string} params.colorCrosshair the color of the crosshair.
+ * @param {boolean} params.flagCoordinates turn on/off slice coordinates.
+ * @param {object} params.origin {"X","Y","Z"} coordinates of the origin .
+ * @param {number} params.voxelSize the size of one voxel (assumed to be isotropic)
+ * @param {array} params.affine the voxel-to-world transform. Use folse for isotropic diagonal using origin and voxelSize.
+ * @param {number} params.heightColorBar height of the text for the colorbar.
+ * @param {number} params.sizeFont the size of other texts.
+ * @param {integer} params.nbDecimals the number of decimals when showing the value.
+ * @param {boolean} params.crosshair turns on/off the crosshair.
+ * @param {float} params.sizeCrosshair the size of the crosshair, expressed as a fraction of the slice (comprised between 0 and 1).
+ * @param {string} params.title the title for the viewer. false will use no title.
+ * @param {object} params.numSlice {"X", "Y", "Z"} coordinates of the initial cut. false will use the middle of the volume.
+ * @param {object} params.overlay object. If false, no overlay.
+ * @param {number} params.opacity the opacity of the overlay.
+ * @param {string} params.onclick command to call on click.
+ * @param {object} params.colormap object. if false, no colormap.
+ * @param {boolean} params.nanValue unable to read values.
+ * @return {object} a brainsprite viewer object.
+ */
+function brainsprite(params) {
   let brain = initBrain(params)
   brain = initCanvas(brain, params.canvas)
   brain = initSprite(brain, params.sprite, params.nbSlice)

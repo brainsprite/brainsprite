@@ -30,6 +30,7 @@ author = 'Brainsprite team'
 extensions = ['recommonmark',
               'sphinx.ext.autosectionlabel',
               'sphinx_gallery.gen_gallery',
+              'sphinx_js'
              ]
 
 # Add any paths that contain templates here, relative to this directory.

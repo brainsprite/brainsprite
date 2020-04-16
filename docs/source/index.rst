@@ -6,3 +6,4 @@
    INSTALL
    QUICKSTART
    auto_examples/index.rst
+   APIJS
