@@ -1,3 +1,0 @@
-[submodule "nilearn"]
-	path = nilearn
-	url = https://github.com/nilearn/nilearn
