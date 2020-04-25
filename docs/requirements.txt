@@ -6,3 +6,4 @@ sphinx-js
 nilearn
 matplotlib
 Pillow
+pandas
