@@ -25,6 +25,7 @@ from nilearn._utils.niimg import _safe_get_data
 from nilearn.datasets import load_mni152_template
 from nilearn.externals import tempita
 
+
 def _data_to_sprite(data):
     """ Convert a 3D array into a sprite of sagittal slices.
         Returns: sprite (2D numpy array)
@@ -43,8 +44,10 @@ def _data_to_sprite(data):
 
     for xx in range(nx):
         # we need to flip the image in the x axis
-        sprite[(indrow[xx] * nz):((indrow[xx] + 1) * nz), (indcol[xx] * ny):
-               ((indcol[xx] + 1) * ny)] = data[xx, :, ::-1].transpose()
+        sprite[
+            (indrow[xx] * nz) : ((indrow[xx] + 1) * nz),
+            (indcol[xx] * ny) : ((indcol[xx] + 1) * ny),
+        ] = data[xx, :, ::-1].transpose()
 
     return sprite
 
@@ -59,28 +62,29 @@ def _threshold_data(data, threshold=None):
         return data, mask, threshold
 
     # Deal with automatic settings of plot parameters
-    if threshold == 'auto':
+    if threshold == "auto":
         # Threshold epsilon below a percentile value, to be sure that some
         # voxels pass the threshold
         threshold = fast_abs_percentile(data) - 1e-5
 
     # Threshold
-    threshold = check_threshold(threshold, data,
-                                percentile_func=fast_abs_percentile,
-                                name='threshold')
+    threshold = check_threshold(
+        threshold, data, percentile_func=fast_abs_percentile, name="threshold"
+    )
 
     # Mask data
     if threshold == 0:
-        mask = (data == 0)
+        mask = data == 0
         data = data * np.logical_not(mask)
     else:
         mask = (data >= -threshold) & (data <= threshold)
         data = data * np.logical_not(mask)
 
     if not np.any(mask):
-        warnings.warn("Threshold given was {0}, but "
-                      "the data has no values below {1}. ".format(threshold,
-                                                                  data.min()))
+        warnings.warn(
+            "Threshold given was {0}, but "
+            "the data has no values below {1}. ".format(threshold, data.min())
+        )
     return data, mask, threshold
 
 
@@ -90,7 +94,7 @@ def _bytesIO_to_base64(handle_io):
         Returns: data
     """
     handle_io.seek(0)
-    data = b64encode(handle_io.read()).decode('utf-8')
+    data = b64encode(handle_io.read()).decode("utf-8")
     handle_io.close()
     return data
 
@@ -100,7 +104,7 @@ def _mask_stat_map(stat_map_img, threshold=None):
         Returns: mask_img, stat_map_img, data, threshold
     """
     # Load stat map
-    stat_map_img = check_niimg_3d(stat_map_img, dtype='auto')
+    stat_map_img = check_niimg_3d(stat_map_img, dtype="auto")
     data = _safe_get_data(stat_map_img, ensure_finite=True)
 
     # threshold the stat_map
@@ -108,92 +112,105 @@ def _mask_stat_map(stat_map_img, threshold=None):
         data, mask, threshold = _threshold_data(data, threshold)
         mask_img = new_img_like(stat_map_img, mask, stat_map_img.affine)
     else:
-        mask_img = new_img_like(stat_map_img, np.zeros(data.shape),
-                                stat_map_img.affine)
+        mask_img = new_img_like(stat_map_img, np.zeros(data.shape), stat_map_img.affine)
     return mask_img, stat_map_img, data, threshold
 
 
-def _load_bg_img(stat_map_img, bg_img='MNI152', black_bg='auto', dim='auto'):
+def _load_bg_img(stat_map_img, bg_img="MNI152", black_bg="auto", dim="auto"):
     """ Load and resample bg_img in an isotropic resolution,
         with a positive diagonal affine matrix.
         Returns: bg_img, bg_min, bg_max, black_bg
     """
-    if (bg_img is None or bg_img is False) and black_bg == 'auto':
+    if (bg_img is None or bg_img is False) and black_bg == "auto":
         black_bg = False
 
     if bg_img is not None and bg_img is not False:
         if isinstance(bg_img, str) and bg_img == "MNI152":
             bg_img = load_mni152_template()
-        bg_img, black_bg, bg_min, bg_max = _load_anat(bg_img, dim=dim,
-                                                      black_bg=black_bg)
+        bg_img, black_bg, bg_min, bg_max = _load_anat(
+            bg_img, dim=dim, black_bg=black_bg
+        )
     else:
-        bg_img = new_img_like(stat_map_img, np.zeros(stat_map_img.shape),
-                              stat_map_img.affine)
+        bg_img = new_img_like(
+            stat_map_img, np.zeros(stat_map_img.shape), stat_map_img.affine
+        )
         bg_min = 0
         bg_max = 0
-    bg_img = reorder_img(bg_img, resample='nearest')
+    bg_img = reorder_img(bg_img, resample="nearest")
     return bg_img, bg_min, bg_max, black_bg
 
 
-def _resample_stat_map(stat_map_img, bg_img, mask_img,
-                       resampling_interpolation='continuous'):
+def _resample_stat_map(
+    stat_map_img, bg_img, mask_img, resampling_interpolation="continuous"
+):
     """ Resample the stat map and mask to the background.
         Returns: stat_map_img, mask_img
     """
-    stat_map_img = resample_to_img(stat_map_img, bg_img,
-                                   interpolation=resampling_interpolation)
-    mask_img = resample_to_img(mask_img, bg_img, fill_value=1,
-                               interpolation='nearest')
+    stat_map_img = resample_to_img(
+        stat_map_img, bg_img, interpolation=resampling_interpolation
+    )
+    mask_img = resample_to_img(mask_img, bg_img, fill_value=1, interpolation="nearest")
 
     return stat_map_img, mask_img
 
 
-def _json_view_params(shape, affine, vmin, vmax, cut_slices, black_bg=False,
-                      opacity=1, draw_cross=True, annotate=True, title=None,
-                      colorbar=True, value=True):
+def _json_view_params(
+    shape,
+    affine,
+    vmin,
+    vmax,
+    cut_slices,
+    black_bg=False,
+    opacity=1,
+    draw_cross=True,
+    annotate=True,
+    title=None,
+    colorbar=True,
+    value=True,
+):
     """ Create a dictionary with all the brainsprite parameters.
         Returns: params
     """
 
     # Set color parameters
     if black_bg:
-        cfont = '#FFFFFF'
-        cbg = '#000000'
+        cfont = "#FFFFFF"
+        cbg = "#000000"
     else:
-        cfont = '#000000'
-        cbg = '#FFFFFF'
+        cfont = "#000000"
+        cbg = "#FFFFFF"
 
     # Deal with limitations of json dump regarding types
-    if type(vmin).__module__ == 'numpy':
+    if type(vmin).__module__ == "numpy":
         vmin = vmin.tolist()  # json does not deal with numpy array
-    if type(vmax).__module__ == 'numpy':
+    if type(vmax).__module__ == "numpy":
         vmax = vmax.tolist()  # json does not deal with numpy array
 
-    params = {'canvas': '3Dviewer',
-              'sprite': 'spriteImg',
-              'nbSlice': {'X': shape[0],
-                          'Y': shape[1],
-                          'Z': shape[2]},
-              'overlay': {'sprite': 'overlayImg',
-                          'nbSlice': {'X': shape[0],
-                                      'Y': shape[1],
-                                      'Z': shape[2]},
-                          'opacity': opacity},
-              'colorBackground': cbg,
-              'colorFont': cfont,
-              'crosshair': draw_cross,
-              'affine': affine.tolist(),
-              'flagCoordinates': annotate,
-              'title': title,
-              'flagValue': value,
-              'numSlice': {'X': cut_slices[0] - 1,
-                           'Y': cut_slices[1] - 1,
-                           'Z': cut_slices[2] - 1}}
+    params = {
+        "canvas": "3Dviewer",
+        "sprite": "spriteImg",
+        "nbSlice": {"X": shape[0], "Y": shape[1], "Z": shape[2]},
+        "overlay": {
+            "sprite": "overlayImg",
+            "nbSlice": {"X": shape[0], "Y": shape[1], "Z": shape[2]},
+            "opacity": opacity,
+        },
+        "colorBackground": cbg,
+        "colorFont": cfont,
+        "crosshair": draw_cross,
+        "affine": affine.tolist(),
+        "flagCoordinates": annotate,
+        "title": title,
+        "flagValue": value,
+        "numSlice": {
+            "X": cut_slices[0] - 1,
+            "Y": cut_slices[1] - 1,
+            "Z": cut_slices[2] - 1,
+        },
+    }
 
     if colorbar:
-        params['colorMap'] = {'img': 'colorMap',
-                              'min': vmin,
-                              'max': vmax}
+        params["colorMap"] = {"img": "colorMap", "min": vmin, "max": vmax}
     return params
 
 
@@ -202,12 +219,12 @@ def _json_view_size(params):
         Returns: width_view, height_view
     """
     # slices_width = sagittal_width (y) + coronal_width (x) + axial_width (x)
-    slices_width = params['nbSlice']['Y'] + 2 * params['nbSlice']['X']
+    slices_width = params["nbSlice"]["Y"] + 2 * params["nbSlice"]["X"]
 
     # slices_height = max of sagittal_height (z), coronal_height (z), and
     # axial_height (y).
     # Also add 20% extra height for annotation and margin
-    slices_height = np.max([params['nbSlice']['Y'], params['nbSlice']['Z']])
+    slices_height = np.max([params["nbSlice"]["Y"], params["nbSlice"]["Z"]])
     slices_height = 1.20 * slices_height
 
     # Get the final size of the viewer
@@ -218,39 +235,46 @@ def _json_view_size(params):
     return width_view, height_view
 
 
-def _viewer_data(bg_img, stat_map_img, mask_img, bg_min, bg_max, colors,
-                    cmap, colorbar):
+def _viewer_data(
+    bg_img, stat_map_img, mask_img, bg_min, bg_max, colors, cmap, colorbar
+):
     """ Create a json-like viewer object, and populate with base64 data.
         Returns: json_view
     """
     # Initialise brainsprite data structure
-    json_view = dict.fromkeys(['bg_base64', 'stat_map_base64', 'cm_base64',
-                              'params', 'js_jquery', 'js_brainsprite'])
+    json_view = dict.fromkeys(
+        [
+            "bg_base64",
+            "stat_map_base64",
+            "cm_base64",
+            "params",
+            "js_jquery",
+            "js_brainsprite",
+        ]
+    )
 
     # Create a base64 sprite for the background
-    json_view['bg_base64'] = save_sprite(
-        img=bg_img,
-        vmax=bg_max,
-        vmin=bg_min,
-        cmap='gray'
+    json_view["bg_base64"] = save_sprite(
+        img=bg_img, vmax=bg_max, vmin=bg_min, cmap="gray"
     )
 
     # Create a base64 sprite for the stat map
-    json_view['stat_map_base64'] = save_sprite(
+    json_view["stat_map_base64"] = save_sprite(
         img=stat_map_img,
-        vmax=colors['vmax'],
-        vmin=colors['vmin'],
+        vmax=colors["vmax"],
+        vmin=colors["vmin"],
         mask=mask_img,
-        cmap=cmap
+        cmap=cmap,
     )
 
     # Create a base64 colormap
     if colorbar:
-        json_view['cm_base64'] = save_cm(cmap=colors['cmap'], format='png')
+        json_view["cm_base64"] = save_cm(cmap=colors["cmap"], format="png")
     else:
-        json_view['cm_base64'] = ''
+        json_view["cm_base64"] = ""
 
     return json_view
+
 
 def _update_view_template(bs_snippet, bg=None, overlay=None, cm=None):
     """Populate a brainsprite viewer html template.
@@ -278,20 +302,19 @@ def _json_view_to_html(json_view):
     """
 
     # Fix the size of the viewer
-    width, height = _json_view_size(json_view['params'])
+    width, height = _json_view_size(json_view["params"])
 
     # Populate all missing keys with html-ready data
-    json_view["INSERT_PAGE_TITLE_HERE"] = json_view[
-        "params"]["title"] or "Slice viewer"
-    json_view['params'] = json.dumps(json_view['params'])
-    js_dir = os.path.join(os.path.dirname(__file__), 'assets', 'js')
-    with open(os.path.join(js_dir, 'jquery.min.js')) as f:
-        json_view['js_jquery'] = f.read()
-    with open(os.path.join(js_dir, 'brainsprite.min.js')) as f:
-        json_view['js_brainsprite'] = f.read()
+    json_view["INSERT_PAGE_TITLE_HERE"] = json_view["params"]["title"] or "Slice viewer"
+    json_view["params"] = json.dumps(json_view["params"])
+    js_dir = os.path.join(os.path.dirname(__file__), "assets", "js")
+    with open(os.path.join(js_dir, "jquery.min.js")) as f:
+        json_view["js_jquery"] = f.read()
+    with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
+        json_view["js_brainsprite"] = f.read()
 
     # Load the html template, and plug in all the data
-    html_view = get_html_template('stat_map_template.html')
+    html_view = get_html_template("stat_map_template.html")
     html_view = html_view.safe_substitute(json_view)
 
     return HTMLDocument(html_view, width=width, height=height)
@@ -302,23 +325,23 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     """
     # Select coordinates for the cut
     if cut_coords is None:
-        cut_coords = find_xyz_cut_coords(
-            stat_map_img, activation_threshold=threshold)
+        cut_coords = find_xyz_cut_coords(stat_map_img, activation_threshold=threshold)
 
     # Convert cut coordinates into cut slices
     try:
-        cut_slices = apply_affine(np.linalg.inv(stat_map_img.affine),
-                                  cut_coords)
+        cut_slices = apply_affine(np.linalg.inv(stat_map_img.affine), cut_coords)
     except ValueError:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
-            "You provided cut_coords={0}".format(cut_coords))
+            "You provided cut_coords={0}".format(cut_coords)
+        )
     except IndexError:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
-            "You provided single cut, cut_coords={0}".format(cut_coords))
+            "You provided single cut, cut_coords={0}".format(cut_coords)
+        )
 
     return cut_slices
 
@@ -340,14 +363,14 @@ def _update_snippet_template(
     flagCoordinates=True,
     title=None,
     colorbar=True,
-    flagValue=True
-    ):
+    flagValue=True,
+):
     """ Create a js snippet for the brainsprite viewer
     """
     # Initiate template
-    resource_path = Path(__file__).resolve().parent.joinpath('assets', 'js')
-    file_template = resource_path.joinpath('brainsprite_template.js')
-    tpl = tempita.Template.from_filename(str(file_template),encoding='utf-8')
+    resource_path = Path(__file__).resolve().parent.joinpath("assets", "js")
+    file_template = resource_path.joinpath("brainsprite_template.js")
+    tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
     return tpl.substitute(
         canvas=canvas,
@@ -372,12 +395,13 @@ def _update_snippet_template(
         Z_num=cut_slices[2] - 1,
         img_colorMap=img_colorMap,
         min=min,
-        max=max
+        max=max,
     )
 
 
-def save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap='Greys',
-                 format='png'):
+def save_sprite(
+    img, vmax, vmin, output_sprite=None, mask=None, cmap="Greys", format="png"
+):
     """ Generate a sprite from a 3D Niimg-like object.
         Returns: sprite
     """
@@ -393,8 +417,7 @@ def save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap='Greys',
     # Save the sprite
     if output_sprite is None:
         output_sprite = BytesIO()
-        imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap,
-            format=format)
+        imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap, format=format)
         output_sprite = _bytesIO_to_base64(output_sprite)
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
@@ -402,12 +425,12 @@ def save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap='Greys',
     return output_sprite
 
 
-def save_cm(cmap, output_cmap=None, format='png', n_colors=256):
+def save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     """ Save the colormap of an image as an image file.
     """
 
     # the colormap
-    data = np.arange(0., n_colors) / (n_colors - 1.)
+    data = np.arange(0.0, n_colors) / (n_colors - 1.0)
     data = data.reshape([1, n_colors])
 
     if output_cmap is None:
@@ -419,23 +442,25 @@ def save_cm(cmap, output_cmap=None, format='png', n_colors=256):
     return output_cmap
 
 
-def view_brain(stat_map_img, bg_img='MNI152',
-             cut_coords=None,
-             colorbar=True,
-             title=None,
-             threshold=1e-6,
-             annotate=True,
-             draw_cross=True,
-             black_bg='auto',
-             cmap=cm.cold_hot,
-             symmetric_cmap=True,
-             dim='auto',
-             vmax=None,
-             vmin=None,
-             resampling_interpolation='continuous',
-             opacity=1,
-             value=True
-             ):
+def view_brain(
+    stat_map_img,
+    bg_img="MNI152",
+    cut_coords=None,
+    colorbar=True,
+    title=None,
+    threshold=1e-6,
+    annotate=True,
+    draw_cross=True,
+    black_bg="auto",
+    cmap=cm.cold_hot,
+    symmetric_cmap=True,
+    dim="auto",
+    vmax=None,
+    vmin=None,
+    resampling_interpolation="continuous",
+    opacity=1,
+    value=True,
+):
     """Interactive html viewer of a statistical map, with optional background
 
     Parameters
@@ -531,45 +556,60 @@ def view_brain(stat_map_img, bg_img='MNI152',
     """
 
     # Prepare the color map and thresholding
-    mask_img, stat_map_img, data, threshold = _mask_stat_map(
-        stat_map_img, threshold)
-    colors = colorscale(cmap, data.ravel(), threshold=threshold,
-                        symmetric_cmap=symmetric_cmap, vmax=vmax,
-                        vmin=vmin)
+    mask_img, stat_map_img, data, threshold = _mask_stat_map(stat_map_img, threshold)
+    colors = colorscale(
+        cmap,
+        data.ravel(),
+        threshold=threshold,
+        symmetric_cmap=symmetric_cmap,
+        vmax=vmax,
+        vmin=vmin,
+    )
 
     # Prepare the data for the cuts
-    bg_img, bg_min, bg_max, black_bg = _load_bg_img(stat_map_img, bg_img,
-                                                    black_bg, dim)
-    stat_map_img, mask_img = _resample_stat_map(stat_map_img, bg_img, mask_img,
-                                                resampling_interpolation)
+    bg_img, bg_min, bg_max, black_bg = _load_bg_img(stat_map_img, bg_img, black_bg, dim)
+    stat_map_img, mask_img = _resample_stat_map(
+        stat_map_img, bg_img, mask_img, resampling_interpolation
+    )
     cut_slices = _get_cut_slices(stat_map_img, cut_coords, threshold)
 
     # Now create a json-like object for the viewer, and converts in html
-    json_view = _viewer_data(bg_img, stat_map_img, mask_img, bg_min, bg_max,
-                                colors, cmap, colorbar)
+    json_view = _viewer_data(
+        bg_img, stat_map_img, mask_img, bg_min, bg_max, colors, cmap, colorbar
+    )
 
-    json_view['params'] = _json_view_params(
-        stat_map_img.shape, stat_map_img.affine, colors['vmin'],
-        colors['vmax'], cut_slices, black_bg, opacity, draw_cross, annotate,
-        title, colorbar, value=value)
+    json_view["params"] = _json_view_params(
+        stat_map_img.shape,
+        stat_map_img.affine,
+        colors["vmin"],
+        colors["vmax"],
+        cut_slices,
+        black_bg,
+        opacity,
+        draw_cross,
+        annotate,
+        title,
+        colorbar,
+        value=value,
+    )
 
     # Set color parameters
     if black_bg:
-        cfont = '#FFFFFF'
-        cbg = '#000000'
+        cfont = "#FFFFFF"
+        cbg = "#000000"
     else:
-        cfont = '#000000'
-        cbg = '#FFFFFF'
+        cfont = "#000000"
+        cbg = "#FFFFFF"
 
     snippet = _update_snippet_template(
-        canvas='3Dviewer',
-        sprite='spriteImg',
-        sprite_overlay='overlayImg',
-        img_colorMap='colorMap',
+        canvas="3Dviewer",
+        sprite="spriteImg",
+        sprite_overlay="overlayImg",
+        img_colorMap="colorMap",
         shape=stat_map_img.shape,
         affine=stat_map_img.affine,
-        min=colors['vmin'],
-        max=colors['vmax'],
+        min=colors["vmin"],
+        max=colors["vmax"],
         cut_slices=cut_slices,
         colorFont=cfont,
         colorBackground=cbg,
@@ -578,7 +618,7 @@ def view_brain(stat_map_img, bg_img='MNI152',
         flagCoordinates=annotate,
         title=title,
         colorbar=colorbar,
-        flagValue=value
+        flagValue=value,
     )
 
     html_view = _json_view_to_html(json_view)
