@@ -26,11 +26,11 @@ var brain = brainsprite(
   numSlice: {
     X: {{X_num}},
     Y: {{Y_num}},
-    Z':{{Z_num}}
+    Z:{{Z_num}}
   },
   colorMap: {
-    img: {{img_colorMap}},
-    min: {{min_colorMap}},
-    max: {{max_colorMap}}
+    img: "{{img_colorMap}}",
+    min: {{min}},
+    max: {{max}}
   }
 );

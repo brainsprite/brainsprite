@@ -3,6 +3,7 @@
 import os
 import json
 import warnings
+from pathlib import Path
 from io import BytesIO
 from base64 import b64encode
 
@@ -83,32 +84,6 @@ def _threshold_data(data, threshold=None):
     return data, mask, threshold
 
 
-def save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap='Greys',
-                 format='png'):
-    """ Generate a sprite from a 3D Niimg-like object.
-        Returns: sprite
-    """
-
-    # Create sprite
-    sprite = _data_to_sprite(_safe_get_data(img, ensure_finite=True))
-
-    # Mask the sprite
-    if mask is not None:
-        mask = _data_to_sprite(_safe_get_data(mask, ensure_finite=True))
-        sprite = np.ma.array(sprite, mask=mask)
-
-    # Save the sprite
-    if output_sprite is None:
-        output_sprite = BytesIO()
-        imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap,
-            format=format)
-        output_sprite = _bytesIO_to_base64(output_sprite)
-    else:
-        imsave(output_cmap, data, cmap=cmap, format=format)
-
-    return output_sprite
-
-
 def _bytesIO_to_base64(handle_io):
     """ Encode the content of a bytesIO virtual file as base64.
         Also closes the file.
@@ -118,23 +93,6 @@ def _bytesIO_to_base64(handle_io):
     data = b64encode(handle_io.read()).decode('utf-8')
     handle_io.close()
     return data
-
-
-def _save_cm(cmap, output_cmap=None, format='png', n_colors=256):
-    """ Save the colormap of an image as an image file.
-    """
-
-    # the colormap
-    data = np.arange(0., n_colors) / (n_colors - 1.)
-    data = data.reshape([1, n_colors])
-
-    if output_cmap is None:
-        output_cmap = BytesIO()
-        imsave(output_cmap, data, cmap=cmap, format=format)
-        output_cmap = _bytesIO_to_base64(output_cmap)
-    else:
-        imsave(output_cmap, data, cmap=cmap, format=format)
-    return output_cmap
 
 
 def _mask_stat_map(stat_map_img, threshold=None):
@@ -260,7 +218,7 @@ def _json_view_size(params):
     return width_view, height_view
 
 
-def _json_view_data(bg_img, stat_map_img, mask_img, bg_min, bg_max, colors,
+def _viewer_data(bg_img, stat_map_img, mask_img, bg_min, bg_max, colors,
                     cmap, colorbar):
     """ Create a json-like viewer object, and populate with base64 data.
         Returns: json_view
@@ -288,7 +246,7 @@ def _json_view_data(bg_img, stat_map_img, mask_img, bg_min, bg_max, colors,
 
     # Create a base64 colormap
     if colorbar:
-        json_view['cm_base64'] = _save_cm(cmap=colors['cmap'], format='png')
+        json_view['cm_base64'] = save_cm(cmap=colors['cmap'], format='png')
     else:
         json_view['cm_base64'] = ''
 
@@ -365,6 +323,102 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     return cut_slices
 
 
+def _update_snippet_template(
+    canvas,
+    sprite,
+    sprite_overlay,
+    img_colorMap,
+    shape,
+    affine,
+    min,
+    max,
+    cut_slices,
+    colorFont,
+    colorBackground,
+    opacity=1,
+    crosshair=True,
+    flagCoordinates=True,
+    title=None,
+    colorbar=True,
+    flagValue=True
+    ):
+    """ Create a js snippet for the brainsprite viewer
+    """
+    # Initiate template
+    resource_path = Path(__file__).resolve().parent.joinpath('assets', 'js')
+    file_template = resource_path.joinpath('brainsprite_template.js')
+    tpl = tempita.Template.from_filename(str(file_template),encoding='utf-8')
+
+    return tpl.substitute(
+        canvas=canvas,
+        sprite=sprite,
+        X=shape[0],
+        Y=shape[1],
+        Z=shape[2],
+        sprite_overlay=sprite_overlay,
+        X_overlay=shape[0],
+        Y_overlay=shape[1],
+        Z_overlay=shape[2],
+        opacity=opacity,
+        colorBackground=colorBackground,
+        colorFont=colorFont,
+        crosshair=crosshair,
+        affine=affine.tolist(),
+        flagCoordinates=flagCoordinates,
+        title=title,
+        flagValue=flagValue,
+        X_num=cut_slices[0] - 1,
+        Y_num=cut_slices[1] - 1,
+        Z_num=cut_slices[2] - 1,
+        img_colorMap=img_colorMap,
+        min=min,
+        max=max
+    )
+
+
+def save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap='Greys',
+                 format='png'):
+    """ Generate a sprite from a 3D Niimg-like object.
+        Returns: sprite
+    """
+
+    # Create sprite
+    sprite = _data_to_sprite(_safe_get_data(img, ensure_finite=True))
+
+    # Mask the sprite
+    if mask is not None:
+        mask = _data_to_sprite(_safe_get_data(mask, ensure_finite=True))
+        sprite = np.ma.array(sprite, mask=mask)
+
+    # Save the sprite
+    if output_sprite is None:
+        output_sprite = BytesIO()
+        imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap,
+            format=format)
+        output_sprite = _bytesIO_to_base64(output_sprite)
+    else:
+        imsave(output_cmap, data, cmap=cmap, format=format)
+
+    return output_sprite
+
+
+def save_cm(cmap, output_cmap=None, format='png', n_colors=256):
+    """ Save the colormap of an image as an image file.
+    """
+
+    # the colormap
+    data = np.arange(0., n_colors) / (n_colors - 1.)
+    data = data.reshape([1, n_colors])
+
+    if output_cmap is None:
+        output_cmap = BytesIO()
+        imsave(output_cmap, data, cmap=cmap, format=format)
+        output_cmap = _bytesIO_to_base64(output_cmap)
+    else:
+        imsave(output_cmap, data, cmap=cmap, format=format)
+    return output_cmap
+
+
 def view_brain(stat_map_img, bg_img='MNI152',
              cut_coords=None,
              colorbar=True,
@@ -380,7 +434,7 @@ def view_brain(stat_map_img, bg_img='MNI152',
              vmin=None,
              resampling_interpolation='continuous',
              opacity=1,
-             **kwargs
+             value=True
              ):
     """Interactive html viewer of a statistical map, with optional background
 
@@ -452,6 +506,8 @@ def view_brain(stat_map_img, bg_img='MNI152',
         See nilearn.image.resample_img
     opacity : float in [0,1] (default 1)
         The level of opacity of the overlay (0: transparent, 1: opaque)
+    value : boolean (default True)
+        dislay the value of the overlay at the current voxel.
 
     Returns
     -------
@@ -489,13 +545,41 @@ def view_brain(stat_map_img, bg_img='MNI152',
     cut_slices = _get_cut_slices(stat_map_img, cut_coords, threshold)
 
     # Now create a json-like object for the viewer, and converts in html
-    json_view = _json_view_data(bg_img, stat_map_img, mask_img, bg_min, bg_max,
+    json_view = _viewer_data(bg_img, stat_map_img, mask_img, bg_min, bg_max,
                                 colors, cmap, colorbar)
 
     json_view['params'] = _json_view_params(
         stat_map_img.shape, stat_map_img.affine, colors['vmin'],
         colors['vmax'], cut_slices, black_bg, opacity, draw_cross, annotate,
-        title, colorbar, value=False)
+        title, colorbar, value=value)
+
+    # Set color parameters
+    if black_bg:
+        cfont = '#FFFFFF'
+        cbg = '#000000'
+    else:
+        cfont = '#000000'
+        cbg = '#FFFFFF'
+
+    snippet = _update_snippet_template(
+        canvas='3Dviewer',
+        sprite='spriteImg',
+        sprite_overlay='overlayImg',
+        img_colorMap='colorMap',
+        shape=stat_map_img.shape,
+        affine=stat_map_img.affine,
+        min=colors['vmin'],
+        max=colors['vmax'],
+        cut_slices=cut_slices,
+        colorFont=cfont,
+        colorBackground=cbg,
+        opacity=opacity,
+        crosshair=draw_cross,
+        flagCoordinates=annotate,
+        title=title,
+        colorbar=colorbar,
+        flagValue=value
+    )
 
     html_view = _json_view_to_html(json_view)
 

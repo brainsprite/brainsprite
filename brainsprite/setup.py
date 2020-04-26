@@ -7,5 +7,5 @@ setup(
    author='Pierre Bellec and the brainsprite contributors',
    packages=['.'],  #same as name
    author_email='pierre.bellec@gmail.com',
-   install_requires=['numpy', 'matplotlib', 'sklearn', 'nilearn'], #external packages as dependencies
+   install_requires=['numpy', 'matplotlib', 'sklearn', 'nilearn', 'tempita'], #external packages as dependencies
 )
