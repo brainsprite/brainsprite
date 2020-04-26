@@ -19,9 +19,11 @@ rm -rf $SCRIPTPATH/docs/source/auto_examples
 rm -rf $SCRIPTPATH/tests/plot_*.html
 
 echo Building docs
+cd docs
 make html
 
 echo Running tests and updating tutorial thumbnails
+cd ..
 npm test
 
 cd $CURRPATH

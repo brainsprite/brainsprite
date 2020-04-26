@@ -43,7 +43,8 @@
     "pngjs": "^4.0.0",
     "puppeteer": "^2.1.1",
     "utf-8-validate": "^5.0.2",
-    "js-beautify": "^1.11.0"
+    "js-beautify": "^1.11.0",
+    "minify": "^5.1.1"
   },
   "dependencies": {
     "jquery": "^3.5.0"

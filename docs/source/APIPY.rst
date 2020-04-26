@@ -2,6 +2,5 @@
 API Python
 **********
 
-.. automodule:: nilearn.plotting.html_stat_map
+.. automodule:: brainsprite
     :members:
-    :private-members:

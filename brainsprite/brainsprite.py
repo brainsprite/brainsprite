@@ -1,5 +1,4 @@
-"""
-Python interface to the brainsprite library
+"""Python interface to the brainsprite library.
 """
 import os
 import json
@@ -136,10 +135,6 @@ def _save_cm(cmap, output_cmap=None, format='png', n_colors=256):
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
     return output_cmap
-
-
-class StatMapView(HTMLDocument):
-    pass
 
 
 def _mask_stat_map(stat_map_img, threshold=None):
@@ -300,8 +295,7 @@ def _json_view_data(bg_img, stat_map_img, mask_img, bg_min, bg_max, colors,
     return json_view
 
 def _update_view_template(bs_snippet, bg=None, overlay=None, cm=None):
-    """
-    Populate a brainsprite viewer html template.
+    """Populate a brainsprite viewer html template.
 
     Parameters
     ----------
@@ -332,7 +326,7 @@ def _json_view_to_html(json_view):
     json_view["INSERT_PAGE_TITLE_HERE"] = json_view[
         "params"]["title"] or "Slice viewer"
     json_view['params'] = json.dumps(json_view['params'])
-    js_dir = os.path.join(os.path.dirname(__file__), 'data', 'js')
+    js_dir = os.path.join(os.path.dirname(__file__), 'assets', 'js')
     with open(os.path.join(js_dir, 'jquery.min.js')) as f:
         json_view['js_jquery'] = f.read()
     with open(os.path.join(js_dir, 'brainsprite.min.js')) as f:
@@ -342,7 +336,7 @@ def _json_view_to_html(json_view):
     html_view = get_html_template('stat_map_template.html')
     html_view = html_view.safe_substitute(json_view)
 
-    return StatMapView(html_view, width=width, height=height)
+    return HTMLDocument(html_view, width=width, height=height)
 
 
 def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
@@ -388,8 +382,7 @@ def view_brain(stat_map_img, bg_img='MNI152',
              opacity=1,
              **kwargs
              ):
-    """
-    Interactive html viewer of a statistical map, with optional background
+    """Interactive html viewer of a statistical map, with optional background
 
     Parameters
     ----------
