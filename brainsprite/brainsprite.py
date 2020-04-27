@@ -349,7 +349,7 @@ def _brainsprite_js(
         img_colorMap=img_colorMap,
         min=min,
         max=max,
-        colorbar=float(~colorbar),
+        colorbar=float(not colorbar),
     )
 
 
