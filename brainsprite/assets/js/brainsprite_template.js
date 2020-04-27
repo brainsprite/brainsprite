@@ -1,11 +1,10 @@
-// bransprise viewer template for tempita
-var brain = brainsprite(
+{
   canvas: "{{canvas}}",
   sprite: "{{sprite}}",
   nbSlice: {
     X: {{X}},
     Y: {{Y}},
-    Z: {{Y}}
+    Z: {{Z}}
   },
   overlay: {
     sprite: "{{sprite_overlay}}",
@@ -16,21 +15,22 @@ var brain = brainsprite(
     },
     opacity: {{opacity}}
   },
-  colorBackground: {{colorBackground}},
-  colorFont: {{colorFont}},
+  colorBackground: "{{colorBackground}}",
+  colorFont: "{{colorFont}}",
   crosshair: {{crosshair}},
   affine: {{affine}},
   flagCoordinates: {{flagCoordinates}},
-  title: {{title}},
+  title: "{{title}}",
   flagValue: {{flagValue}},
   numSlice: {
     X: {{X_num}},
     Y: {{Y_num}},
-    Z:{{Z_num}}
+    Z: {{Z_num}}
   },
   colorMap: {
     img: "{{img_colorMap}}",
     min: {{min}},
-    max: {{max}}
+    max: {{max}},
+    hide: {{colorbar}}
   }
-);
+}

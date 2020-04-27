@@ -24,7 +24,6 @@ function initBrain (params) {
     title: false,
     numSlice: false,
     onclick: '',
-    opacity: 1
   }
   var brain = Object.assign({}, defaultParams, params)
 
@@ -110,7 +109,7 @@ function initSprite (brain, sprite, nbSlice) {
 function initOverlay (brain, sprite, nbSlice) {
   // Initialize the overlay canvas - for internal use
 
-  brain.overlay = {}
+  brain.overlay.opacity = typeof brain.overlay.opacity !== 'undefined' ? brain.overlay.opacity : 1
   brain.overlay.sprite = document.getElementById(sprite)
   brain.overlay.nbCol = brain.overlay.sprite.width / nbSlice.Y
   brain.overlay.nbRow = brain.overlay.sprite.height / nbSlice.Z
@@ -126,9 +125,9 @@ function initOverlay (brain, sprite, nbSlice) {
 
 function initColorMap (colorMap) {
   // Initialize the color map - for internal use.
-  colorMap.img = document.getElementById(colorMap.img)
   colorMap.hide =
     typeof colorMap.hide !== 'undefined' ? colorMap.hide : false
+  colorMap.img = document.getElementById(colorMap.img)
   colorMap.canvas = document.createElement('canvas')
   colorMap.context = colorMap.canvas.getContext('2d')
   colorMap.canvas.width = colorMap.img.width
@@ -158,7 +157,7 @@ function initColorMap (colorMap) {
  * @param {string} params.title the title for the viewer. false will use no title.
  * @param {object} params.numSlice {"X", "Y", "Z"} coordinates of the initial cut. false will use the middle of the volume.
  * @param {object} params.overlay object. If false, no overlay.
- * @param {number} params.opacity the opacity of the overlay.
+ * @param {number} params.overlay.opacity the opacity of the overlay.
  * @param {string} params.onclick command to call on click.
  * @param {object} params.colormap object. if false, no colormap.
  * @param {boolean} params.nanValue unable to read values.
@@ -325,7 +324,7 @@ function brainsprite(params) {
       0, 0, brain.sprite.width, brain.sprite.height)
     if (brain.overlay) {
       // Draw the overlay on a canvas
-      brain.planes.contextMaster.globalAlpha = brain.opacity
+      brain.planes.contextMaster.globalAlpha = brain.overlay.opacity
       brain.planes.contextMaster.drawImage(brain.overlay.sprite,
         0, 0, brain.overlay.sprite.width, brain.overlay.sprite.height,
         0, 0, brain.sprite.width, brain.sprite.height)

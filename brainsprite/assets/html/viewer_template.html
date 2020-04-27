@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{title}}</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+  <div id="div_viewer">
+    {{bsprite_html}}
+  </div>
+
+  <script>
+    {{jquery_js}}
+  </script>
+  <script>
+    {{brainsprite_js}}
+  </script>
+
+  <script>
+  // On load: build all figures
+  $( window ).on('load',function() {
+    // Create brain slices
+    var brain = brainsprite(
+      {{bsprite_js}}
+    );
+  });
+  </script>
+</body>
+</html>
