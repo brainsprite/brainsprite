@@ -1,4 +1,4 @@
-"""Python interface to the brainsprite library.
+"""Python interface for the brainsprite.js library.
 """
 import os
 import json
@@ -377,92 +377,91 @@ def brainsprite_data(
     value=True,
     base64=True,
 ):
-    """Generate data (sprites and code) for a brainsprite viewer
+    """
+    Generate data (sprites and code) for a brainsprite viewer.
 
-    Parameters
-    ----------
-    stat_map_img : Niimg-like object
-        See http://nilearn.github.io/manipulating_images/input_output.html
-        The statistical map image. Can be either a 3D volume or a 4D volume
-        with exactly one time point.
-    canvas : str
-        The label for the brainsprite html canvas.
-    sprite : str
-        The label for the html sprite background image.
-    sprite_overlay : str
-        The label for the html sprite overlay image.
-    img_colorMap : str
-        The label for the html colormap image.
-    bg_img : Niimg-like object (default='MNI152')
-        See http://nilearn.github.io/manipulating_images/input_output.html
-        The background image that the stat map will be plotted on top of.
+    :param stat_map_img: The statistical map image. Can be either a 3D volume
+        or a 4D volume with exactly one time point.
+    :type stat_map_img: stasNiimg-like object, See
+        http://nilearn.github.io/manipulating_images/input_output.html
+    :param canvas: The label for the brainsprite html canvas.
+    :type canvas: str, optional
+    :param sprite: The label for the html sprite background image.
+    :type sprite: str, optional
+    :param sprite_overlay: The label for the html sprite overlay image.
+    :type sprite_overlay: str, optional
+    :param img_colorMap: The label for the html colormap image.
+    :type img_colorMap: str, optional
+    :param bg_img: The background image that the stat map will be plotted on top of.
         If nothing is specified, the MNI152 template will be used.
         To turn off background image, just pass "bg_img=False".
-    cut_coords : None, or a tuple of floats (default None)
-        The MNI coordinates of the point where the cut is performed
+    :type bg_img: Niimg-like object, optional
+        See http://nilearn.github.io/manipulating_images/input_output.html
+    :param cut_coords: The MNI coordinates of the point where the cut is performed
         as a 3-tuple: (x, y, z). If None is given, the cuts are calculated
         automaticaly.
-    colorbar : boolean, optional (default True)
-        If True, display a colorbar on top of the plots.
-    title : string or None (default=None)
-        The title displayed on the figure (or None: no title).
-    threshold : string, number or None  (default=1e-6)
-        If None is given, the image is not thresholded.
+    :type cut_coords: None, or a tuple of floats, optional
+    :param colorbar: If True, display a colorbar on top of the plots.
+    :type colorbar: boolean, optional
+    :param title: The title displayed on the figure (or None: no title).
+    :type title: string or None, optional
+    :param threshold: If None is given, the image is not thresholded.
         If a string of the form "90%" is given, use the 90-th percentile of
         the absolute value in the image.
         If a number is given, it is used to threshold the image:
         values below the threshold (in absolute value) are plotted
         as transparent. If auto is given, the threshold is determined
         automatically.
-    annotate : boolean (default=True)
-        If annotate is True, current cuts are added to the viewer.
-    draw_cross : boolean (default=True)
-        If draw_cross is True, a cross is drawn on the plot to
+    :type threshold: string, number or None, optional
+    :param annotate: If annotate is True, current cuts are added to the viewer.
+    :type annotate: boolean, optional
+    :param draw_cross: If draw_cross is True, a cross is drawn on the plot to
         indicate the cuts.
-    black_bg : boolean (default='auto')
-        If True, the background of the image is set to be black.
+    :type draw_cross: boolean, optional
+    :param black_bg: If True, the background of the image is set to be black.
         Otherwise, a white background is used.
         If set to auto, an educated guess is made to find if the background
         is white or black.
-    cmap : matplotlib colormap, optional
-        The colormap for specified image.
-    symmetric_cmap : bool, optional (default=True)
-        True: make colormap symmetric (ranging from -vmax to vmax).
+    :type black_bg: boolean, optional
+    :param cmap: The colormap for specified image.
+    :type cmap:  matplotlib colormap, optional
+    :param symmetric_cmap: True: make colormap symmetric (ranging from -vmax to vmax).
         False: the colormap will go from the minimum of the volume to vmax.
         Set it to False if you are plotting a positive volume, e.g. an atlas
         or an anatomical image.
-    dim : float, 'auto' (default='auto')
-        Dimming factor applied to background image. By default, automatic
+    :type symmetric_cmap: bool, optional
+    :param dim: Dimming factor applied to background image. By default, automatic
         heuristics are applied based upon the background image intensity.
         Accepted float values, where a typical scan is between -2 and 2
         (-2 = increase constrast; 2 = decrease contrast), but larger values
         can be used for a more pronounced effect. 0 means no dimming.
-    vmax : float, or None (default=None)
-        max value for mapping colors.
+    :type dim: float or 'auto', optional
+    :param vmax: max value for mapping colors.
         If vmax is None and symmetric_cmap is True, vmax is the max
         absolute value of the volume.
         If vmax is None and symmetric_cmap is False, vmax is the max
         value of the volume.
-    vmin : float, or None (default=None)
-        min value for mapping colors.
+    :type vmax: float, or None, optional
+    :param vmin: min value for mapping colors.
         If `symmetric_cmap` is `True`, `vmin` is always equal to `-vmax` and
         cannot be chosen.
         If `symmetric_cmap` is `False`, `vmin` defaults to the min of the
         image, or 0 when a threshold is used.
-    resampling_interpolation : string, optional (default continuous)
-        The interpolation method for resampling.
+    :type vmin: float, or None, optional
+    :param resampling_interpolation: The interpolation method for resampling.
         Can be 'continuous', 'linear', or 'nearest'.
         See nilearn.image.resample_img
-    opacity : float in [0,1] (default 1)
-        The level of opacity of the overlay (0: transparent, 1: opaque)
-    value : boolean (default True)
-        dislay the value of the overlay at the current voxel.
-    base64 : boolean (default True)
-        turn on/off embedding of sprites in the html using base64 encoding.
-        If the flag is off, the sprites will be saved
-    Returns
-    -------
-    bsprite : a brainsprite data structure.
+    :type resampling_interpolation: string, optional
+    :param opacity: The level of opacity of the overlay (0: transparent, 1: opaque)
+    :type opacity: float in [0,1], optional
+    :param value: dislay the value of the overlay at the current voxel.
+    :type value: boolean, optional
+    :param base64: turn on/off embedding of sprites in the html using base64 encoding.
+        If the flag is off, the sprites (and the colorbar) will be saved in
+        files named based on parameters sprite, sprite_overlay and img_colorMap.
+    :type base64: boolean (default True)
+
+    :return bsprite: a brainsprite data structure.
 
     """
 
@@ -559,96 +558,80 @@ def brainsprite_viewer(
 ):
     """Interactive html viewer of a statistical map, with optional background
 
-    Parameters
-    ----------
-    stat_map_img : Niimg-like object
-        See http://nilearn.github.io/manipulating_images/input_output.html
-        The statistical map image. Can be either a 3D volume or a 4D volume
-        with exactly one time point.
-    bg_img : Niimg-like object (default='MNI152')
-        See http://nilearn.github.io/manipulating_images/input_output.html
-        The background image that the stat map will be plotted on top of.
+    :param stat_map_img: The statistical map image. Can be either a 3D volume
+        or a 4D volume with exactly one time point.
+    :type stat_map_img: stasNiimg-like object, See
+        http://nilearn.github.io/manipulating_images/input_output.html
+    :param bg_img: The background image that the stat map will be plotted on top of.
         If nothing is specified, the MNI152 template will be used.
         To turn off background image, just pass "bg_img=False".
-    cut_coords : None, or a tuple of floats (default None)
-        The MNI coordinates of the point where the cut is performed
+    :type bg_img: Niimg-like object, optional
+        See http://nilearn.github.io/manipulating_images/input_output.html
+    :param cut_coords: The MNI coordinates of the point where the cut is performed
         as a 3-tuple: (x, y, z). If None is given, the cuts are calculated
         automaticaly.
-    colorbar : boolean, optional (default True)
-        If True, display a colorbar on top of the plots.
-    title : string or None (default=None)
-        The title displayed on the figure (or None: no title).
-    threshold : string, number or None  (default=1e-6)
-        If None is given, the image is not thresholded.
+    :type cut_coords: None, or a tuple of floats, optional
+    :param colorbar: If True, display a colorbar on top of the plots.
+    :type colorbar: boolean, optional
+    :param title: The title displayed on the figure (or None: no title).
+    :type title: string or None, optional
+    :param threshold: If None is given, the image is not thresholded.
         If a string of the form "90%" is given, use the 90-th percentile of
         the absolute value in the image.
         If a number is given, it is used to threshold the image:
         values below the threshold (in absolute value) are plotted
         as transparent. If auto is given, the threshold is determined
         automatically.
-    annotate : boolean (default=True)
-        If annotate is True, current cuts are added to the viewer.
-    draw_cross : boolean (default=True)
-        If draw_cross is True, a cross is drawn on the plot to
+    :type threshold: string, number or None, optional
+    :param annotate: If annotate is True, current cuts are added to the viewer.
+    :type annotate: boolean, optional
+    :param draw_cross: If draw_cross is True, a cross is drawn on the plot to
         indicate the cuts.
-    black_bg : boolean (default='auto')
-        If True, the background of the image is set to be black.
+    :type draw_cross: boolean, optional
+    :param black_bg: If True, the background of the image is set to be black.
         Otherwise, a white background is used.
         If set to auto, an educated guess is made to find if the background
         is white or black.
-    cmap : matplotlib colormap, optional
-        The colormap for specified image.
-    symmetric_cmap : bool, optional (default=True)
-        True: make colormap symmetric (ranging from -vmax to vmax).
+    :type black_bg: boolean, optional
+    :param cmap: The colormap for specified image.
+    :type cmap:  matplotlib colormap, optional
+    :param symmetric_cmap: True: make colormap symmetric (ranging from -vmax to vmax).
         False: the colormap will go from the minimum of the volume to vmax.
         Set it to False if you are plotting a positive volume, e.g. an atlas
         or an anatomical image.
-    dim : float, 'auto' (default='auto')
-        Dimming factor applied to background image. By default, automatic
+    :type symmetric_cmap: bool, optional
+    :param dim: Dimming factor applied to background image. By default, automatic
         heuristics are applied based upon the background image intensity.
         Accepted float values, where a typical scan is between -2 and 2
         (-2 = increase constrast; 2 = decrease contrast), but larger values
         can be used for a more pronounced effect. 0 means no dimming.
-    vmax : float, or None (default=None)
-        max value for mapping colors.
+    :type dim: float or 'auto', optional
+    :param vmax: max value for mapping colors.
         If vmax is None and symmetric_cmap is True, vmax is the max
         absolute value of the volume.
         If vmax is None and symmetric_cmap is False, vmax is the max
         value of the volume.
-    vmin : float, or None (default=None)
-        min value for mapping colors.
+    :type vmax: float, or None, optional
+    :param vmin: min value for mapping colors.
         If `symmetric_cmap` is `True`, `vmin` is always equal to `-vmax` and
         cannot be chosen.
         If `symmetric_cmap` is `False`, `vmin` defaults to the min of the
         image, or 0 when a threshold is used.
-    resampling_interpolation : string, optional (default continuous)
-        The interpolation method for resampling.
+    :type vmin: float, or None, optional
+    :param resampling_interpolation: The interpolation method for resampling.
         Can be 'continuous', 'linear', or 'nearest'.
         See nilearn.image.resample_img
-    opacity : float in [0,1] (default 1)
-        The level of opacity of the overlay (0: transparent, 1: opaque)
-    value : boolean (default True)
-        dislay the value of the overlay at the current voxel.
+    :type resampling_interpolation: string, optional
+    :param opacity: The level of opacity of the overlay (0: transparent, 1: opaque)
+    :type opacity: float in [0,1], optional
+    :param value: dislay the value of the overlay at the current voxel.
+    :type value: boolean, optional
 
-    Returns
-    -------
-    html_view : the html viewer object.
+    :return html_view: the html viewer object.
         It can be saved as an html page `html_view.save_as_html('test.html')`,
         or opened in a browser `html_view.open_in_browser()`.
         If the output is not requested and the current environment is a Jupyter
         notebook, the viewer will be inserted in the notebook.
-
-    See Also
-    --------
-    nilearn.plotting.plot_stat_map:
-        static plot of brain volume, on a single or multiple planes.
-    nilearn.plotting.view_connectome:
-        interactive 3d view of a connectome.
-    nilearn.plotting.view_markers:
-        interactive plot of colored markers.
-    nilearn.plotting.view_surf, nilearn.plotting.view_img_on_surf:
-        interactive view of statistical maps or surface atlases on the cortical
-        surface.
     """
     # Generate sprites and meta-data
     bsprite = brainsprite_data(
@@ -672,7 +655,7 @@ def brainsprite_viewer(
         base64=True,
     )
 
-    # Add js assets
+    # Collect js assets (jquery and brainsprite.js)
     js_dir = os.path.join(os.path.dirname(__file__), "assets", "js")
     with open(os.path.join(js_dir, "jquery.min.js")) as f:
         bsprite["jquery_js"] = f.read()
