@@ -9,6 +9,7 @@ jobs:
           name: Build docs
           command: |
             cd brainsprite
+            apt install npm
             npm install -g jsdoc
             pip install -e .
             cd ../docs
