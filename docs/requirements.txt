@@ -1,9 +1,12 @@
-sphinx
+matplotlib
+nilearn
+Pillow
+pandas
+pytest
+setuptools
 recommonmark
+sphinx
 sphinx_rtd_theme
 sphinx-gallery
 sphinx-js
-nilearn
-matplotlib
-Pillow
-pandas
+wheel
