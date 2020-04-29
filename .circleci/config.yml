@@ -15,6 +15,7 @@ jobs:
             cd ../docs
             pip install --progress-bar off -r requirements.txt
             make html
+            cp ../README.md build/html
       - persist_to_workspace:
           root: .
           paths:
@@ -62,7 +63,7 @@ jobs:
             cd website
             touch .nojekyll
             git add *
-            git add .nojekyll 
+            git add .nojekyll
             git commit --all -m "Automated update through circleci"
             git push --force --quiet origin master
 

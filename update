@@ -31,6 +31,10 @@ cd $SCRIPTPATH
 echo minifying brainsprite.js
 minify brainsprite.js > brainsprite.min.js
 
+echo updating LICENSE and README for the python library
+cp $SCRIPTPATH/LICENSE $SCRIPTPATH/brainsprite/LICENSE
+cp $SCRIPTPATH/README.md $SCRIPTPATH/brainsprite/README.md
+
 echo updating js assets in brainsprite.py
 cp brainsprite.min.js brainsprite/assets/js/
 cp assets/jquery*/jquery.min.js brainsprite/assets/js
