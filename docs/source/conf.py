@@ -60,7 +60,7 @@ html_theme = 'sphinx_rtd_theme'
 html_short_title = 'Brainsprite'
 
 # The logo
-html_logo = 'img/logo_brainsprite.jpg'
+html_logo = 'img/logo_brainsprite.png'
 
 # icon
 html_favicon = 'img/logo_brainsprite_small.png'

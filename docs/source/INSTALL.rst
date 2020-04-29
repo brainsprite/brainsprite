@@ -5,20 +5,22 @@ Installation
 Python
 ######
 
-The Brainsprite js library as well as brainsprite python API are both included in the nilearn python package, available through pypi:
+The Brainsprite python library is available through pypi:
 
 .. code-block:: console
 
-    pip install nilearn
+    pip install brainsprite
 
 
 Javascript
 ##########
 
-The core javascript library is available through npm:
+The brainsprite javascript library is available through npm:
 
 .. code-block:: console
 
     npm install brainsprite
 
-You can also directly incorporate ::brainsprite.min.js as an asset of your webpage. Its only dependency is jquery. Download links are available on the `brainsprite github repository <https://github.com/brainsprite/brainsprite/releases>`_.
+You can also directly incorporate :code:`brainsprite.min.js` as an asset of your webpage.
+Its only dependency is jquery. Download links are available on the
+`brainsprite github repository <https://github.com/brainsprite/brainsprite/releases>`_.

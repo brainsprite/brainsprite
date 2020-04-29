@@ -1,5 +1,9 @@
 # Getting started
 
+## Why brainsprite?
+
+There are many high quality brain viewers written in javascript, such as [papaya](https://github.com/rii-mango/Papaya) and [brainbrowser](https://github.com/aces/brainbrowser). These brain viewers have the ability of dealing with complex brain imaging formats, and users can interactively change the aspect of the viewer (e.g. the colormap). For this reason, these brain viewers are relatively large and slow to load. By comparison, the vision for brainsprite is to be as minimal, small and fast as possible. A brainsprite viewer takes roughly the same size as a traditional picture on a webpage, and looks like a publication figure rather than a software window. The brainpsrite interface is also highly customizable, and can be interfaced with other interactive elements on a webpage, such as sliders, plots or matrices. As such, brainsprite viewers are designed to be elements on a web dashboard, rather than a brain-viewer-inside-a-browser. To achieve fast loading, all the heavy lifting of data preparation is done through a python library which packages brain images into traditional png or jpg "sprite" files. The javascript brainsprite library then renders these sprites into interactive viewers, using only core html5 features.
+
 ## Sprites
 For brainsprite to work, you will need to generate a sprite image (also known as mosaic) such as the one above, and specify the size of each slice (in pixel). The sagital slices are assumed to be in the same orientation as the MNI space (X: left to right, Y: posterior to anterior, Z: ventral to dorsal), and stacked from left to right row by row. The number of slices per row can be anything, but generating a sprite image that is roughly square will work best. A full example of sprite image (MNI space at 1 mm isotropic) can be found [here](https://github.com/brainsprite/brainsprite/blob/master/tests/sprite.jpg).
 

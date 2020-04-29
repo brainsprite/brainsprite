@@ -353,6 +353,265 @@ def _brainsprite_js(
     )
 
 
+class viewer_substitute():
+    """
+    Templating tool to insert a brainsprite viewer in an HTML document
+
+    :param canvas: The label for the brainsprite html canvas.
+    :type canvas: str, optional
+    :param sprite: The label for the html sprite background image.
+    :type sprite: str, optional
+    :param sprite_overlay: The label for the html sprite overlay image.
+    :type sprite_overlay: str, optional
+    :param img_colorMap: The label for the html colormap image.
+    :type img_colorMap: str, optional
+    :param cut_coords: The MNI coordinates of the point where the cut is performed
+        as a 3-tuple: (x, y, z). If None is given, the cuts are calculated
+        automaticaly.
+    :type cut_coords: None, or a tuple of floats, optional
+    :param colorbar: If True, display a colorbar on top of the plots.
+    :type colorbar: boolean, optional
+    :param title: The title displayed on the figure (or None: no title).
+    :type title: string or None, optional
+    :param threshold: If None is given, the image is not thresholded.
+        If a string of the form "90%" is given, use the 90-th percentile of
+        the absolute value in the image.
+        If a number is given, it is used to threshold the image:
+        values below the threshold (in absolute value) are plotted
+        as transparent. If auto is given, the threshold is determined
+        automatically.
+    :type threshold: string, number or None, optional
+    :param annotate: If annotate is True, current cuts are added to the viewer.
+    :type annotate: boolean, optional
+    :param draw_cross: If draw_cross is True, a cross is drawn on the plot to
+        indicate the cuts.
+    :type draw_cross: boolean, optional
+    :param black_bg: If True, the background of the image is set to be black.
+        Otherwise, a white background is used.
+        If set to auto, an educated guess is made to find if the background
+        is white or black.
+    :type black_bg: boolean, optional
+    :param cmap: The colormap for specified image.
+    :type cmap:  matplotlib colormap, optional
+    :param symmetric_cmap: True: make colormap symmetric (ranging from -vmax to vmax).
+        False: the colormap will go from the minimum of the volume to vmax.
+        Set it to False if you are plotting a positive volume, e.g. an atlas
+        or an anatomical image.
+    :type symmetric_cmap: bool, optional
+    :param dim: Dimming factor applied to background image. By default, automatic
+        heuristics are applied based upon the background image intensity.
+        Accepted float values, where a typical scan is between -2 and 2
+        (-2 = increase constrast; 2 = decrease contrast), but larger values
+        can be used for a more pronounced effect. 0 means no dimming.
+    :type dim: float or 'auto', optional
+    :param vmax: max value for mapping colors.
+        If vmax is None and symmetric_cmap is True, vmax is the max
+        absolute value of the volume.
+        If vmax is None and symmetric_cmap is False, vmax is the max
+        value of the volume.
+    :type vmax: float, or None, optional
+    :param vmin: min value for mapping colors.
+        If `symmetric_cmap` is `True`, `vmin` is always equal to `-vmax` and
+        cannot be chosen.
+        If `symmetric_cmap` is `False`, `vmin` defaults to the min of the
+        image, or 0 when a threshold is used.
+    :type vmin: float, or None, optional
+    :param resampling_interpolation: The interpolation method for resampling.
+        Can be 'continuous', 'linear', or 'nearest'.
+        See nilearn.image.resample_img
+    :type resampling_interpolation: string, optional
+    :param opacity: The level of opacity of the overlay (0: transparent, 1: opaque)
+    :type opacity: float in [0,1], optional
+    :param value: dislay the value of the overlay at the current voxel.
+    :type value: boolean, optional
+    :param base64: turn on/off embedding of sprites in the html using base64 encoding.
+        If the flag is off, the sprites (and the colorbar) will be saved in
+        files named based on parameters sprite, sprite_overlay and img_colorMap.
+    :type base64: boolean (default True)
+
+    :return viewer_tp: a brainsprite viewer template object.
+
+    """
+
+    def __init__(
+        self,
+        canvas="3Dviewer",
+        sprite="spriteImg",
+        sprite_overlay="overlayImg",
+        img_colorMap="colorMap",
+        cut_coords=None,
+        colorbar=True,
+        title=None,
+        threshold=1e-6,
+        annotate=True,
+        draw_cross=True,
+        black_bg="auto",
+        cmap=cm.cold_hot,
+        symmetric_cmap=True,
+        dim="auto",
+        vmax=None,
+        vmin=None,
+        resampling_interpolation="continuous",
+        opacity=1,
+        value=True,
+        base64=True,
+    ):
+        """Set up default attributes for the class."""
+        self.canvas = canvas
+        self.sprite = sprite
+        self.sprite_overlay = sprite_overlay
+        self.img_colorMap = img_colorMap
+        self.cut_coords = cut_coords
+        self.colorbar = colorbar
+        self.title = title
+        self.threshold = threshold
+        self.annotate = annotate
+        self.draw_cross = draw_cross
+        self.black_bg = black_bg
+        self.cmap = cmap
+        self.symmetric_cmap = symmetric_cmap
+        self.dim = dim
+        self.vmax = vmax
+        self.vmin = vmin
+        self.resampling_interpolation = resampling_interpolation
+        self.opacity = opacity
+        self.value = value
+        self.base64 = base64
+
+    def fit(self, stat_map_img, bg_img="MNI152"):
+        """
+        Generate sprite and meta-data from a brain volume.
+        Also optionally incorporate a background image.
+        :param stat_map_img: The statistical map image. Can be either a 3D volume
+            or a 4D volume with exactly one time point.
+        :param bg_img: The background image that the stat map will be plotted on top of.
+            If nothing is specified, the MNI152 template will be used.
+            To turn off background image, just pass "bg_img=False".
+        """
+        # Prepare the color map and thresholding
+        mask_img, stat_map_img, data, self.threshold = _mask_stat_map(
+            stat_map_img, self.threshold
+        )
+
+        self.colors_ = colorscale(
+            self.cmap,
+            data.ravel(),
+            threshold=self.threshold,
+            symmetric_cmap=self.symmetric_cmap,
+            vmax=self.vmax,
+            vmin=self.vmin,
+        )
+
+        if self.black_bg:
+            cfont = "#FFFFFF"
+            cbg = "#000000"
+        else:
+            cfont = "#000000"
+            cbg = "#FFFFFF"
+
+        # Prepare the data for the cuts
+        bg_img, self.bg_min_, self.bg_max_, self.black_bg_ = _load_bg_img(
+            stat_map_img, bg_img, self.black_bg, self.dim
+        )
+        stat_map_img, mask_img = _resample_stat_map(
+            stat_map_img, bg_img, mask_img, self.resampling_interpolation
+        )
+        self.cut_slices_ = _get_cut_slices(
+            stat_map_img, self.cut_coords, self.threshold
+        )
+
+        # Now create the viewer, and populate the sprite data
+        self.html_ = _brainsprite_html(
+            canvas=self.canvas,
+            sprite=self.sprite,
+            sprite_overlay=self.sprite_overlay,
+            img_colorMap=self.img_colorMap,
+            bg_img=bg_img,
+            base64=self.base64,
+            stat_map_img=stat_map_img,
+            mask_img=mask_img,
+            bg_min=self.bg_min_,
+            bg_max=self.bg_max_,
+            colors=self.colors_,
+            cmap=self.cmap,
+            colorbar=self.colorbar,
+        )
+
+        # Add the javascript snippet
+        self.javascript_ = _brainsprite_js(
+            canvas=self.canvas,
+            sprite=self.sprite,
+            sprite_overlay=self.sprite_overlay,
+            img_colorMap=self.img_colorMap,
+            shape=stat_map_img.shape,
+            affine=stat_map_img.affine,
+            min=self.colors_["vmin"],
+            max=self.colors_["vmax"],
+            cut_slices=self.cut_slices_,
+            colorFont=cfont,
+            colorBackground=cbg,
+            opacity=self.opacity,
+            crosshair=self.draw_cross,
+            flagCoordinates=self.annotate,
+            title=self.title,
+            colorbar=self.colorbar,
+            flagValue=self.value,
+        )
+
+        # Add the brainsprite.min.js library
+        js_dir = os.path.join(os.path.dirname(__file__), "assets", "js")
+        with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
+            self.library_ = f.read()
+            f.close()
+
+        # Suggest a size for the viewer
+        # width x height, in pixels
+        self.width_, self.height_ = _viewer_size(stat_map_img.shape)
+
+    def transform(self, template, javascript, html, library, namespace={}, width=None, height=None):
+        """ Apply substitution in a template, using tempita.
+
+            :param template: a template where brainsprite data needs to be substitued.
+            :type template: tempita template
+            :param javascript: the tempita name to substitute with brainsprite javascript snippet.
+                If None, javascript is not substitued.
+            :type javascript: str or None
+            :param html: the tempita name to substitute with brainsprite html snippet.
+                If None, html is not substitued.
+            :type html: str or None
+            :param library: the tempita name to substitue with the brainsprite js library.
+                If None, library is not substitued.
+            :type library: str or None
+            :param namespace: a list of names to substitute, using tempita's substitute method.
+            :type namespace: dict
+            :param width: the width of the html report.
+                If None, the width of the report will be the width of the viewer.
+            :type height: int or None
+            :param height: the height of the html report.
+                If None, the height of the report will be the height of the viewer.
+            :type height: int or None
+        """
+        if javascript != None:
+            namespace[javascript] = self.javascript_
+
+        if html != None:
+            namespace[html] = self.html_
+
+        if library != None:
+            namespace[library] = self.library_
+
+        if width == None:
+            width = self.width_
+
+        if height == None:
+            height = self.height_
+
+        # Populate template
+        viewer = template.substitute(namespace)
+
+        return HTMLDocument(viewer, width=width, height=height)
+
+
 def brainsprite_data(
     stat_map_img,
     canvas="3Dviewer",
@@ -633,10 +892,8 @@ def brainsprite_viewer(
         If the output is not requested and the current environment is a Jupyter
         notebook, the viewer will be inserted in the notebook.
     """
-    # Generate sprites and meta-data
-    bsprite = brainsprite_data(
-        stat_map_img,
-        bg_img=bg_img,
+    # Initialize the template substitution tool
+    bsprite = viewer_substitute(
         cut_coords=cut_coords,
         colorbar=colorbar,
         title=title,
@@ -655,25 +912,27 @@ def brainsprite_viewer(
         base64=True,
     )
 
-    # Collect js assets (jquery and brainsprite.js)
+    # build sprites and meta-data
+    bsprite.fit(stat_map_img, bg_img=bg_img)
+
+    # Initialize namespace for substitution
+    namespace = {}
+    namespace["title"] = title
+
     js_dir = os.path.join(os.path.dirname(__file__), "assets", "js")
     with open(os.path.join(js_dir, "jquery.min.js")) as f:
-        bsprite["jquery_js"] = f.read()
-    with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
-        bsprite["brainsprite_js"] = f.read()
+        namespace["jquery_js"] = f.read()
 
-    # Initiate template
+    # Load template
     resource_path = Path(__file__).resolve().parent.joinpath("assets", "html")
     file_template = resource_path.joinpath("viewer_template.html")
     tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
     # Populate template
-    viewer = tpl.substitute(
-        title=title,
-        jquery_js=bsprite["jquery_js"],
-        brainsprite_js=bsprite["brainsprite_js"],
-        bsprite_html=bsprite["html"],
-        bsprite_js=bsprite["js"],
+    return bsprite.transform(
+        tpl,
+        javascript = "js",
+        html = "html",
+        library = "library",
+        namespace = namespace
     )
-
-    return HTMLDocument(viewer, width=bsprite["size"][0], height=bsprite["size"][1])
