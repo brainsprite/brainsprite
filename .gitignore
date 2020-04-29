@@ -1,4 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
+### Puppeteer tests
+tests/.puppeteerEndpoint
+
+### Sphinx gallery
+docs/source/auto_examples
+
 ### ExtJs template
 .architect
 bootstrap.css
@@ -38,6 +44,10 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# NPM
+node_modules
+package-lock.json
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

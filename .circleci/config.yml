@@ -1,0 +1,48 @@
+version: 2.1
+jobs:
+  build-docs:
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - checkout
+      - run:
+          name: Build docs
+          command: |
+            cd brainsprite
+            sudo apt install npm
+            sudo npm install -g jsdoc
+            pip install -e .
+            cd ../docs
+            pip install --progress-bar off -r requirements.txt
+            make html
+      - persist_to_workspace:
+          root: .
+          paths:
+            - tests
+            - docs
+  run-tests:
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run tests and update thumbnails
+          command: |
+            npm install .
+            npm test
+            mkdir /tmp/test_report
+            cp tests/plot_*.png /tmp/test_report
+      - store_artifacts:
+          path: /tmp/test_report
+          destination: circleci-tests
+
+workflows:
+  version: 2
+  Full_Build:
+    jobs:
+      - build-docs
+      - run-tests:
+          requires:
+            - build-docs

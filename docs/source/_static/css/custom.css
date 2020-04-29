@@ -1,0 +1,15 @@
+.sphx-glr-thumbcontainer {
+    min-height: 130px !important;
+    margin: 20px !important;
+}
+.sphx-glr-thumbcontainer .figure {
+    width: 250px !important;
+}
+.sphx-glr-thumbcontainer img {
+    max-height: 300px !important;
+    max-width: 250px !important;
+    width: 250px;
+}
+.sphx-glr-thumbcontainer a.internal {
+    padding: 130px 10px 0 !important;
+}

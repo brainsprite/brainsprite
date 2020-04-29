@@ -1,0 +1,9 @@
+sphinx
+recommonmark
+sphinx_rtd_theme
+sphinx-gallery
+sphinx-js
+nilearn
+matplotlib
+Pillow
+pandas

@@ -7,11 +7,11 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SIMEXP/brainsprite.js.git"
+    "url": "git+https://github.com/brainsprite/brainsprite.git"
   },
   "keywords": [
     "brain",
@@ -21,15 +21,32 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/SIMEXP/brainsprite.js/issues"
+    "url": "https://github.com/brainsprite/brainsprite/issues"
   },
-  "homepage": "https://simexp.github.io/brainsprite.js",
+  "homepage": "https://brainsprite.github.io/brainsprite",
   "devDependencies": {
+    "bufferutil": "^4.0.1",
+    "canvas": "^2.6.1",
     "eslint": "^5.14.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "jest": "^25.3.0",
+    "jsdoc": "^3.6.4",
+    "looks-same": "^7.2.2",
+    "node.js": "0.0.1-security",
+    "pixelmatch": "^5.1.0",
+    "pngjs": "^4.0.0",
+    "puppeteer": "^2.1.1",
+    "utf-8-validate": "^5.0.2",
+    "js-beautify": "^1.11.0",
+    "minify": "^5.1.1"
+  },
+  "dependencies": {
+    "jquery": "^3.5.0"
   }
 }
