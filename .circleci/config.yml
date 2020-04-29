@@ -57,7 +57,7 @@ jobs:
             git clone https://brainsprite-bot:$TOKEN@github.com/brainsprite/brainsprite.github.io.git website > /dev/null 2>&1
             echo Scrapping old website and updating content
             rm -rf website/*
-            cp -r docs/* website/
+            cp -r docs/build/html/* website/
             echo Committing updated website
             cd website
             git commit --all -m "Automated update through circleci"
