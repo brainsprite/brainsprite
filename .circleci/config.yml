@@ -62,6 +62,7 @@ jobs:
             cd website
             touch .nojekyll
             git add *
+            git add .nojekyll 
             git commit --all -m "Automated update through circleci"
             git push --force --quiet origin master
 
