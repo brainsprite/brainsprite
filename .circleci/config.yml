@@ -9,6 +9,7 @@ jobs:
           name: Build docs
           command: |
             cd brainsprite
+            npm install -g jsdoc
             pip install -e .
             cd ../docs
             pip install --progress-bar off -r requirements.txt
