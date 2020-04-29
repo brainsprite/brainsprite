@@ -73,8 +73,9 @@ workflows:
             - build-docs
       - deploy-docs:
           filters:
-            only: master
             branches:
+              only:
+                - master
           context: docs-build
           requires:
             - run-tests
