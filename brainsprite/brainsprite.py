@@ -371,8 +371,9 @@ class viewer_substitute:
 
     def fit(self, stat_map_img, bg_img="MNI152"):
         """
-        Generate sprite and meta-data from a brain volume.
-        Also optionally incorporate a background image.
+        Generate sprite and meta-data from a brain volume. Also optionally
+        incorporate a background image.
+
         :param stat_map_img: The statistical map image. Can be either a 3D volume
             or a 4D volume with exactly one time point.
         :type stat_map_img: stasNiimg-like object, See
@@ -436,9 +437,8 @@ class viewer_substitute:
         # width x height, in pixels
         self.width_, self.height_ = _viewer_size(stat_map_img.shape)
 
-    def transform(
-        self, template, javascript, html, library, namespace={}, width=None, height=None
-    ):
+    def transform(self, template, javascript, html, library, namespace=None,
+        width=None, height=None):
         """ Apply substitution in a template, using tempita.
 
             :param template: a template where brainsprite data needs to be substitued.
@@ -461,6 +461,9 @@ class viewer_substitute:
                 If None, the height of the report will be the height of the viewer.
             :type height: int or None
         """
+        if namespace == None:
+            namespace = {}
+            
         if javascript != None:
             namespace[javascript] = self.javascript_
 

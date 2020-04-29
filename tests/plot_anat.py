@@ -84,4 +84,4 @@ viewer.save_as_html('plot_anat.html')
 
 #%%
 # The templating approach presented here is generic, and allows to insert one
-# or multiple viewers in complex html documents.
+# or multiple viewers in any html document template.
