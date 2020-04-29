@@ -1,8 +1,8 @@
 """
-Statistical map viewer - Python
-===============================
-
-Brainsprite viewer for an activation map with an anatomical background, using the python API, and how to embed the viewer in an html document.
+Statistical map viewer
+======================
+Generate a brainsprite viewer for an activation map with an anatomical
+background, by populating an html template.
 """
 
 #%%
@@ -18,6 +18,7 @@ stat_img = motor_images.images[0]
 # We use :code:`brainsprite_viewer` to generate the viewer object in python.
 # The defaults are set for a functional map, so there is not much to do. We still
 # tweak a couple parameters to get a clean map:
+#
 #  * apply a threshold to get rid of small activation (:code:`threshold`),
 #  * reduce the opacity of the overlay to see the underlying anatomy (:code:`opacity`)
 #  * Put a title inside the figure (:code:`title`)
