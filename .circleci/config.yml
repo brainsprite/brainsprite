@@ -16,6 +16,7 @@ jobs:
             pip install --progress-bar off -r requirements.txt
             make html
             cp ../README.md build/html
+            cp ../LICENSE build/html
       - persist_to_workspace:
           root: .
           paths:
