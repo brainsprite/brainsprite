@@ -3,21 +3,17 @@
 ## Why brainsprite?
 
 Brainsprite viewers are designed to be elements on a web dashboard: they load fast,
-and can easily be interfaced with other interactive elements on a webpage.
+and can easily be interfaced with other interactive elements.
 The brainsprite javascript library is thus as small and fast as possible, while
 the heavy lifting of data preparation is done through a python library.
 
-## Sprites
-For brainsprite to work, you will need to generate a sprite image (also known
-as a mosaic) such as the one above, and specify the size of each slice (in
-pixel). The sagital slices are assumed to be in the same orientation as the
-MNI space (X: left to right, Y: posterior to anterior, Z: ventral to dorsal),
-and stacked from left to right row by row. The number of slices per row can be
-anything, but generating a sprite image that is roughly square will work best.
-
 ## HTML code
-The first thing to do is to add a div in your html with an empty canvas as well
-as the sprite image, which will be hidden:
+![](./_static/sprite_small.jpg)
+
+Brainsprite works from a sprite image (also known as a mosaic) such as the one
+above.The first thing to do is to add a div in an html document with an empty
+canvas (which will be populated with the viewer) as well as the sprite image,
+which is hidden:
 ```html
 <div>
     <canvas id="3Dviewer">
@@ -31,11 +27,13 @@ Then you include the brainsprite minified library (and jquery for the
 does not use jquery):
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-<script type="text/javascript" src="../brainsprite.min.js"></script>
+<script type="text/javascript" src="brainsprite.min.js"></script>
 ```
 
 Finally, once the page is loaded, brainsprite is called to create a
-`brain` object:
+`brain` object. The parameters brainsprite are used to tweak the appearance of
+the viewer, as well as specify important meta-data which cannot be infered from
+the sprite, such as the size of each slice (in pixel):
 ```html
  <script>
   $( window ).load(function() {
@@ -47,12 +45,19 @@ Finally, once the page is loaded, brainsprite is called to create a
   });
   </script>
 ```
-The three parameters are `canvas`: the ID of the canvas where the brain slices will be added; `sprite`: the ID of the sprite image; and, `nbslice` the size, along axis Y and Z, of each slice inside the sprite. The call to `brainsprite` will automatically generate the slices. Try clicking on the slices to navigate the volume.
+Other important parameters are:
+ * `canvas`: the ID of the canvas where the brain slices will be added;
+ * `sprite`: the ID of the sprite image;
 
-## Templating
-The brainsprite python library uses another library called
-[nilearn](https://nilearn.github.io/) in order to generate the sprites, as well
-as the html and javascript code required above. This code can be inserted into
-an html page template based on the [tempita](https://pypi.org/project/Tempita/)
-library. Altogether, adding a brainviewer to a webpage only takes a few lines of
-python. Check the tutorials to learn more about the syntax.
+The call to `brainsprite` will automatically generate a brain viewer, just like
+this one:
+<iframe src="_static/example_basic.html" width=500 height=200 style="padding:0; border:0; display: block; margin-left: auto; margin-right: auto"></iframe>
+
+## Python code
+
+The brainsprite python library uses [nilearn](https://nilearn.github.io/) in
+order to generate the sprites, as well as the html and javascript code required
+above. This code can be inserted into an html page template based on the
+[tempita](https://pypi.org/project/Tempita/) library. Altogether, adding a
+brain viewer to a webpage only takes a few lines of python. Check the tutorials
+to learn more about the syntax.

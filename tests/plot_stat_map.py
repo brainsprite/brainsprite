@@ -35,5 +35,10 @@ viewer = brainsprite_viewer(stat_img, bg_img=anat, threshold=3,
 viewer
 
 #%%
+# The following instruction can be used to save the viewer in a stand-alone,
+# html document:
+viewer.save_as_html('plot_stat_map.html')
+
+#%%
 # There are a lot more control one can use to modify the appearance of the
 # brain viewer. Check the Python API for more information.

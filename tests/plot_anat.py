@@ -59,7 +59,7 @@ viewer
 #%%
 # The following instruction can be used to save the viewer in a stand-alone,
 # html document:
-viewer.save_as_html('plot_anat_html.html')
+viewer.save_as_html('plot_anat.html')
 
 #%%
 # It is possible to include this html page as an iframe in

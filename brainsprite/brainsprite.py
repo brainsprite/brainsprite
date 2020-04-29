@@ -244,116 +244,7 @@ def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     return output_cmap
 
 
-def _brainsprite_html(
-    canvas,
-    sprite,
-    sprite_overlay,
-    img_colorMap,
-    bg_img,
-    base64,
-    stat_map_img,
-    mask_img,
-    bg_min,
-    bg_max,
-    colors,
-    cmap,
-    colorbar,
-):
-    """Create an html snippet for the brainsprite viewer (with sprite data).
-    """
-    # Initiate template
-    resource_path = Path(__file__).resolve().parent.joinpath("assets", "html")
-    if base64:
-        file_template = resource_path.joinpath("brainsprite_template_base64.html")
-        file_bg = None
-        file_overlay = None
-        file_colormap = None
-    else:
-        file_template = resource_path.joinpath("brainsprite_template.html")
-        file_bg = sprite + ".png"
-        file_bg = sprite_overlay + ".png"
-        file_colormap = img_colorMap + ".png"
-    tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
-
-    # Fill template
-    snippet_html = tpl.substitute(
-        canvas=canvas,
-        sprite=sprite,
-        img_colorMap=img_colorMap,
-        sprite_overlay=sprite_overlay,
-        bg_base64=_save_sprite(
-            output_sprite=file_bg, img=bg_img, vmax=bg_max, vmin=bg_min, cmap="gray"
-        ),
-        overlay_base64=_save_sprite(
-            output_sprite=file_overlay,
-            img=stat_map_img,
-            vmax=colors["vmax"],
-            vmin=colors["vmin"],
-            mask=mask_img,
-            cmap=cmap,
-        ),
-        colormap_base64=_save_cm(
-            output_cmap=file_colormap, cmap=colors["cmap"], format="png"
-        ),
-    )
-    return snippet_html
-
-
-def _brainsprite_js(
-    canvas,
-    sprite,
-    sprite_overlay,
-    img_colorMap,
-    shape,
-    affine,
-    min,
-    max,
-    cut_slices,
-    colorFont,
-    colorBackground,
-    opacity=1,
-    crosshair=True,
-    flagCoordinates=True,
-    title=None,
-    colorbar=True,
-    flagValue=True,
-):
-    """ Create a js snippet for the brainsprite viewer
-    """
-    # Initiate template
-    resource_path = Path(__file__).resolve().parent.joinpath("assets", "js")
-    file_template = resource_path.joinpath("brainsprite_template.js")
-    tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
-
-    return tpl.substitute(
-        canvas=canvas,
-        sprite=sprite,
-        X=shape[0],
-        Y=shape[1],
-        Z=shape[2],
-        sprite_overlay=sprite_overlay,
-        X_overlay=shape[0],
-        Y_overlay=shape[1],
-        Z_overlay=shape[2],
-        opacity=opacity,
-        colorBackground=colorBackground,
-        colorFont=colorFont,
-        crosshair=float(crosshair),
-        affine=affine.tolist(),
-        flagCoordinates=float(flagCoordinates),
-        title=title,
-        flagValue=float(flagValue),
-        X_num=cut_slices[0] - 1,
-        Y_num=cut_slices[1] - 1,
-        Z_num=cut_slices[2] - 1,
-        img_colorMap=img_colorMap,
-        min=min,
-        max=max,
-        colorbar=float(not colorbar),
-    )
-
-
-class viewer_substitute():
+class viewer_substitute:
     """
     Templating tool to insert a brainsprite viewer in an HTML document
 
@@ -429,7 +320,7 @@ class viewer_substitute():
         files named based on parameters sprite, sprite_overlay and img_colorMap.
     :type base64: boolean (default True)
 
-    :return viewer_tp: a brainsprite viewer template object.
+    :return bsprite: a brainsprite viewer template substitution tool.
 
     """
 
@@ -484,9 +375,13 @@ class viewer_substitute():
         Also optionally incorporate a background image.
         :param stat_map_img: The statistical map image. Can be either a 3D volume
             or a 4D volume with exactly one time point.
+        :type stat_map_img: stasNiimg-like object, See
+            http://nilearn.github.io/manipulating_images/input_output.html
         :param bg_img: The background image that the stat map will be plotted on top of.
             If nothing is specified, the MNI152 template will be used.
             To turn off background image, just pass "bg_img=False".
+        :type bg_img: Niimg-like object, optional
+            See http://nilearn.github.io/manipulating_images/input_output.html
         """
         # Prepare the color map and thresholding
         mask_img, stat_map_img, data, self.threshold = _mask_stat_map(
@@ -521,41 +416,14 @@ class viewer_substitute():
         )
 
         # Now create the viewer, and populate the sprite data
-        self.html_ = _brainsprite_html(
-            canvas=self.canvas,
-            sprite=self.sprite,
-            sprite_overlay=self.sprite_overlay,
-            img_colorMap=self.img_colorMap,
-            bg_img=bg_img,
-            base64=self.base64,
-            stat_map_img=stat_map_img,
-            mask_img=mask_img,
-            bg_min=self.bg_min_,
-            bg_max=self.bg_max_,
-            colors=self.colors_,
-            cmap=self.cmap,
-            colorbar=self.colorbar,
-        )
+        self.html_ = self._brainsprite_html(bg_img, stat_map_img, mask_img)
 
         # Add the javascript snippet
-        self.javascript_ = _brainsprite_js(
-            canvas=self.canvas,
-            sprite=self.sprite,
-            sprite_overlay=self.sprite_overlay,
-            img_colorMap=self.img_colorMap,
+        self.javascript_ = self._brainsprite_js(
             shape=stat_map_img.shape,
             affine=stat_map_img.affine,
-            min=self.colors_["vmin"],
-            max=self.colors_["vmax"],
-            cut_slices=self.cut_slices_,
             colorFont=cfont,
             colorBackground=cbg,
-            opacity=self.opacity,
-            crosshair=self.draw_cross,
-            flagCoordinates=self.annotate,
-            title=self.title,
-            colorbar=self.colorbar,
-            flagValue=self.value,
         )
 
         # Add the brainsprite.min.js library
@@ -568,7 +436,9 @@ class viewer_substitute():
         # width x height, in pixels
         self.width_, self.height_ = _viewer_size(stat_map_img.shape)
 
-    def transform(self, template, javascript, html, library, namespace={}, width=None, height=None):
+    def transform(
+        self, template, javascript, html, library, namespace={}, width=None, height=None
+    ):
         """ Apply substitution in a template, using tempita.
 
             :param template: a template where brainsprite data needs to be substitued.
@@ -610,6 +480,85 @@ class viewer_substitute():
         viewer = template.substitute(namespace)
 
         return HTMLDocument(viewer, width=width, height=height)
+
+    def _brainsprite_html(self, bg_img, stat_map_img, mask_img):
+        """Create an html snippet for the brainsprite viewer (with sprite data).
+        """
+        # Initiate template
+        resource_path = Path(__file__).resolve().parent.joinpath("assets", "html")
+        if self.base64:
+            file_template = resource_path.joinpath("brainsprite_template_base64.html")
+            file_bg = None
+            file_overlay = None
+            file_colormap = None
+        else:
+            file_template = resource_path.joinpath("brainsprite_template.html")
+            file_bg = self.sprite + ".png"
+            file_bg = self.sprite_overlay + ".png"
+            file_colormap = self.img_colorMap + ".png"
+        tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
+
+        # Fill template
+        snippet_html = tpl.substitute(
+            canvas=self.canvas,
+            sprite=self.sprite,
+            img_colorMap=self.img_colorMap,
+            sprite_overlay=self.sprite_overlay,
+            bg_base64=_save_sprite(
+                output_sprite=file_bg,
+                img=bg_img,
+                vmax=self.bg_max_,
+                vmin=self.bg_min_,
+                cmap="gray",
+            ),
+            overlay_base64=_save_sprite(
+                output_sprite=file_overlay,
+                img=stat_map_img,
+                vmax=self.colors_["vmax"],
+                vmin=self.colors_["vmin"],
+                mask=mask_img,
+                cmap=self.cmap,
+            ),
+            colormap_base64=_save_cm(
+                output_cmap=file_colormap, cmap=self.colors_["cmap"], format="png"
+            ),
+        )
+        return snippet_html
+
+    def _brainsprite_js(self, shape, affine, colorFont, colorBackground):
+        """ Create a js snippet for the brainsprite viewer
+        """
+        # Initiate template
+        resource_path = Path(__file__).resolve().parent.joinpath("assets", "js")
+        file_template = resource_path.joinpath("brainsprite_template.js")
+        tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
+
+        return tpl.substitute(
+            canvas=self.canvas,
+            sprite=self.sprite,
+            X=shape[0],
+            Y=shape[1],
+            Z=shape[2],
+            sprite_overlay=self.sprite_overlay,
+            X_overlay=shape[0],
+            Y_overlay=shape[1],
+            Z_overlay=shape[2],
+            opacity=self.opacity,
+            colorBackground=colorBackground,
+            colorFont=colorFont,
+            crosshair=float(self.draw_cross),
+            affine=affine.tolist(),
+            flagCoordinates=float(self.annotate),
+            title=self.title,
+            flagValue=float(self.value),
+            X_num=self.cut_slices_[0] - 1,
+            Y_num=self.cut_slices_[1] - 1,
+            Z_num=self.cut_slices_[2] - 1,
+            img_colorMap=self.img_colorMap,
+            min=self.colors_["vmin"],
+            max=self.colors_["vmax"],
+            colorbar=float(not self.colorbar),
+        )
 
 
 def brainsprite_viewer(
@@ -746,9 +695,5 @@ def brainsprite_viewer(
 
     # Populate template
     return bsprite.transform(
-        tpl,
-        javascript = "js",
-        html = "html",
-        library = "library",
-        namespace = namespace
+        tpl, javascript="js", html="html", library="library", namespace=namespace
     )
