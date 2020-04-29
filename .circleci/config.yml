@@ -37,6 +37,32 @@ jobs:
       - store_artifacts:
           path: /tmp/test_report
           destination: circleci-tests
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docs
+  deploy-docs:
+    branches:
+      only:
+        - master
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Deploy website on brainsprite.github.io
+          command: |
+            echo Cloning brainsprite.github.io
+            git clone https://brainsprite-bot:$TOKEN@github.com/brainsprite/brainsprite.github.io.git website > /dev/null 2>&1
+            echo Scrapping old website and updating content
+            rm -rf website/*
+            cp -r docs/* website/
+            echo Committing updated website
+            cd website
+            git commit --all -m "Automated update through circleci"
+            git push --force --quiet origin master
 
 workflows:
   version: 2
@@ -46,3 +72,7 @@ workflows:
       - run-tests:
           requires:
             - build-docs
+      - deploy-docs:
+          context: docs-build
+          requires:
+            - run-tests
