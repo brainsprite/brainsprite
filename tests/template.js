@@ -49,7 +49,7 @@ module.exports.fullTest = (file, clip) => {
         const imgDiff = new PNG({width, height});
         const numDiffPixels = pixelmatch(imgCurrent.data, imgReference.data, imgDiff.data, width, height, {threshold: 0.2})
         fs.writeFileSync(fileDiff, PNG.sync.write(imgDiff));
-        expect(numDiffPixels).toBe(0);
+        expect(numDiffPixels).toBeLessThan(1000);
       },
       5000,
     );
