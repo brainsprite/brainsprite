@@ -1,5 +1,27 @@
 #!/usr/bin/bash
 
+while getopts ":ht" opt; do
+  case ${opt} in
+    h )
+      echo "Usage:"
+      echo "    update          Update the docs and run all tests."
+      echo "    update -h       Display this help message."
+      echo "    update -t       Update the docs and the target of all tests."
+      exit 0
+      ;;
+    t )
+      echo "Updating the target of all tests."
+      export TEST_RUN="init"
+      ;;
+    \? )
+      echo "Invalid Option: -$OPTARG" 1>&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+
 CURRPATH=`pwd`
 SCRIPT=`realpath -s $0`
 SCRIPTPATH=`dirname $SCRIPT`
@@ -25,5 +47,7 @@ make html
 echo Running tests and updating tutorial thumbnails
 cd ..
 npm test
+
+export TEST_RUN="regular"
 
 cd $CURRPATH

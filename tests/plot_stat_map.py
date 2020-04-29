@@ -15,9 +15,10 @@ motor_images = datasets.fetch_neurovault_motor_task()
 stat_img = motor_images.images[0]
 
 #%%
-# We use :code:`brainsprite_viewer` to generate the viewer object in python.
-# The defaults are set for a functional map, so there is not much to do. We still
-# tweak a couple parameters to get a clean map:
+# We are going to use the same template and instruction as in the
+# `plot_anat <plot_anat.html>`_ tutorial. The defaults are set for a functional
+# map, so there is not much to do. We still tweak a couple parameters to get a
+# clean map:
 #
 #  * apply a threshold to get rid of small activation (:code:`threshold`),
 #  * reduce the opacity of the overlay to see the underlying anatomy (:code:`opacity`)
@@ -34,25 +35,5 @@ viewer = brainsprite_viewer(stat_img, bg_img=anat, threshold=3,
 viewer
 
 #%%
-# We can export the viewer as an html page. The html page is fully self-contained: it includes the javascript brainsprite library as well as the sprite.
-viewer.save_as_html('plot_stat_map.html')
-
-#%%
-# That html document can be opened and rendered indepently, and can be shared,
-# e.g. as an email attachment. It is possible to include this html page as an
-# iframe in another html document, using the following snippet:
-#
-# .. code-block:: html
-#
-#   <iframe src="plot_stat_map.html"></iframe>
-#
-# Note that the style of the iframe may need to be modified in
-# order to, e.g. center the iframe in the page.
-# This is better done through css, but here is an example of
-# in-line html styling with centering and adapting the size of the iframe to the size of the image:
-#
-# .. code-block:: html
-#
-#   <iframe src="plot_stat_map.html" width=500 height=200
-#       style="padding:0; border:0; display: block;
-#       margin-left: auto; margin-right: auto"></iframe>
+# There are a lot more control one can use to modify the appearance of the
+# brain viewer. Check the Python API for more information.
