@@ -42,9 +42,6 @@ jobs:
           paths:
             - docs
   deploy-docs:
-    branches:
-      only:
-        - master
     docker:
       - image: circleci/python:latest
     steps:
@@ -73,6 +70,9 @@ workflows:
           requires:
             - build-docs
       - deploy-docs:
+          filters:
+            branches:
+              only: master
           context: docs-build
           requires:
             - run-tests
