@@ -60,6 +60,7 @@ jobs:
             cp -r docs/build/html/* website/
             echo Committing updated website
             cd website
+            touch .nojekyll
             git add *
             git commit --all -m "Automated update through circleci"
             git push --force --quiet origin master
