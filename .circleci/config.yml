@@ -10,7 +10,7 @@ jobs:
           command: |
             cd brainsprite
             sudo apt install npm
-            npm install -g jsdoc
+            sudo npm install -g jsdoc
             pip install -e .
             cd ../docs
             pip install --progress-bar off -r requirements.txt
