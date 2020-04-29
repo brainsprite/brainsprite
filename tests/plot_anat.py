@@ -16,7 +16,7 @@ haxby_anat_filename = haxby_dataset.anat[0]
 # Now let's have a look at a generic html template, and focus on the parts that need
 # to be filled in:
 #
-# .. literalinclude:: ../_static/plot_anat_html_template.html
+# .. literalinclude:: ../_static/viewer_template.html
 #    :language: html
 #    :emphasize-lines: 5-8,12-15,22-25
 #    :linenos:
@@ -46,7 +46,7 @@ bsprite.fit(haxby_anat_filename)
 # information. The parameters indicate which tempita names we used in the
 # template for the javascript, html and library code, respectively.
 import tempita
-file_template = '../docs/source/_static/plot_anat_html_template.html'
+file_template = '../docs/source/_static/viewer_template.html'
 template = tempita.Template.from_filename(file_template, encoding="utf-8")
 
 viewer = bsprite.transform(template, javascript='js', html='html', library='bsprite')
