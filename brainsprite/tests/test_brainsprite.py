@@ -108,13 +108,12 @@ def test_save_sprite():
     """This test covers _save_sprite as well as _bytesIO_to_base64
     """
 
-    # Generate a simulated volume with a square inside
-    data = np.zeros([2, 1, 1])
-    data[0, 0, 0] = 1
-    mask = data > 0
+    # Generate simple simulated data with one "spot"
+    img, _ = _simulate_img()
+    mask, img, _, _ = bp._mask_stat_map(img, threshold=None)
 
     # Generate the sprite
-    sprite_base64 = bp._save_sprite(data, vmin=0, vmax=1, mask=mask, format="png")
+    sprite_base64 = bp._save_sprite(img, vmin=0, vmax=1, mask=mask, format="png")
 
     # Check the sprite is correct
     assert sprite_base64.startswith("iVBORw0KG")
