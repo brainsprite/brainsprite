@@ -20,7 +20,9 @@ jobs:
       - run:
           name: Running Python unit tests
           command: |
-            pytest brainsprite/tests/test*
+            coverage run --source brainsprite -m pytest brainsprite/tests/test*
+            coverage report
+            coverage html
             bash <(curl -s https://codecov.io/bash)
       - run:
           name: Building documentation
