@@ -6,14 +6,29 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build docs
+          name: Installing NPM & related dependency
           command: |
-            cd brainsprite
             sudo apt install npm
             sudo npm install -g jsdoc
+      - run:
+          name: Installing Python library & dev dependency
+          command: |
+            cd brainsprite
             pip install --progress-bar off -e .
             cd ../docs
             pip install --progress-bar off -r requirements.txt
+      - run:
+          name: Running Python unit tests
+          command: |
+            cd brainsprite
+            coverage run --source brainsprite -m pytest tests/test*
+            coverage report
+            coverage html
+            bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Building documentation
+          command: |
+            cd docs
             make html
             cp ../README.md build/html
             cp ../LICENSE build/html
@@ -30,10 +45,17 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run tests and update thumbnails
+          name: Runing javascript tests and updating thumbnails
           command: |
             npm install .
             npm test
+      - run:
+          name: Pushing code coverage statistics
+          command: |
+            bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Collecting test artifacts
+          command: |
             mkdir /tmp/test_report
             cp tests/plot_*.png /tmp/test_report
       - store_artifacts:
@@ -51,18 +73,23 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Deploy website on brainsprite.github.io
+          name: Cloning brainsprite.github.io
           command: |
-            echo Cloning brainsprite.github.io
             git config --global user.email "$GH_EMAIL" > /dev/null 2>&1
             git config --global user.name "$GH_NAME" > /dev/null 2>&1
             git clone https://brainsprite-bot:$TOKEN@github.com/brainsprite/brainsprite.github.io.git website > /dev/null 2>&1
-            echo Scrapping old website and updating content
+      - run:
+          name: Scrapping old website and updating content
+          command: |
             rm -rf website/*
             cp -r docs/build/html/* website/
             echo Committing updated website
             cd website
             touch .nojekyll
+      - run:
+          name: Committing and pushing changes
+          command: |
+            cd website
             git add *
             git add .nojekyll
             git commit --all -m "Automated update through circleci"
@@ -72,8 +99,10 @@ workflows:
   version: 2
   Full_Build:
     jobs:
-      - build-docs
+      - build-docs:
+          context: testing
       - run-tests:
+          context: testing
           requires:
             - build-docs
       - deploy-docs:
