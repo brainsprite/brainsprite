@@ -244,6 +244,10 @@ def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     return output_cmap
 
 
+class StatMapView(HTMLDocument):
+    pass
+
+
 class viewer_substitute:
     """
     Templating tool to insert a brainsprite viewer in an HTML document
@@ -482,7 +486,7 @@ class viewer_substitute:
         # Populate template
         viewer = template.substitute(namespace)
 
-        return HTMLDocument(viewer, width=width, height=height)
+        return StatMapView(viewer, width=width, height=height)
 
     def _brainsprite_html(self, bg_img, stat_map_img, mask_img):
         """Create an html snippet for the brainsprite viewer (with sprite data).

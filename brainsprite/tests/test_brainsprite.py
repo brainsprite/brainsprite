@@ -1,5 +1,5 @@
 import warnings
-from io import BytesIO
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -11,6 +11,7 @@ import brainsprite as bp
 from nilearn.image import new_img_like
 from nilearn.image import get_data
 from nilearn.plotting.js_plotting_utils import colorscale
+from nilearn.externals import tempita
 
 
 def _check_html(html_view, title=None):
@@ -19,8 +20,6 @@ def _check_html(html_view, title=None):
     assert isinstance(html_view, bp.StatMapView)
     assert "var brain =" in str(html_view)
     assert "overlayImg" in str(html_view)
-    if title is not None:
-        assert "<title>{}</title>".format(title) in str(html_view)
 
 
 def _simulate_img(affine=np.eye(4)):
@@ -105,7 +104,7 @@ def test_threshold_data():
 
 
 def test_save_sprite():
-    """This test covers _save_sprite as well as _bytesIO_to_base64
+    """This test covers _save_sprite
     """
 
     # Generate simple simulated data with one "spot"
@@ -121,10 +120,10 @@ def test_save_sprite():
 
 
 def test_save_cmap():
-    """This test covers _save_cmap as well as _bytesIO_to_base64
+    """This test covers _save_cmap
     """
 
-    # Save the cmap using BytesIO
+    # Save the cmap
     cmap_base64 = bp._save_cm("cold_hot", format="png", n_colors=2)
 
     # Check the colormap is correct
@@ -221,3 +220,49 @@ def test_get_cut_slices():
     img = Nifti1Image(data, affine)
     cut_slices = bp._get_cut_slices(img, cut_coords=None, threshold=None)
     assert (cut_slices == [4, 4, 4]).all()
+
+
+def test_viewer_substitute():
+    mni = datasets.load_mni152_template()
+    with warnings.catch_warnings(record=True) as w:
+        # Create a fake functional image by resample the template
+        img = image.resample_img(mni, target_affine=3 * np.eye(3))
+        file_template = Path(__file__).resolve().parent.joinpath("viewer_template.html")
+        template = tempita.Template.from_filename(file_template, encoding="utf-8")
+        bsprite = bp.viewer_substitute(
+            cmap="gray",
+            symmetric_cmap=False,
+            black_bg=True,
+            threshold=None,
+            vmax=250,
+            title="Slice viewer",
+            value=False,
+        )
+        bsprite.fit(img)
+        viewer = bsprite.transform(
+            template, javascript="js", html="html", library="bsprite"
+        )
+        _check_html(viewer)
+
+        bsprite.fit(img, bg_img=mni)
+        viewer = bsprite.transform(
+            template, javascript="js", html="html", library="bsprite"
+        )
+        _check_html(viewer)
+
+        bsprite.fit(img, bg_img=None)
+        viewer = bsprite.transform(
+            template, javascript="js", html="html", library="bsprite"
+        )
+        _check_html(viewer)
+
+        img_4d = image.new_img_like(img, get_data(img)[:, :, :, np.newaxis])
+        assert len(img_4d.shape) == 4
+        bsprite.fit(img_4d)
+
+    # Check that all warnings were expected
+    warnings_set = set(warning_.category for warning_ in w)
+    expected_set = set([FutureWarning, UserWarning, DeprecationWarning])
+    assert warnings_set.issubset(expected_set), (
+        "the following warnings were not expected: {}"
+    ).format(warnings_set.difference(expected_set))

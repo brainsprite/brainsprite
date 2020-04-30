@@ -50,10 +50,6 @@ jobs:
             npm install .
             npm test
       - run:
-          name: Pushing code coverage statistics
-          command: |
-            bash <(curl -s https://codecov.io/bash)
-      - run:
           name: Collecting test artifacts
           command: |
             mkdir /tmp/test_report
