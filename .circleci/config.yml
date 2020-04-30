@@ -22,6 +22,10 @@ jobs:
           command: |
             pytest ../brainsprite/tests/test*
       - run:
+          name: Pushing code coverage statistics
+          command: |
+            bash <(curl -s https://codecov.io/bash)
+      - run:
           name: Building documentation
           command: |
             make html
@@ -44,6 +48,10 @@ jobs:
           command: |
             npm install .
             npm test
+      - run:
+          name: Pushing code coverage statistics
+          command: |
+            bash <(curl -s https://codecov.io/bash)
       - run:
           name: Collecting test artifacts
           command: |
@@ -89,8 +97,10 @@ workflows:
   version: 2
   Full_Build:
     jobs:
-      - build-docs
+      - build-docs:
+          context: testing
       - run-tests:
+          context: testing
           requires:
             - build-docs
       - deploy-docs:
