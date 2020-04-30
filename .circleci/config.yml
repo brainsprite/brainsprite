@@ -8,26 +8,24 @@ jobs:
       - run:
           name: Installing NPM & related dependency
           command: |
-            cd brainsprite
             sudo apt install npm
             sudo npm install -g jsdoc
       - run:
           name: Installing Python library & dev dependency
           command: |
+            cd brainsprite
             pip install --progress-bar off -e .
             cd ../docs
             pip install --progress-bar off -r requirements.txt
       - run:
           name: Running Python unit tests
           command: |
-            pytest ../brainsprite/tests/test*
-      - run:
-          name: Pushing code coverage statistics
-          command: |
+            pytest brainsprite/tests/test*
             bash <(curl -s https://codecov.io/bash)
       - run:
           name: Building documentation
           command: |
+            cd docs
             make html
             cp ../README.md build/html
             cp ../LICENSE build/html
@@ -88,6 +86,7 @@ jobs:
       - run:
           name: Committing and pushing changes
           command: |
+            cd website
             git add *
             git add .nojekyll
             git commit --all -m "Automated update through circleci"
