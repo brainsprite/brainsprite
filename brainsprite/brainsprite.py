@@ -432,7 +432,7 @@ class viewer_substitute:
         )
 
         # Add the brainsprite.min.js library
-        js_dir = os.path.join(os.path.dirname(__file__), "assets", "js")
+        js_dir = os.path.join(os.path.dirname(__file__), "data", "js")
         with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
             self.library_ = f.read()
             f.close()
@@ -492,7 +492,7 @@ class viewer_substitute:
         """Create an html snippet for the brainsprite viewer (with sprite data).
         """
         # Initiate template
-        resource_path = Path(__file__).resolve().parent.joinpath("assets", "html")
+        resource_path = Path(__file__).resolve().parent.joinpath("data", "html")
         if self.base64:
             file_template = resource_path.joinpath("brainsprite_template_base64.html")
             file_bg = None
@@ -536,7 +536,7 @@ class viewer_substitute:
         """ Create a js snippet for the brainsprite viewer
         """
         # Initiate template
-        resource_path = Path(__file__).resolve().parent.joinpath("assets", "js")
+        resource_path = Path(__file__).resolve().parent.joinpath("data", "js")
         file_template = resource_path.joinpath("brainsprite_template.js")
         tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 

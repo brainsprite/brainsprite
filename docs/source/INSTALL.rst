@@ -19,7 +19,7 @@ The brainsprite javascript library is available through npm:
 
 .. code-block:: console
 
-    npm install brainsprite
+    npm install brainsprite.js
 
 You can also directly incorporate :code:`brainsprite.min.js` as an asset of your webpage.
 Its only dependency is jquery. Download links are available on the

@@ -1,10 +1,12 @@
 {
   "name": "brainsprite.js",
-  "version": "0.13.3",
+  "version": "0.14.1",
   "description": "Brainsprite.js turns a sprite of brain slices into a 3D interactive web viewer",
   "main": "brainsprite.js",
   "directories": {
-    "test": "tests"
+    "doc": "docs",
+    "test": "tests",
+    "python": "brainsprite"
   },
   "scripts": {
     "test": "jest"
@@ -18,7 +20,7 @@
     "viewer",
     "javascript"
   ],
-  "author": "Pierre Bellec and brainsprite contributors",
+  "author": "The brainsprite contributors",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brainsprite/brainsprite/issues"
