@@ -18,12 +18,12 @@
     "viewer",
     "javascript"
   ],
-  "author": "",
+  "author": "Pierre Bellec and brainsprite contributors",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brainsprite/brainsprite/issues"
   },
-  "homepage": "https://brainsprite.github.io/brainsprite",
+  "homepage": "https://brainsprite.github.io",
   "devDependencies": {
     "bufferutil": "^4.0.1",
     "canvas": "^2.6.1",
@@ -37,14 +37,14 @@
     "fs": "0.0.1-security",
     "jest": "^25.3.0",
     "jsdoc": "^3.6.4",
+    "js-beautify": "^1.11.0",
     "looks-same": "^7.2.2",
+    "minify": "^5.1.1",
     "node.js": "0.0.1-security",
     "pixelmatch": "^5.1.0",
     "pngjs": "^4.0.0",
     "puppeteer": "^2.1.1",
-    "utf-8-validate": "^5.0.2",
-    "js-beautify": "^1.11.0",
-    "minify": "^5.1.1"
+    "utf-8-validate": "^5.0.2"
   },
   "dependencies": {
     "jquery": "^3.5.0"
