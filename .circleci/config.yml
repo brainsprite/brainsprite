@@ -13,9 +13,7 @@ jobs:
       - run:
           name: Installing Python library & dev dependency
           command: |
-            cd brainsprite
             pip install --progress-bar off -e .
-            cd ../docs
             pip install --progress-bar off -r requirements.txt
       - run:
           name: Running Python unit tests
