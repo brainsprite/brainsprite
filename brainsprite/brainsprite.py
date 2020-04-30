@@ -244,6 +244,10 @@ def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     return output_cmap
 
 
+class StatMapView(HTMLDocument):
+    pass
+
+
 class viewer_substitute:
     """
     Templating tool to insert a brainsprite viewer in an HTML document
@@ -319,6 +323,8 @@ class viewer_substitute:
         If the flag is off, the sprites (and the colorbar) will be saved in
         files named based on parameters sprite, sprite_overlay and img_colorMap.
     :type base64: boolean (default True)
+    :param minified: if true, used a minified version of brainsprite.js.
+    :type minified: bool, optional
 
     :return bsprite: a brainsprite viewer template substitution tool.
 
@@ -346,6 +352,7 @@ class viewer_substitute:
         opacity=1,
         value=True,
         base64=True,
+        minified=True,
     ):
         """Set up default attributes for the class."""
         self.canvas = canvas
@@ -368,6 +375,7 @@ class viewer_substitute:
         self.opacity = opacity
         self.value = value
         self.base64 = base64
+        self.minified = True
 
     def fit(self, stat_map_img, bg_img="MNI152"):
         """
@@ -429,7 +437,11 @@ class viewer_substitute:
 
         # Add the brainsprite.min.js library
         js_dir = os.path.join(os.path.dirname(__file__), "assets", "js")
-        with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
+        if self.minified:
+            file_bsprite = "brainsprite.min.js"
+        else:
+            file_bsprite = "brainsprite.js"
+        with open(os.path.join(js_dir, file_bsprite)) as f:
             self.library_ = f.read()
             f.close()
 
@@ -482,7 +494,7 @@ class viewer_substitute:
         # Populate template
         viewer = template.substitute(namespace)
 
-        return HTMLDocument(viewer, width=width, height=height)
+        return StatMapView(viewer, width=width, height=height)
 
     def _brainsprite_html(self, bg_img, stat_map_img, mask_img):
         """Create an html snippet for the brainsprite viewer (with sprite data).
