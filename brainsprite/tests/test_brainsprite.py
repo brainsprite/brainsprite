@@ -227,23 +227,34 @@ def test_viewer_substitute():
     with warnings.catch_warnings(record=True) as w:
         # Create a fake functional image by resample the template
         img = image.resample_img(mni, target_affine=3 * np.eye(3))
-        template = tempita.Template.from_filename('viewer_template.html', encoding="utf-8")
-        bsprite = bp.viewer_substitute(cmap='gray', symmetric_cmap=False,
-            black_bg=True, threshold=None, vmax=250, title="Slice viewer",
-            value=False)
+        template = tempita.Template.from_filename(
+            "viewer_template.html", encoding="utf-8"
+        )
+        bsprite = bp.viewer_substitute(
+            cmap="gray",
+            symmetric_cmap=False,
+            black_bg=True,
+            threshold=None,
+            vmax=250,
+            title="Slice viewer",
+            value=False,
+        )
         bsprite.fit(img)
-        viewer = bsprite.transform(template, javascript='js', html='html',
-            library='bsprite')
+        viewer = bsprite.transform(
+            template, javascript="js", html="html", library="bsprite"
+        )
         _check_html(viewer)
 
         bsprite.fit(img, bg_img=mni)
-        viewer = bsprite.transform(template, javascript='js', html='html',
-            library='bsprite')
+        viewer = bsprite.transform(
+            template, javascript="js", html="html", library="bsprite"
+        )
         _check_html(viewer)
 
         bsprite.fit(img, bg_img=None)
-        viewer = bsprite.transform(template, javascript='js', html='html',
-            library='bsprite')
+        viewer = bsprite.transform(
+            template, javascript="js", html="html", library="bsprite"
+        )
         _check_html(viewer)
 
         img_4d = image.new_img_like(img, get_data(img)[:, :, :, np.newaxis])
@@ -252,8 +263,7 @@ def test_viewer_substitute():
 
     # Check that all warnings were expected
     warnings_set = set(warning_.category for warning_ in w)
-    expected_set = set([FutureWarning, UserWarning,
-                       DeprecationWarning])
+    expected_set = set([FutureWarning, UserWarning, DeprecationWarning])
     assert warnings_set.issubset(expected_set), (
-        "the following warnings were not expected: {}").format(
-        warnings_set.difference(expected_set))
+        "the following warnings were not expected: {}"
+    ).format(warnings_set.difference(expected_set))
