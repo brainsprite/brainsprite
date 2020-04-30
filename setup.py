@@ -9,7 +9,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="brainsprite",
-    version="0.14.1",
+    version="0.14.2",
     description="Python API for the brainsprite MRI brain viewer",
     long_description=long_description,
     long_description_content_type="text/markdown",  # Optional (see note above)
