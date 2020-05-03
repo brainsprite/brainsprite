@@ -179,24 +179,19 @@ function brainsprite(params) {
     if (!colorMap) {
       return NaN
     }
-    var cv, dist, nbColor, ind, val, voxelValue
-    nbColor = colorMap.canvas.width
-    ind = NaN
-    val = Infinity
-    let xx = 0
-    for (xx = 0; xx < nbColor; xx++) {
-      cv = colorMap.context.getImageData(xx, 0, 1, 1).data
-      dist = Math.pow(cv[0] - rgb[0], 2) +
-              Math.pow(cv[1] - rgb[1], 2) +
-              Math.pow(cv[2] - rgb[2], 2)
+    let ind = NaN
+    let val = Infinity
+    const nbColor = colorMap.canvas.width
+    const cv = colorMap.context.getImageData(0, 0, nbColor, 1).data
+    for (let xx = 0; xx < nbColor; xx++) {
+      dist = Math.abs(cv[xx * 4] - rgb[0]) + Math.abs(cv[xx * 4 + 1] - rgb[1]) + Math.abs(cv[xx * 4 + 2] - rgb[2])
       if (dist < val) {
         ind = xx
         val = dist
       }
     }
-    voxelValue =
-        (ind * (colorMap.max - colorMap.min) / (nbColor - 1)) + colorMap.min
-    return voxelValue
+
+    return (ind * (colorMap.max - colorMap.min) / (nbColor - 1)) + colorMap.min
   }
 
   let updateValue = function () {
