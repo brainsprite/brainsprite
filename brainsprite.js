@@ -240,29 +240,19 @@ function brainsprite(params) {
     };
   }
 
-  let multiply = function (a, b) {
-    // Multiply two matrices A and B
-    let aNumRows = a.length; let aNumCols = a[0].length
-    let bNumCols = b[0].length
-    let m = new Array(aNumRows) // initialize array of rows
-    for (var r = 0; r < aNumRows; ++r) {
-      m[r] = new Array(bNumCols) // initialize the current row
-      for (var c = 0; c < bNumCols; ++c) {
-        m[r][c] = 0 // initialize the current cell
-        for (var i = 0; i < aNumCols; ++i) {
-          m[r][c] += a[r][i] * b[i][c]
-        }
-      }
+  let vec3FromVec4Mat4Mul = function (result, mat4, vec4) {
+    for (let r = 0; r < 3; ++r) {
+      result[r] = vec4[0] * mat4[r][0] + vec4[1] * mat4[r][1] + vec4[2] * mat4[r][2] + vec4[3] * mat4[r][3]
     }
-    return m
   }
 
+  let coordVoxel = [0, 0, 0]
   let updateCoordinates = function () {
-    let coordVoxel = multiply(brain.affine,
-      [ [brain.numSlice.X + 1],
-        [brain.numSlice.Y + 1],
-        [brain.numSlice.Z + 1],
-        [1] ])
+    vec3FromVec4Mat4Mul(coordVoxel, brain.affine,
+      [ brain.numSlice.X + 1,
+        brain.numSlice.Y + 1,
+        brain.numSlice.Z + 1,
+        1 ])
     brain.coordinatesSlice.X = coordVoxel[0]
     brain.coordinatesSlice.Y = coordVoxel[1]
     brain.coordinatesSlice.Z = coordVoxel[2]
