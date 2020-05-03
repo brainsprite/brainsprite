@@ -184,7 +184,7 @@ function brainsprite(params) {
     const nbColor = colorMap.canvas.width
     const cv = colorMap.context.getImageData(0, 0, nbColor, 1).data
     for (let xx = 0; xx < nbColor; xx++) {
-      dist = Math.abs(cv[xx * 4] - rgb[0]) + Math.abs(cv[xx * 4 + 1] - rgb[1]) + Math.abs(cv[xx * 4 + 2] - rgb[2])
+      const dist = Math.abs(cv[xx * 4] - rgb[0]) + Math.abs(cv[xx * 4 + 1] - rgb[1]) + Math.abs(cv[xx * 4 + 2] - rgb[2])
       if (dist < val) {
         ind = xx
         val = dist
@@ -196,7 +196,7 @@ function brainsprite(params) {
 
   let updateValue = function () {
     // Update voxel value
-    let pos = {}
+    const pos = {}
     if (brain.overlay && !brain.nanValue) {
       try {
         pos.XW = Math.round((brain.numSlice.X) % brain.nbCol)
@@ -207,7 +207,7 @@ function brainsprite(params) {
           pos.XW * brain.nbSlice.Y + brain.numSlice.Y,
           pos.XH * brain.nbSlice.Z + brain.nbSlice.Z - brain.numSlice.Z - 1,
           1, 1, 0, 0, 1, 1)
-        let rgb = brain.contextRead.getImageData(0, 0, 1, 1).data
+        const rgb = brain.contextRead.getImageData(0, 0, 1, 1).data
         if (rgb[3] === 0) {
           brain.voxelValue = NaN
         } else {
@@ -229,13 +229,10 @@ function brainsprite(params) {
     }
   }
 
-  let coordVoxel = [0, 0, 0]
+  const coordVoxel = [0, 0, 0]
   let updateCoordinates = function () {
     vec3FromVec4Mat4Mul(coordVoxel, brain.affine,
-      [ brain.numSlice.X + 1,
-        brain.numSlice.Y + 1,
-        brain.numSlice.Z + 1,
-        1 ])
+      [brain.numSlice.X + 1, brain.numSlice.Y + 1, brain.numSlice.Z + 1, 1])
     brain.coordinatesSlice.X = coordVoxel[0]
     brain.coordinatesSlice.Y = coordVoxel[1]
     brain.coordinatesSlice.Z = coordVoxel[2]
