@@ -179,53 +179,36 @@ function brainsprite(params) {
     if (!colorMap) {
       return NaN
     }
-    var cv, dist, nbColor, ind, val, voxelValue
-    nbColor = colorMap.canvas.width
-    ind = NaN
-    val = Infinity
-    let xx = 0
-    for (xx = 0; xx < nbColor; xx++) {
-      cv = colorMap.context.getImageData(xx, 0, 1, 1).data
-      dist = Math.pow(cv[0] - rgb[0], 2) +
-              Math.pow(cv[1] - rgb[1], 2) +
-              Math.pow(cv[2] - rgb[2], 2)
+    let ind = NaN
+    let val = Infinity
+    const nbColor = colorMap.canvas.width
+    const cv = colorMap.context.getImageData(0, 0, nbColor, 1).data
+    for (let xx = 0; xx < nbColor; xx++) {
+      const dist = Math.abs(cv[xx * 4] - rgb[0]) + Math.abs(cv[xx * 4 + 1] - rgb[1]) + Math.abs(cv[xx * 4 + 2] - rgb[2])
       if (dist < val) {
         ind = xx
         val = dist
       }
     }
-    voxelValue =
-        (ind * (colorMap.max - colorMap.min) / (nbColor - 1)) + colorMap.min
-    return voxelValue
+
+    return (ind * (colorMap.max - colorMap.min) / (nbColor - 1)) + colorMap.min
   }
 
   let updateValue = function () {
     // Update voxel value
-    let pos = {}; let test1 = []; let test2 = []
+    const pos = {}
     if (brain.overlay && !brain.nanValue) {
       try {
         pos.XW = Math.round((brain.numSlice.X) % brain.nbCol)
         pos.XH = Math.round((brain.numSlice.X - pos.XW) / brain.nbCol)
-        brain.contextRead.fillStyle = '#FFFFFF'
-        brain.contextRead.fillRect(0, 0, 1, 1)
+        brain.contextRead.clearRect(0, 0, 1, 1)
         brain.contextRead.drawImage(
           brain.overlay.sprite,
           pos.XW * brain.nbSlice.Y + brain.numSlice.Y,
           pos.XH * brain.nbSlice.Z + brain.nbSlice.Z - brain.numSlice.Z - 1,
           1, 1, 0, 0, 1, 1)
-        let rgb = {}
-        rgb = brain.contextRead.getImageData(0, 0, 1, 1).data
-        test1 = ((rgb[0] === 255) && (rgb[1] === 255) && (rgb[2] === 255))
-        brain.contextRead.fillStyle = '#000000'
-        brain.contextRead.fillRect(0, 0, 1, 1)
-        brain.contextRead.drawImage(
-          brain.overlay.sprite,
-          pos.XW * brain.nbSlice.Y + brain.numSlice.Y,
-          pos.XH * brain.nbSlice.Z + brain.nbSlice.Z - brain.numSlice.Z - 1,
-          1, 1, 0, 0, 1, 1)
-        rgb = brain.contextRead.getImageData(0, 0, 1, 1).data
-        test2 = ((rgb[0] === 0) && (rgb[1] === 0) && (rgb[2] === 0))
-        if (test1 && test2) {
+        const rgb = brain.contextRead.getImageData(0, 0, 1, 1).data
+        if (rgb[3] === 0) {
           brain.voxelValue = NaN
         } else {
           brain.voxelValue = getValue(rgb, brain.colorMap)
@@ -240,29 +223,16 @@ function brainsprite(params) {
     };
   }
 
-  let multiply = function (a, b) {
-    // Multiply two matrices A and B
-    let aNumRows = a.length; let aNumCols = a[0].length
-    let bNumCols = b[0].length
-    let m = new Array(aNumRows) // initialize array of rows
-    for (var r = 0; r < aNumRows; ++r) {
-      m[r] = new Array(bNumCols) // initialize the current row
-      for (var c = 0; c < bNumCols; ++c) {
-        m[r][c] = 0 // initialize the current cell
-        for (var i = 0; i < aNumCols; ++i) {
-          m[r][c] += a[r][i] * b[i][c]
-        }
-      }
+  let vec3FromVec4Mat4Mul = function (result, mat4, vec4) {
+    for (let r = 0; r < 3; ++r) {
+      result[r] = vec4[0] * mat4[r][0] + vec4[1] * mat4[r][1] + vec4[2] * mat4[r][2] + vec4[3] * mat4[r][3]
     }
-    return m
   }
 
+  const coordVoxel = [0, 0, 0]
   let updateCoordinates = function () {
-    let coordVoxel = multiply(brain.affine,
-      [ [brain.numSlice.X + 1],
-        [brain.numSlice.Y + 1],
-        [brain.numSlice.Z + 1],
-        [1] ])
+    vec3FromVec4Mat4Mul(coordVoxel, brain.affine,
+      [brain.numSlice.X + 1, brain.numSlice.Y + 1, brain.numSlice.Z + 1, 1])
     brain.coordinatesSlice.X = coordVoxel[0]
     brain.coordinatesSlice.Y = coordVoxel[1]
     brain.coordinatesSlice.Z = coordVoxel[2]
