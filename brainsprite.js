@@ -46,7 +46,7 @@ function initBrain (params) {
   brain.coordinatesSlice = { 'X': 0, 'Y': 0, 'Z': 0 }
 
   // width and height for the canvas
-  brain.widthCanvas = { 'X': 0, 'Y': 0, 'Z': 0 }
+  brain.widthCanvas = { 'X': 0, 'Y': 0, 'Z': 0, 'max': 0 }
   brain.heightCanvas = { 'X': 0, 'Y': 0, 'Z': 0, 'max': 0 }
 
   return brain
@@ -242,48 +242,9 @@ function brainsprite(params) {
   // Initialize the viewer //
   //* **********************//
   brain.init = function () {
-    let clientWidth = brain.canvas.parentElement.clientWidth
     let nX = brain.nbSlice.X; let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z
 
-    // Update the width of the X, Y and Z slices in the canvas,
-    // based on the width of its parent
-    brain.widthCanvas.X =
-        Math.floor(clientWidth * (nY / (2 * nX + nY)))
-    brain.widthCanvas.Y =
-        Math.floor(clientWidth * (nX / (2 * nX + nY)))
-    brain.widthCanvas.Z =
-        Math.floor(clientWidth * (nX / (2 * nX + nY)))
-    brain.widthCanvas.max =
-        Math.max(brain.widthCanvas.X,
-          brain.widthCanvas.Y,
-          brain.widthCanvas.Z)
-
-    // Update the height of the slices in the canvas,
-    // based on width and image ratio
-    brain.heightCanvas.X = Math.floor(brain.widthCanvas.X * nZ / nY)
-    brain.heightCanvas.Y = Math.floor(brain.widthCanvas.Y * nZ / nX)
-    brain.heightCanvas.Z = Math.floor(brain.widthCanvas.Z * nY / nX)
-    brain.heightCanvas.max =
-        Math.max(brain.heightCanvas.X,
-          brain.heightCanvas.Y,
-          brain.heightCanvas.Z)
-
-    // Apply the width/height to the canvas, if necessary
-    let widthAll =
-        brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z
-    if (brain.canvas.width !== widthAll) {
-      brain.canvas.width = widthAll
-      brain.canvas.height =
-          Math.round((1 + brain.spaceFont) * brain.heightCanvas.max)
-      brain.context.imageSmoothingEnabled = brain.smooth
-    };
-
-    // Size for fonts
-    brain.sizeFontPixels =
-        Math.round(brain.sizeFont * (brain.heightCanvas.max))
-
-    // fonts
-    brain.context.font = brain.sizeFontPixels + 'px Arial'
+    brain.resize()
 
     // Draw the Master canvas
     brain.planes.canvasMaster.width = brain.sprite.width
@@ -330,6 +291,70 @@ function brainsprite(params) {
     brain.numSlice.X = Math.round(brain.numSlice.X)
     brain.numSlice.Y = Math.round(brain.numSlice.Y)
     brain.numSlice.Z = Math.round(brain.numSlice.Z)
+  }
+
+  //* ******************//
+  // Resize the viewer //
+  //* ******************//
+  brain.resize = function () {
+    let clientWidth = brain.canvas.parentElement.clientWidth
+    let nX = brain.nbSlice.X; let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z
+
+    // Calculate the width of the X, Y and Z slices in the canvas,
+    // based on the width of its parent
+    const newWidthCanvasX =
+        Math.floor(clientWidth * (nY / (2 * nX + nY)))
+    const newWidthCanvasY =
+        Math.floor(clientWidth * (nX / (2 * nX + nY)))
+    const newWidthCanvasZ =
+        Math.floor(clientWidth * (nX / (2 * nX + nY)))
+
+    // Return early if there are no actual changes in the canvas widths
+    if (
+      newWidthCanvasX === brain.widthCanvas.X &&
+      newWidthCanvasY === brain.widthCanvas.Y &&
+      newWidthCanvasZ === brain.widthCanvas.Z
+    ) {
+      return false
+    }
+
+    // Update the state
+    brain.widthCanvas.X = newWidthCanvasX
+    brain.widthCanvas.Y = newWidthCanvasY
+    brain.widthCanvas.Z = newWidthCanvasZ
+    brain.widthCanvas.max =
+        Math.max(newWidthCanvasX,
+          newWidthCanvasY,
+          newWidthCanvasZ)
+
+    // Update the height of the slices in the canvas,
+    // based on width and image ratio
+    brain.heightCanvas.X = Math.floor(brain.widthCanvas.X * nZ / nY)
+    brain.heightCanvas.Y = Math.floor(brain.widthCanvas.Y * nZ / nX)
+    brain.heightCanvas.Z = Math.floor(brain.widthCanvas.Z * nY / nX)
+    brain.heightCanvas.max =
+        Math.max(brain.heightCanvas.X,
+          brain.heightCanvas.Y,
+          brain.heightCanvas.Z)
+
+    // Apply the width/height to the canvas, if necessary
+    let widthAll =
+        brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z
+    if (brain.canvas.width !== widthAll) {
+      brain.canvas.width = widthAll
+      brain.canvas.height =
+          Math.round((1 + brain.spaceFont) * brain.heightCanvas.max)
+      brain.context.imageSmoothingEnabled = brain.smooth
+    };
+
+    // Size for fonts
+    brain.sizeFontPixels =
+        Math.round(brain.sizeFont * (brain.heightCanvas.max))
+
+    // fonts
+    brain.context.font = brain.sizeFontPixels + 'px Arial'
+
+    return true
   }
 
   //* **************************************//
@@ -579,6 +604,12 @@ function brainsprite(params) {
 
   // Draw all slices
   brain.drawAll()
+
+  window.addEventListener('resize', function () {
+    if (brain.resize()) {
+      brain.drawAll()
+    }
+  })
 
   return brain
 }
