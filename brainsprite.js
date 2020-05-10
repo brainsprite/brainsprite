@@ -46,7 +46,7 @@ function initBrain (params) {
   brain.coordinatesSlice = { 'X': 0, 'Y': 0, 'Z': 0 }
 
   // width and height for the canvas
-  brain.widthCanvas = { 'X': 0, 'Y': 0, 'Z': 0 }
+  brain.widthCanvas = { 'X': 0, 'Y': 0, 'Z': 0, 'max': 0 }
   brain.heightCanvas = { 'X': 0, 'Y': 0, 'Z': 0, 'max': 0 }
 
   return brain
@@ -300,18 +300,32 @@ function brainsprite(params) {
     let clientWidth = brain.canvas.parentElement.clientWidth
     let nX = brain.nbSlice.X; let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z
 
-    // Update the width of the X, Y and Z slices in the canvas,
+    // Calculate the width of the X, Y and Z slices in the canvas,
     // based on the width of its parent
-    brain.widthCanvas.X =
+    const newWidthCanvasX = 
         Math.floor(clientWidth * (nY / (2 * nX + nY)))
-    brain.widthCanvas.Y =
+    const newWidthCanvasY =
         Math.floor(clientWidth * (nX / (2 * nX + nY)))
-    brain.widthCanvas.Z =
+    const newWidthCanvasZ =
         Math.floor(clientWidth * (nX / (2 * nX + nY)))
+
+    // Return early if there are no actual changes in the canvas widths
+    if (
+      newWidthCanvasX === brain.widthCanvas.X &&
+      newWidthCanvasY === brain.widthCanvas.Y &&
+      newWidthCanvasZ === brain.widthCanvas.Z
+    ) {
+      return false
+    }
+
+    // Update the state
+    brain.widthCanvas.X = newWidthCanvasX;
+    brain.widthCanvas.Y = newWidthCanvasY;
+    brain.widthCanvas.Z = newWidthCanvasZ;
     brain.widthCanvas.max =
-        Math.max(brain.widthCanvas.X,
-          brain.widthCanvas.Y,
-          brain.widthCanvas.Z)
+        Math.max(newWidthCanvasX,
+          newWidthCanvasY,
+          newWidthCanvasZ)
 
     // Update the height of the slices in the canvas,
     // based on width and image ratio
@@ -339,6 +353,8 @@ function brainsprite(params) {
 
     // fonts
     brain.context.font = brain.sizeFontPixels + 'px Arial'
+
+    return true
   }
 
   //* **************************************//
@@ -590,16 +606,7 @@ function brainsprite(params) {
   brain.drawAll()
 
   window.addEventListener('resize', function () {
-    // Test to ensure that we resize the viewier
-    // only if the width of the canvas will actually change
-    const currentCanvasWidth = brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z
-    const clientWidth = brain.canvas.parentElement.clientWidth
-    const nX = brain.nbSlice.X
-    const nY = brain.nbSlice.Y
-    const newExpectedCanvasWidth = Math.floor(clientWidth * (nY / (2 * nX + nY))) + 2 * Math.floor(clientWidth * (nX / (2 * nX + nY)))
-
-    if (currentCanvasWidth !== newExpectedCanvasWidth) {
-      brain.resize()
+    if (brain.resize()) {
       brain.drawAll()
     }
   });
