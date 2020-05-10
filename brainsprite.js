@@ -302,7 +302,7 @@ function brainsprite(params) {
 
     // Calculate the width of the X, Y and Z slices in the canvas,
     // based on the width of its parent
-    const newWidthCanvasX = 
+    const newWidthCanvasX =
         Math.floor(clientWidth * (nY / (2 * nX + nY)))
     const newWidthCanvasY =
         Math.floor(clientWidth * (nX / (2 * nX + nY)))
@@ -319,9 +319,9 @@ function brainsprite(params) {
     }
 
     // Update the state
-    brain.widthCanvas.X = newWidthCanvasX;
-    brain.widthCanvas.Y = newWidthCanvasY;
-    brain.widthCanvas.Z = newWidthCanvasZ;
+    brain.widthCanvas.X = newWidthCanvasX
+    brain.widthCanvas.Y = newWidthCanvasY
+    brain.widthCanvas.Z = newWidthCanvasZ
     brain.widthCanvas.max =
         Math.max(newWidthCanvasX,
           newWidthCanvasY,
@@ -609,7 +609,7 @@ function brainsprite(params) {
     if (brain.resize()) {
       brain.drawAll()
     }
-  });
+  })
 
   return brain
 }
