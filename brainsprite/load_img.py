@@ -22,7 +22,7 @@ from nilearn._utils.niimg import _safe_get_data
 from nilearn.datasets import load_mni152_template
 
 
-class WebImg:
+class WebAssets:
     """
     Convert a brain image into assets for a web document.
 
@@ -35,8 +35,28 @@ class WebImg:
     :type img: Nimg-like object
         See http://nilearn.github.io/manipulating_images/input_output.html
     :param bg_img: A brain image to use as background.
-    :type img: Nimg-like object, optional
+    :type bg_img: Nimg-like object, optional
         See http://nilearn.github.io/manipulating_images/input_output.html
+    :param cmap: The colormap for specified image.
+    :type cmap:  matplotlib colormap, optional
+    :param vmax: max value for mapping colors.
+        If vmax is None and symmetric_cmap is True, vmax is the max
+        absolute value of the volume.
+        If vmax is None and symmetric_cmap is False, vmax is the max
+        value of the volume.
+    :type vmax: float, or None, optional
+    :param vmin: min value for mapping colors.
+        If `symmetric_cmap` is `True`, `vmin` is always equal to `-vmax` and
+        cannot be chosen.
+        If `symmetric_cmap` is `False`, `vmin` defaults to the min of the
+        image, or 0 when a threshold is used.
+    :type vmin: float, or None, optional
+    :param dim: Dimming factor applied to background image. By default, automatic
+        heuristics are applied based upon the background image intensity.
+        Accepted float values, where a typical scan is between -2 and 2
+        (-2 = increase constrast; 2 = decrease contrast), but larger values
+        can be used for a more pronounced effect. 0 means no dimming.
+    :type dim: float or 'auto', optional
     :param resampling_interpolation: The interpolation method for resampling.
         Can be 'continuous', 'linear', or 'nearest'.
         See nilearn.image.resample_img
@@ -52,6 +72,10 @@ class WebImg:
         name,
         img,
         bg_img=None,
+        cmap=cm.cold_hot,
+        vmax=None,
+        vmin=None,
+        dim="auto",
         threshold=None,
         black_bg="auto",
         cut_coords=None,
@@ -65,6 +89,10 @@ class WebImg:
         self.name = name
         self.img = img
         self.bg_img = bg_img
+        self.cmap = cmap
+        self.vmax = vmax
+        self.vmin = vmin
+        self.dim = dim
         self.threshold = threshold
         self.black_bg = black_bg
         self.cut_coords = cut_coords
@@ -75,13 +103,17 @@ class WebImg:
         self.verbose = verbose
         self.type_viewer = "brainsprite"
 
-    def load():
+    def generate(self, path_output=os.getcwd(), bg_webimg=None):
         """Load an image, generate web assets.
         """
 
+        # Output folder - will only be used if base64 encoding is disabled
+        output_sprite = os.path.join(os.getcwd(), f"{self.name}.{self.format}")
+        output_cmap = os.path.join(os.getcwd(), f"{self.name}_cm.{self.format}")
+
         # Prepare the color map and thresholding
         mask_img, stat_map_img, data, self.threshold = _mask_stat_map(
-            stat_map_img, self.threshold
+            self.img, self.threshold
         )
 
         self.colors_ = colorscale(
@@ -95,10 +127,10 @@ class WebImg:
 
         # Prepare the data for the cuts
         bg_img, self.bg_min_, self.bg_max_, self.black_bg_ = _load_bg_img(
-            stat_map_img, bg_img, self.black_bg, self.dim
+            stat_map_img, self.bg_img, self.black_bg, self.dim
         )
 
-        stat_map_img, mask_img = _resample_stat_map(
+        self.img, mask_img = _resample_stat_map(
             stat_map_img, bg_img, mask_img, self.resampling_interpolation
         )
 
@@ -108,7 +140,7 @@ class WebImg:
 
         self.web_img_ = (
             _save_sprite(
-                output_sprite=self.web_img,
+                output_sprite=output_sprite,
                 img=stat_map_img,
                 base64=self.base64,
                 vmax=self.colors_["vmax"],
@@ -120,7 +152,7 @@ class WebImg:
 
         self.web_colormap_ = (
             _save_cm(
-                output_cmap=self.web_colormap,
+                output_cmap=output_cmap,
                 base64=self.base64,
                 cmap=self.colors_["cmap"],
                 format=self.format,
@@ -131,7 +163,7 @@ class WebImg:
             _save_metadata(
                 shape=stat_map_img.shape,
                 affine=stat_map_img.affine,
-                black_bg=black_bg,
+                black_bg=self.black_bg,
                 cut_slices=self.cut_slices_,
                 colors=self.colors_,
             ),
@@ -333,14 +365,13 @@ def _save_sprite(
         imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap, format=format)
         output_sprite = _bytesIO_to_base64(output_sprite)
     else:
-        output_sprite = output_cmap
-        imsave(output_cmap, data, cmap=cmap, format=format)
+        imsave(output_sprite, sprite, cmap=cmap, format=format)
 
     return output_sprite
 
 
 def _set_colors(black_bg):
-    if self.black_bg:
+    if black_bg:
         cfont = "#FFFFFF"
         cbg = "#000000"
     else:
@@ -361,9 +392,9 @@ def _save_metadata(shape, affine, black_bg, cut_slices, colors):
     metadata["colorBackground"] = cbg
     metadata["colorFont"] = cfont
     metadata["affine"] = affine.tolist()
-    metadata["X_num"] = cut_slices_[0] - 1
-    metadata["Y_num"] = cut_slices_[1] - 1
-    metadata["Z_num"] = cut_slices_[2] - 1
+    metadata["X_num"] = cut_slices[0] - 1
+    metadata["Y_num"] = cut_slices[1] - 1
+    metadata["Z_num"] = cut_slices[2] - 1
     metadata["min"] = colors["vmin"]
     metadata["max"] = colors["vmax"]
     return metadata
