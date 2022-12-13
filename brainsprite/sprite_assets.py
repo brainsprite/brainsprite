@@ -145,6 +145,7 @@ class WebAssets:
                 vmin=self.colors_["vmin"],
                 mask=mask_img,
                 cmap=self.cmap,
+                format=self.format,
             ),
         )
 

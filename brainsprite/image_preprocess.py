@@ -44,8 +44,8 @@ def _threshold_data(data, threshold=None):
 
     if not np.any(mask):
         warnings.warn(
-            "Threshold given was {0}, but "
-            "the data has no values below {1}. ".format(threshold, data.min())
+            f"Threshold given was {threshold}, but "
+            f"the data has no values below {data.min()}. "
         )
     return data, mask, threshold
 
