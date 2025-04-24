@@ -24,9 +24,7 @@ setup(
     maintainer="Pierre Bellec",
     maintainer_email="pierre.bellec@gmail.com",
     install_requires=[
-        "numpy",
-        "matplotlib",
-        "nilearn",
+        "nilearn[plotting]>=0.10.3",
     ],  # external packages as dependencies
     classifiers=[
         "Development Status :: 3 - Alpha",

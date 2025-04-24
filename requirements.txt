@@ -1,8 +1,6 @@
 coverage
-matplotlib
-nilearn
+nilearn[plotting]>=0.10.3
 Pillow
-pandas
 pytest
 setuptools
 recommonmark
