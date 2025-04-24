@@ -1,12 +1,3 @@
-coverage
-nilearn[plotting]>=0.10.3
-Pillow
-pytest
 setuptools
-recommonmark
-sphinx
-sphinx_rtd_theme
-sphinx-gallery
-sphinx-js
 twine
 wheel

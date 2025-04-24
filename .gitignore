@@ -122,3 +122,7 @@ ENV/
 .idea/misc.xml
 .idea/modules.xml
 .idea/workspace.xml
+
+
+# hatchling
+brainsprite/_version.py

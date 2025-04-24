@@ -1,3 +1,67 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-vcs"]
+
+[project]
+authors = [{name = "Nilearn developers"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
+]
+
+dependencies = [
+    "nilearn[plotting]>=0.10.3"
+]
+description = "Python API for the brainsprite MRI brain viewer"
+# Version from setuptools_scm
+dynamic = ["version"]
+license = {text = "MIT"}
+maintainers = [{name = "Pierre Bellec", email = "pierre.bellec@gmail.com"}]
+name = "brainsprite"
+readme = "README.md"
+requires-python = ">=3.9"
+
+# package_data={"brainsprite.data.js": ["*.js"], "brainsprite.data.html": ["*.html"]},
+
+[project.optional-dependencies]
+# Requirements necessary for building the documentation
+doc = [
+    "sphinx>=7.4.7",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-gallery>=0.18.0",
+    "sphinx_rtd_theme",
+    "sphinx-js",
+    "recommonmark",
+]
+# For running unit and docstring tests
+test = [
+    "coverage",
+    "pytest>=6.0.0",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://brainsprite.github.io"
+"Bug Reports" = "https://github.com/brainsprite/brainsprite/issues"
+Funding = "https://ccna-ccnv.ca/"
+Source = "https://github.com/brainsprite/brainsprite/"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "brainsprite/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["brainsprite"]
+
+[tool.hatch.version]
+source = "vcs"
+
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
 ignore-words = ".github/codespell_ignore_words.txt"
