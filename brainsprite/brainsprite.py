@@ -17,7 +17,7 @@ from nilearn.plotting.js_plotting_utils import get_html_template, colorscale
 from nilearn.plotting import cm
 from nilearn.plotting.find_cuts import find_xyz_cut_coords
 from nilearn.plotting.img_plotting import load_anat
-from nilearn._utils.html_document import HTMLDocument
+from nilearn.plotting.html_document import HTMLDocument
 from nilearn._utils.niimg_conversions import check_niimg_3d
 from nilearn._utils.param_validation import check_threshold
 from nilearn._utils.extmath import fast_abs_percentile
