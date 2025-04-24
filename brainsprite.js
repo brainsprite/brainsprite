@@ -419,7 +419,7 @@ function brainsprite(params) {
         // Add X coordinates on the slice
         if (brain.flagCoordinates) {
           coord = 'x = ' + Math.round(brain.coordinatesSlice.X)
-           = brain.context.measureText(coord).width
+          coordWidth = brain.context.measureText(coord).width
           brain.context.fillStyle = brain.colorFont
           brain.context.fillText(coord, brain.widthCanvas.X / 2 - coordWidth /
             2, Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
