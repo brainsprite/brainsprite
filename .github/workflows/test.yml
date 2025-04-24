@@ -1,0 +1,65 @@
+name: test
+
+on:
+    push:
+        branches:
+        -   main
+        -   master
+    pull_request:
+        branches:
+        -   '*'
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+# Force to use color
+env:
+    FORCE_COLOR: true
+
+jobs:
+
+    test_and_coverage:
+
+        name: 'Test with ${{ matrix.py }} on ${{ matrix.os }}'
+
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            fail-fast: true
+            matrix:
+                py: ['3.13', '3.12', '3.11', '3.10', '3.9']
+                os: [ubuntu-latest, macos-latest, windows-latest]
+
+        steps:
+
+        -   uses: actions/checkout@v4
+        -   name: Install the latest version of uv
+            uses: astral-sh/setup-uv@v5
+        -   name: Setup python
+            uses: actions/setup-python@v5
+            with:
+                python-version: ${{ matrix.py }}
+                allow-prereleases: true
+        -   name: Install tox
+            run: uv tool install tox --with=tox-uv --with=tox-gh-actions
+        -   name: Show tox config
+            run: tox c
+
+        -   name: Run test suite
+            run: |
+                tox run --list-dependencies -e test -- brainsprite
+
+        -   name: Upload html coverage
+            if: success() || failure()
+            uses: actions/upload-artifact@v4
+            with:
+                name: ${{ matrix.os }}_${{ matrix.py }}_htmlcov
+                path: htmlcov
+                
+        -   name: Upload coverage to CodeCov
+            uses: codecov/codecov-action@v5
+            with:
+                flags: ${{ matrix.os }}_${{ matrix.py }}
+                token: ${{ secrets.CODECOV_TOKEN }}
+            if: success()

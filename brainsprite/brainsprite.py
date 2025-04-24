@@ -16,15 +16,14 @@ from nilearn.image import resample_to_img, new_img_like, reorder_img
 from nilearn.plotting.js_plotting_utils import get_html_template, colorscale
 from nilearn.plotting import cm
 from nilearn.plotting.find_cuts import find_xyz_cut_coords
-from nilearn.plotting.img_plotting import _load_anat
-from nilearn.reporting import HTMLDocument
+from nilearn.plotting.img_plotting import load_anat
+from nilearn._utils.html_document import HTMLDocument
 from nilearn._utils.niimg_conversions import check_niimg_3d
 from nilearn._utils.param_validation import check_threshold
 from nilearn._utils.extmath import fast_abs_percentile
-from nilearn._utils.niimg import _safe_get_data
 from nilearn.datasets import load_mni152_template
 from nilearn.externals import tempita
-
+from nilearn._utils.niimg import safe_get_data
 
 def _data_to_sprite(data):
     """ Convert a 3D array into a sprite of sagittal slices.
@@ -105,7 +104,7 @@ def _mask_stat_map(stat_map_img, threshold=None):
     """
     # Load stat map
     stat_map_img = check_niimg_3d(stat_map_img, dtype="auto")
-    data = _safe_get_data(stat_map_img, ensure_finite=True)
+    data = safe_get_data(stat_map_img, ensure_finite=True)
 
     # threshold the stat_map
     if threshold is not None:
@@ -127,7 +126,7 @@ def _load_bg_img(stat_map_img, bg_img="MNI152", black_bg="auto", dim="auto"):
     if bg_img is not None and bg_img is not False:
         if isinstance(bg_img, str) and bg_img == "MNI152":
             bg_img = load_mni152_template()
-        bg_img, black_bg, bg_min, bg_max = _load_anat(
+        bg_img, black_bg, bg_min, bg_max = load_anat(
             bg_img, dim=dim, black_bg=black_bg
         )
     else:
@@ -209,11 +208,11 @@ def _save_sprite(
     """
 
     # Create sprite
-    sprite = _data_to_sprite(_safe_get_data(img, ensure_finite=True))
+    sprite = _data_to_sprite(safe_get_data(img, ensure_finite=True))
 
     # Mask the sprite
     if mask is not None:
-        mask = _data_to_sprite(_safe_get_data(mask, ensure_finite=True))
+        mask = _data_to_sprite(safe_get_data(mask, ensure_finite=True))
         sprite = np.ma.array(sprite, mask=mask)
 
     # Save the sprite

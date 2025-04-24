@@ -26,9 +26,7 @@ setup(
     install_requires=[
         "numpy",
         "matplotlib",
-        "sklearn",
         "nilearn",
-        "tempita",
     ],  # external packages as dependencies
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -40,5 +38,5 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    python_requires=">=3.5",
+    python_requires=">=3.9",
 )
