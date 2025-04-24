@@ -201,7 +201,7 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
 
 
 def _save_sprite(
-    img, vmax, vmin, output_sprite=None, mask=None, cmap="Greys", format="png"
+    img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", format="png"
 ):
     """ Generate a sprite from a 3D Niimg-like object.
         Returns: sprite
@@ -261,7 +261,7 @@ class viewer_substitute:
     :type img_colorMap: str, optional
     :param cut_coords: The MNI coordinates of the point where the cut is performed
         as a 3-tuple: (x, y, z). If None is given, the cuts are calculated
-        automaticaly.
+        automatically.
     :type cut_coords: None, or a tuple of floats, optional
     :param colorbar: If True, display a colorbar on top of the plots.
     :type colorbar: boolean, optional
@@ -295,7 +295,7 @@ class viewer_substitute:
     :param dim: Dimming factor applied to background image. By default, automatic
         heuristics are applied based upon the background image intensity.
         Accepted float values, where a typical scan is between -2 and 2
-        (-2 = increase constrast; 2 = decrease contrast), but larger values
+        (-2 = increase contrast; 2 = decrease contrast), but larger values
         can be used for a more pronounced effect. 0 means no dimming.
     :type dim: float or 'auto', optional
     :param vmax: max value for mapping colors.
@@ -316,7 +316,7 @@ class viewer_substitute:
     :type resampling_interpolation: string, optional
     :param opacity: The level of opacity of the overlay (0: transparent, 1: opaque)
     :type opacity: float in [0,1], optional
-    :param value: dislay the value of the overlay at the current voxel.
+    :param value: display the value of the overlay at the current voxel.
     :type value: boolean, optional
     :param base64: turn on/off embedding of sprites in the html using base64 encoding.
         If the flag is off, the sprites (and the colorbar) will be saved in
@@ -444,16 +444,16 @@ class viewer_substitute:
         width=None, height=None):
         """ Apply substitution in a template, using tempita.
 
-            :param template: a template where brainsprite data needs to be substitued.
+            :param template: a template where brainsprite data needs to be substituted.
             :type template: tempita template
             :param javascript: the tempita name to substitute with brainsprite javascript snippet.
-                If None, javascript is not substitued.
+                If None, javascript is not substituted.
             :type javascript: str or None
             :param html: the tempita name to substitute with brainsprite html snippet.
-                If None, html is not substitued.
+                If None, html is not substituted.
             :type html: str or None
-            :param library: the tempita name to substitue with the brainsprite js library.
-                If None, library is not substitued.
+            :param library: the tempita name to substitute with the brainsprite js library.
+                If None, library is not substituted.
             :type library: str or None
             :param namespace: a list of names to substitute, using tempita's substitute method.
             :type namespace: dict

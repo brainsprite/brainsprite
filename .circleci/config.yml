@@ -43,7 +43,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Runing javascript tests and updating thumbnails
+          name: Running javascript tests and updating thumbnails
           command: |
             npm install .
             npm test

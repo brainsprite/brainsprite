@@ -1,3 +1,4 @@
+---
 name: test
 
 on:
@@ -21,7 +22,7 @@ jobs:
 
     test_and_coverage:
 
-        name: 'Test with ${{ matrix.py }} on ${{ matrix.os }}'
+        name: Test with ${{ matrix.py }} on ${{ matrix.os }}
 
         runs-on: ${{ matrix.os }}
 
@@ -56,7 +57,7 @@ jobs:
             with:
                 name: ${{ matrix.os }}_${{ matrix.py }}_htmlcov
                 path: htmlcov
-                
+
         -   name: Upload coverage to CodeCov
             uses: codecov/codecov-action@v5
             with:

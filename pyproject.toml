@@ -1,3 +1,8 @@
+[tool.codespell]
+builtin = "clear,rare,en-GB_to_en-US"
+ignore-words = ".github/codespell_ignore_words.txt"
+skip = "./.git"
+
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers --doctest-modules --showlocals -s -vv"
 doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
