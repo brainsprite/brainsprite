@@ -24,6 +24,8 @@ function initBrain (params) {
     title: false,
     numSlice: false,
     onclick: '',
+    radiological: false,
+    showLR: true,
   }
   var brain = Object.assign({}, defaultParams, params)
 
@@ -417,7 +419,7 @@ function brainsprite(params) {
         // Add X coordinates on the slice
         if (brain.flagCoordinates) {
           coord = 'x = ' + Math.round(brain.coordinatesSlice.X)
-          coordWidth = brain.context.measureText(coord).width
+           = brain.context.measureText(coord).width
           brain.context.fillStyle = brain.colorFont
           brain.context.fillText(coord, brain.widthCanvas.X / 2 - coordWidth /
             2, Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
@@ -485,6 +487,32 @@ function brainsprite(params) {
           (brain.widthCanvas.Y / 2) - coordWidth / 2,
           Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
         }
+
+        if (brain.showLR) {
+          const isRadiological = !!brain.radiological
+          const centerY = Math.round(brain.canvas.height / 2)
+        
+          const { font, textAlign, textBaseline } = brain.context
+        
+          brain.context.font = `${brain.sizeFontPixels}px Arial`
+          brain.context.textAlign = 'center'
+          brain.context.textBaseline = 'middle'
+          brain.context.fillStyle = brain.colorFont
+        
+          const labelLeft = isRadiological ? 'R' : 'L'
+          const labelRight = isRadiological ? 'L' : 'R'
+        
+          const paddingRatio = 0.05  // 5% from each side
+          const offsetX = brain.widthCanvas.Y * paddingRatio
+        
+          brain.context.fillText(labelLeft, brain.widthCanvas.X + offsetX, centerY)
+          brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y - offsetX, centerY)
+        
+          brain.context.font = font
+          brain.context.textAlign = textAlign
+          brain.context.textBaseline = textBaseline
+        }
+
         break
 
       case 'Z':
@@ -523,6 +551,31 @@ function brainsprite(params) {
           brain.context.fillText(coord, brain.widthCanvas.X +
           brain.widthCanvas.Y + (brain.widthCanvas.Z / 2) - coordWidth / 2,
           Math.round(brain.canvas.height - (brain.sizeFontPixels / 2)))
+        }
+
+        if (brain.showLR) {
+          const isRadiological = !!brain.radiological
+          const centerY = Math.round(brain.canvas.height / 2)
+        
+          const { font, textAlign, textBaseline } = brain.context
+        
+          brain.context.font = `${brain.sizeFontPixels}px Arial`
+          brain.context.textAlign = 'center'
+          brain.context.textBaseline = 'middle'
+          brain.context.fillStyle = brain.colorFont
+        
+          const labelLeft = isRadiological ? 'R' : 'L'
+          const labelRight = isRadiological ? 'L' : 'R'
+        
+          const paddingRatio = 0.05  // 5% from each side
+          const offsetX = brain.widthCanvas.Y * paddingRatio
+        
+          brain.context.fillText(labelLeft, brain.widthCanvas.X + brain.widthCanvas.Y + offsetX, centerY)
+          brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z - offsetX, centerY)
+        
+          brain.context.font = font
+          brain.context.textAlign = textAlign
+          brain.context.textBaseline = textBaseline
         }
     }
   }
