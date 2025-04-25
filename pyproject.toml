@@ -18,9 +18,7 @@ classifiers = [
 dependencies = [
     "nilearn[plotting]>=0.10.3"
 ]
-
 description = "Python API for the brainsprite MRI brain viewer"
-
 # Version from setuptools_scm
 dynamic = ["version"]
 license = {text = "MIT"}
@@ -37,7 +35,7 @@ doc = [
     "sphinx-gallery>=0.18.0",
     "sphinx_rtd_theme",
     "sphinx-js",
-    "myst-parser>=3.0.1",
+    "myst-parser>=3.0.1"
 ]
 # For running unit and docstring tests
 test = [
