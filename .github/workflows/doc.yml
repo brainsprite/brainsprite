@@ -1,0 +1,33 @@
+name: documentation
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+        -   uses: actions/checkout@v4
+        -   name: Install the latest version of uv
+            uses: astral-sh/setup-uv@v5
+        -   name: Setup python
+            uses: actions/setup-python@v5
+            with:
+                python-version: 3.9
+                allow-prereleases: true
+        -   name: Install tox
+            run: uv tool install tox --with=tox-uv --with=tox-gh-actions
+        -   name: Show tox config
+            run: tox c
+        -   name: Build doc
+            run: tox run -e doc
+        -   name: Deploy to GitHub Pages
+            uses: peaceiris/actions-gh-pages@v3
+            if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+            with:
+                publish_branch: gh-pages
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: _build/
+                force_orphan: true
