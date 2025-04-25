@@ -34,12 +34,12 @@ jobs:
             with:
                 node-version: 18  
         -   name: Install Puppeteer dependencies
+            # https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux
             run: |
                 sudo apt-get update
                 sudo apt-get install -y \
                     ca-certificates \
                     fonts-liberation \
-                    libasound2 \
                     libatk-bridge2.0-0 \
                     libatk1.0-0 \
                     libc6 \
