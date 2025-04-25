@@ -8,7 +8,10 @@ module.exports = async function() {
   app.use(express.static(__dirname + '/'));
   global.__SERVER__ = app.listen(8080);
 
-  const browser = await puppeteer.launch({});
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });  
+  
   global.__BROWSER__ = browser;
   fs.writeFileSync(
     path.join(__dirname, '.puppeteerEndpoint'),
