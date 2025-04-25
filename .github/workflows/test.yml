@@ -20,15 +20,10 @@ env:
     FORCE_COLOR: true
 
 jobs:
-
     test_js:
-
         name: Test Javascript
-
         runs-on: ubuntu-latest
-
         steps:
-
         -   uses: actions/checkout@v4
         -   uses: actions/setup-node@v4
             with:
@@ -36,5 +31,5 @@ jobs:
         -   name: Install
             run: npm install
         -   name: Run test suite
-            run: npm test
+            run: make js_test
 
