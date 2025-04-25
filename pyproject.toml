@@ -15,7 +15,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13"
 ]
-
 dependencies = [
     "nilearn[plotting]>=0.10.3"
 ]
@@ -29,8 +28,6 @@ maintainers = [{name = "Pierre Bellec", email = "pierre.bellec@gmail.com"}]
 name = "brainsprite"
 readme = "README.md"
 requires-python = ">=3.9"
-
-# package_data={"brainsprite.data.js": ["*.js"], "brainsprite.data.html": ["*.html"]},
 
 [project.optional-dependencies]
 # Requirements necessary for building the documentation
@@ -46,14 +43,19 @@ doc = [
 test = [
     "coverage",
     "pytest>=6.0.0",
-    "pytest-cov",
+    "pytest-cov"
 ]
 
 [project.urls]
-Homepage = "https://brainsprite.github.io"
 "Bug Reports" = "https://github.com/brainsprite/brainsprite/issues"
 Funding = "https://ccna-ccnv.ca/"
+Homepage = "https://brainsprite.github.io"
 Source = "https://github.com/brainsprite/brainsprite/"
+
+[tool.codespell]
+builtin = "clear,rare,en-GB_to_en-US"
+ignore-words = ".github/codespell_ignore_words.txt"
+skip = "./.git"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "brainsprite/_version.py"
@@ -63,11 +65,6 @@ packages = ["brainsprite"]
 
 [tool.hatch.version]
 source = "vcs"
-
-[tool.codespell]
-builtin = "clear,rare,en-GB_to_en-US"
-ignore-words = ".github/codespell_ignore_words.txt"
-skip = "./.git"
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers --doctest-modules --showlocals -s -vv"
