@@ -22,7 +22,7 @@ from nilearn._utils.niimg_conversions import check_niimg_3d
 from nilearn._utils.param_validation import check_threshold
 from nilearn._utils.extmath import fast_abs_percentile
 from nilearn.datasets import load_mni152_template
-from nilearn.externals import tempita
+import tempita
 from nilearn._utils.niimg import safe_get_data
 
 def _data_to_sprite(data):

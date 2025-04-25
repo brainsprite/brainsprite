@@ -16,6 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
+    "Tempita",
     "nilearn[plotting]>=0.10.3"
 ]
 description = "Python API for the brainsprite MRI brain viewer"
