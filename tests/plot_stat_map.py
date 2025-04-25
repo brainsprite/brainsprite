@@ -34,8 +34,9 @@ bsprite.fit(stat_img, bg_img=anat)
 # We can now open the template with tempita, and fill it with the required
 # information. The parameters indicate which tempita names we used in the
 # template for the javascript, html and library code, respectively.
-import tempita
-file_template = '../docs/source/_static/viewer_template.html'
+from nilearn.externals import tempita
+from pathlib import Path
+file_template = Path.cwd() / ".." / "docs" /"source"/"_static"/"viewer_template.html"
 template = tempita.Template.from_filename(file_template, encoding="utf-8")
 
 viewer = bsprite.transform(template, javascript='js', html='html', library='bsprite')
