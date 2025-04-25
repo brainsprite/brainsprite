@@ -380,12 +380,12 @@ class viewer_substitute:
         :param stat_map_img: The statistical map image. Can be either a 3D volume
             or a 4D volume with exactly one time point.
         :type stat_map_img: stasNiimg-like object, See
-            http://nilearn.github.io/manipulating_images/input_output.html
+            https://nilearn.github.io/dev/manipulating_images/index.html
         :param bg_img: The background image that the stat map will be plotted on top of.
             If nothing is specified, the MNI152 template will be used.
             To turn off background image, just pass "bg_img=False".
         :type bg_img: Niimg-like object, optional
-            See http://nilearn.github.io/manipulating_images/input_output.html
+            See https://nilearn.github.io/dev/manipulating_images/index.html
         """
         # Prepare the color map and thresholding
         mask_img, stat_map_img, data, self.threshold = _mask_stat_map(

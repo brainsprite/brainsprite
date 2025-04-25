@@ -2,6 +2,14 @@ name: documentation
 
 on: [push, pull_request, workflow_dispatch]
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+# Force to use color
+env:
+    FORCE_COLOR: true
+
 permissions:
   contents: write
 
@@ -10,19 +18,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         -   uses: actions/checkout@v4
+        -   uses: actions/setup-node@v4
+            with:
+                node-version: 14   
+                     
         -   name: Install the latest version of uv
             uses: astral-sh/setup-uv@v5
+
         -   name: Setup python
             uses: actions/setup-python@v5
             with:
                 python-version: 3.9
-                allow-prereleases: true
+                allow-prereleases: true    
+
         -   name: Install tox
             run: uv tool install tox --with=tox-uv --with=tox-gh-actions
+
         -   name: Show tox config
             run: tox c
+
         -   name: Build doc
             run: tox run -e doc
+
         -   name: Deploy to GitHub Pages
             uses: peaceiris/actions-gh-pages@v3
             if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}

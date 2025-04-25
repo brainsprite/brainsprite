@@ -20,11 +20,12 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-html-noplot:
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) plot_gallery=0
-	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
-
 clean:
 	rm -fr build
 	rm -fr source/auto_examples
+
+linkcheck: clean
+	@$(SPHINXBUILD) "$(SOURCEDIR)" "$(BUILDDIR)" -D plot_gallery=0 -b linkcheck $(SPHINXOPTS)
+
+check:
+	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" -W --keep-going -T -n -b html $(SPHINXOPTS)
