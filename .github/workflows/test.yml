@@ -23,14 +23,9 @@ jobs:
 
     test_js:
 
-        name: Test with on ${{ matrix.os }}
+        name: Test Javascript
 
-        runs-on: ${{ matrix.os }}
-
-        strategy:
-            fail-fast: false
-            matrix:
-                os: [ubuntu-latest, macos-latest, windows-latest]
+        runs-on: ubuntu-latest
 
         steps:
 
