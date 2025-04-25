@@ -1,6 +1,6 @@
 {
   "name": "brainsprite.js",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "Brainsprite.js turns a sprite of brain slices into a 3D interactive web viewer",
   "main": "brainsprite.js",
   "directories": {
