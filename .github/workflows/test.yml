@@ -84,4 +84,3 @@ jobs:
             
         -   name: Run test suite
             run: make js_test
-
