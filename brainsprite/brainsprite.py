@@ -68,13 +68,8 @@ def _threshold_data(data, threshold=None):
     )
 
     # Mask data
-    if threshold == 0:
-        mask = data == 0
-        data = data * np.logical_not(mask)
-    else:
-        mask = (data >= -threshold) & (data <= threshold)
-        data = data * np.logical_not(mask)
-
+    mask = data == 0 if threshold == 0 else (data >= -threshold) & (data <= threshold)
+    data = data * np.logical_not(mask)
     if not np.any(mask):
         warnings.warn(
             f"Threshold given was {threshold}, "
@@ -180,18 +175,18 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     # Convert cut coordinates into cut slices
     try:
         cut_slices = apply_affine(np.linalg.inv(stat_map_img.affine), cut_coords)
-    except ValueError:
+    except ValueError as e:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
             f"You provided cut_coords={cut_coords}"
-        )
-    except IndexError:
+        ) from e
+    except IndexError as e:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
             f"You provided single cut, cut_coords={cut_coords}"
-        )
+        ) from e
 
     return cut_slices
 
@@ -490,9 +485,9 @@ class viewer_substitute:
             file_colormap = None
         else:
             file_template = resource_path.joinpath("brainsprite_template.html")
-            file_bg = self.sprite + ".png"
-            file_bg = self.sprite_overlay + ".png"
-            file_colormap = self.img_colorMap + ".png"
+            file_bg = f"{self.sprite}.png"
+            file_bg = f"{self.sprite_overlay}.png"
+            file_colormap = f"{self.img_colorMap}.png"
         tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
         # Fill template
