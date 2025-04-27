@@ -20,10 +20,12 @@ def _check_html(html_view):
     assert "overlayImg" in str(html_view)
 
 
-def _simulate_img(affine=np.eye(4)):
+def _simulate_img(affine=None):
     """Simulate data with one "spot"
     Returns: img, data.
     """
+    if affine is None:
+        affine = np.eye(4)
     data = np.zeros([8, 8, 8])
     data[4, 4, 4] = 1
     img = Nifti1Image(data, affine)
