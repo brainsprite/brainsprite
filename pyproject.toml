@@ -95,10 +95,7 @@ ignore = [
     "ERA001",
     "F821",
     "N801",
-    "N803",
-    "PTH118",
-    "PTH120",
-    "PTH123"
+    "N803"
 ]
 # List of all the ruff rules (includes why the rule matters)
 # https://docs.astral.sh/ruff/rules/

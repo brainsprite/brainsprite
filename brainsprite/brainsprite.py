@@ -1,6 +1,5 @@
 """Python interface for the brainsprite.js library."""
 
-import os
 import warnings
 from base64 import b64encode
 from io import BytesIO
@@ -417,10 +416,9 @@ class viewer_substitute:
         )
 
         # Add the brainsprite.min.js library
-        js_dir = os.path.join(os.path.dirname(__file__), "data", "js")
-        with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
+        js_dir = Path(__file__).parent / "data" / "js"
+        with (js_dir / "brainsprite.min.js").open("r") as f:
             self.library_ = f.read()
-            f.close()
 
         # Suggest a size for the viewer
         # width x height, in pixels
