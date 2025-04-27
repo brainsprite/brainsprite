@@ -15,10 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13"
 ]
-dependencies = [
-    "Tempita",
-    "nilearn[plotting]>=0.10.3"
-]
+dependencies = ["Tempita", "nilearn[plotting]>=0.10.3"]
 description = "Python API for the brainsprite MRI brain viewer"
 # Version from setuptools_scm
 dynamic = ["version"]
@@ -39,11 +36,7 @@ doc = [
     "myst-parser>=3.0.1"
 ]
 # For running unit and docstring tests
-test = [
-    "coverage",
-    "pytest>=6.0.0",
-    "pytest-cov"
-]
+test = ["coverage", "pytest>=6.0.0", "pytest-cov"]
 
 [project.urls]
 "Bug Reports" = "https://github.com/brainsprite/brainsprite/issues"
@@ -72,3 +65,84 @@ junit_family = "xunit2"
 log_cli_level = "INFO"
 minversion = "6.0"
 xfail_strict = true
+
+[tool.ruff]
+include = [
+    "pyproject.toml",
+    "brainsprite/**/*.py",
+    "docs/**/*.py",
+    "tests/**/*.py"
+]
+indent-width = 4
+line-length = 100
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+fixable = ["ALL"]
+ignore = [
+    "B904",
+    "D101",
+    "D104",
+    "D205",
+    "ERA001",
+    "F821",
+    "N801",
+    "N802",
+    "N803",
+    "PTH118",
+    "PTH120",
+    "PTH123"
+]
+# List of all the ruff rules (includes why the rule matters)
+# https://docs.astral.sh/ruff/rules/
+select = [
+    "ARG",
+    "B",
+    "C4",
+    "C90",
+    "D",
+    "E",
+    "ERA",
+    "F",
+    "FLY",
+    "FURB",
+    "I",
+    "N",
+    "NPY",
+    "PERF",
+    "PIE",
+    "PTH",
+    "PD",
+    "PGH",
+    "PLR",
+    "RUF",
+    "SIM",
+    "UP",
+    "W"
+]
+unfixable = []
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+"brainsprite/**/tests/*" = ["ARG001", "B008", "D103", "D404", "N806", "PLR2004"]
+"tests/**/*" = ["B018", "E402", "D203", "D213"]
+
+[tool.ruff.lint.pylint]
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-args
+max-args = 20
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-branches
+max-branches = 15
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-returns
+max-returns = 3
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-statements
+max-statements = 25

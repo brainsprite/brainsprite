@@ -57,12 +57,12 @@ repos:
 #     -   id: prettier
 #         types_or: [css, html]
 
-# -   repo: https://github.com/astral-sh/ruff-pre-commit
-#     rev: v0.8.3
-#     hooks:
-#     # Run the linter.
-#     -   id: ruff
-#         # args: [--statistics]
-#         args: [--fix, --show-fixes]
-#     # Run the formatter.
-#     -   id: ruff-format
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.3
+    hooks:
+    # Run the linter.
+    -   id: ruff
+        # args: [--statistics]
+        args: [--fix, --show-fixes]
+    # Run the formatter.
+    -   id: ruff-format
