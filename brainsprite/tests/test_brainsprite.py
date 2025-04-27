@@ -38,7 +38,7 @@ def _check_affine(affine):
     assert affine[2, 2] == affine[1, 1]
     assert affine[0, 0] > 0
 
-    a, b = image.resampling.to_matrix_vector(affine)
+    a, _ = image.resampling.to_matrix_vector(affine)
     assert np.all(
         (np.abs(a) > 0.001).sum(axis=0) == 1
     ), "the affine transform was not near-diagonal"
@@ -142,7 +142,7 @@ def test_load_bg_img():
     affine = np.eye(4)
     affine[0, 0] = -1
     affine[0, 1] = 0.1
-    img, _check_html = _simulate_img(affine)
+    img, _ = _simulate_img(affine)
 
     # use empty bg_img
     bg_img, _, _, _ = bp._load_bg_img(img, bg_img=None)
@@ -151,7 +151,7 @@ def test_load_bg_img():
     _check_affine(bg_img.affine)
 
     # Try to load the default background
-    bg_img, _, _, __builtins__ = bp._load_bg_img(img)
+    bg_img, _, _, _ = bp._load_bg_img(img)
 
     # Check positive isotropic, near-diagonal affine
     _check_affine(bg_img.affine)
