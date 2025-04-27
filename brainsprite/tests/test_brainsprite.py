@@ -240,7 +240,8 @@ def test_viewer_substitute():
         _check_html(viewer)
 
         img_4d = image.new_img_like(img, get_data(img)[:, :, :, np.newaxis])
-        assert len(img_4d.shape) == 4
+        ndim = 4
+        assert len(img_4d.shape) == ndim
         bsprite.fit(img_4d)
 
     # Check that all warnings were expected

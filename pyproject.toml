@@ -133,7 +133,7 @@ unfixable = []
 max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
-"brainsprite/**/tests/*" = ["ARG001", "B008", "D103", "D404"]
+"brainsprite/**/tests/*" = ["ARG001", "B008", "D103", "D404", "PLR2004"]
 "tests/**/*" = ["B018", "E402", "D203", "D213"]
 
 [tool.ruff.lint.pylint]
