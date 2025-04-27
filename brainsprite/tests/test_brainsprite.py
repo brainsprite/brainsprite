@@ -1,30 +1,28 @@
+"""Test for brainsprite."""
+
 import warnings
 from pathlib import Path
 
 import numpy as np
 import pytest
-
 from nibabel import Nifti1Image
-
 from nilearn import datasets, image
-from brainsprite import brainsprite as bp
-from nilearn.image import new_img_like
-from nilearn.image import get_data
-from nilearn.plotting.js_plotting_utils import colorscale
 from nilearn.externals import tempita
+from nilearn.image import get_data, new_img_like
+
+from brainsprite import brainsprite as bp
 
 
 def _check_html(html_view, title=None):
-    """ Check the presence of some expected code in the html viewer
-    """
+    """Check the presence of some expected code in the html viewer."""
     assert isinstance(html_view, bp.StatMapView)
     assert "var brain =" in str(html_view)
     assert "overlayImg" in str(html_view)
 
 
 def _simulate_img(affine=np.eye(4)):
-    """ Simulate data with one "spot"
-        Returns: img, data
+    """Simulate data with one "spot"
+    Returns: img, data.
     """
     data = np.zeros([8, 8, 8])
     data[4, 4, 4] = 1
@@ -33,8 +31,7 @@ def _simulate_img(affine=np.eye(4)):
 
 
 def _check_affine(affine):
-    """ Check positive, isotropic, near-diagonal affine.
-    """
+    """Check positive, isotropic, near-diagonal affine."""
     assert affine[0, 0] == affine[1, 1]
     assert affine[2, 2] == affine[1, 1]
     assert affine[0, 0] > 0
@@ -46,7 +43,6 @@ def _check_affine(affine):
 
 
 def test_data_to_sprite():
-
     # Simulate data and turn into sprite
     data = np.zeros([8, 8, 8])
     data[2:6, 2:6, 2:6] = 1
@@ -71,7 +67,6 @@ def test_data_to_sprite():
 
 
 def test_threshold_data():
-
     data = np.arange(-3, 4)
 
     # Check that an 'auto' threshold leaves at least one element
@@ -104,9 +99,7 @@ def test_threshold_data():
 
 
 def test_save_sprite():
-    """This test covers _save_sprite
-    """
-
+    """This test covers _save_sprite."""
     # Generate simple simulated data with one "spot"
     img, _ = _simulate_img()
     mask, img, _, _ = bp._mask_stat_map(img, threshold=None)
@@ -120,9 +113,7 @@ def test_save_sprite():
 
 
 def test_save_cmap():
-    """This test covers _save_cmap
-    """
-
+    """This test covers _save_cmap."""
     # Save the cmap
     cmap_base64 = bp._save_cm("cold_hot", format="png", n_colors=2)
 
@@ -132,7 +123,6 @@ def test_save_cmap():
 
 
 def test_mask_stat_map():
-
     # Generate simple simulated data with one "spot"
     img, data = _simulate_img()
 
@@ -146,7 +136,6 @@ def test_mask_stat_map():
 
 
 def test_load_bg_img():
-
     # Generate simple simulated data with non-diagonal affine
     affine = np.eye(4)
     affine[0, 0] = -1
@@ -167,7 +156,6 @@ def test_load_bg_img():
 
 
 def test_resample_stat_map():
-
     # Start with simple simulated data
     bg_img, data = _simulate_img()
 
@@ -199,7 +187,6 @@ def test_resample_stat_map():
 
 
 def test_get_cut_slices():
-
     # Generate simple simulated data with one "spot"
     img, data = _simulate_img()
 
@@ -228,9 +215,7 @@ def test_viewer_substitute():
         # Create a fake functional image by resample the template
         img = image.resample_img(mni, target_affine=3 * np.eye(3))
         file_template = (
-            Path(__file__)
-            .resolve()
-            .parent.joinpath("..", "data", "html", "viewer_template.html")
+            Path(__file__).resolve().parent.joinpath("..", "data", "html", "viewer_template.html")
         )
         template = tempita.Template.from_filename(file_template, encoding="utf-8")
         bsprite = bp.viewer_substitute(
@@ -243,21 +228,15 @@ def test_viewer_substitute():
             value=False,
         )
         bsprite.fit(img)
-        viewer = bsprite.transform(
-            template, javascript="js", html="html", library="bsprite"
-        )
+        viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
         _check_html(viewer)
 
         bsprite.fit(img, bg_img=mni)
-        viewer = bsprite.transform(
-            template, javascript="js", html="html", library="bsprite"
-        )
+        viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
         _check_html(viewer)
 
         bsprite.fit(img, bg_img=None)
-        viewer = bsprite.transform(
-            template, javascript="js", html="html", library="bsprite"
-        )
+        viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
         _check_html(viewer)
 
         img_4d = image.new_img_like(img, get_data(img)[:, :, :, np.newaxis])
@@ -265,8 +244,8 @@ def test_viewer_substitute():
         bsprite.fit(img_4d)
 
     # Check that all warnings were expected
-    warnings_set = set(warning_.category for warning_ in w)
-    expected_set = set([FutureWarning, UserWarning, DeprecationWarning])
-    assert warnings_set.issubset(expected_set), (
-        "the following warnings were not expected: {}"
-    ).format(warnings_set.difference(expected_set))
+    warnings_set = {warning_.category for warning_ in w}
+    expected_set = {FutureWarning, UserWarning, DeprecationWarning}
+    assert warnings_set.issubset(
+        expected_set
+    ), f"the following warnings were not expected: {warnings_set.difference(expected_set)}"

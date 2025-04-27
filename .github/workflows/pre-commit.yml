@@ -1,0 +1,19 @@
+name: pre-commit
+
+on:
+    push:
+        branches:
+        -   main
+        -   master
+    pull_request:
+        branches:
+        -   '*'
+    workflow_dispatch:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+    - uses: pre-commit/action@v3.0.1
