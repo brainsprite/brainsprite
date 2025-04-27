@@ -16,15 +16,14 @@ from nilearn.image import resample_to_img, new_img_like, reorder_img
 from nilearn.plotting.js_plotting_utils import get_html_template, colorscale
 from nilearn.plotting import cm
 from nilearn.plotting.find_cuts import find_xyz_cut_coords
-from nilearn.plotting.img_plotting import _load_anat
-from nilearn.reporting import HTMLDocument
+from nilearn.plotting.img_plotting import load_anat
+from nilearn.plotting.html_document import HTMLDocument
 from nilearn._utils.niimg_conversions import check_niimg_3d
 from nilearn._utils.param_validation import check_threshold
 from nilearn._utils.extmath import fast_abs_percentile
-from nilearn._utils.niimg import _safe_get_data
 from nilearn.datasets import load_mni152_template
-from nilearn.externals import tempita
-
+import tempita
+from nilearn._utils.niimg import safe_get_data
 
 def _data_to_sprite(data):
     """ Convert a 3D array into a sprite of sagittal slices.
@@ -105,7 +104,7 @@ def _mask_stat_map(stat_map_img, threshold=None):
     """
     # Load stat map
     stat_map_img = check_niimg_3d(stat_map_img, dtype="auto")
-    data = _safe_get_data(stat_map_img, ensure_finite=True)
+    data = safe_get_data(stat_map_img, ensure_finite=True)
 
     # threshold the stat_map
     if threshold is not None:
@@ -127,7 +126,7 @@ def _load_bg_img(stat_map_img, bg_img="MNI152", black_bg="auto", dim="auto"):
     if bg_img is not None and bg_img is not False:
         if isinstance(bg_img, str) and bg_img == "MNI152":
             bg_img = load_mni152_template()
-        bg_img, black_bg, bg_min, bg_max = _load_anat(
+        bg_img, black_bg, bg_min, bg_max = load_anat(
             bg_img, dim=dim, black_bg=black_bg
         )
     else:
@@ -136,7 +135,7 @@ def _load_bg_img(stat_map_img, bg_img="MNI152", black_bg="auto", dim="auto"):
         )
         bg_min = 0
         bg_max = 0
-    bg_img = reorder_img(bg_img, resample="nearest")
+    bg_img = reorder_img(bg_img, resample="nearest", copy_header=True)
     return bg_img, bg_min, bg_max, black_bg
 
 
@@ -147,9 +146,9 @@ def _resample_stat_map(
         Returns: stat_map_img, mask_img
     """
     stat_map_img = resample_to_img(
-        stat_map_img, bg_img, interpolation=resampling_interpolation
+        stat_map_img, bg_img, interpolation=resampling_interpolation, force_resample=True
     )
-    mask_img = resample_to_img(mask_img, bg_img, fill_value=1, interpolation="nearest")
+    mask_img = resample_to_img(mask_img, bg_img, fill_value=1, interpolation="nearest", force_resample=True)
 
     return stat_map_img, mask_img
 
@@ -202,18 +201,18 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
 
 
 def _save_sprite(
-    img, vmax, vmin, output_sprite=None, mask=None, cmap="Greys", format="png"
+    img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", format="png"
 ):
     """ Generate a sprite from a 3D Niimg-like object.
         Returns: sprite
     """
 
     # Create sprite
-    sprite = _data_to_sprite(_safe_get_data(img, ensure_finite=True))
+    sprite = _data_to_sprite(safe_get_data(img, ensure_finite=True))
 
     # Mask the sprite
     if mask is not None:
-        mask = _data_to_sprite(_safe_get_data(mask, ensure_finite=True))
+        mask = _data_to_sprite(safe_get_data(mask, ensure_finite=True))
         sprite = np.ma.array(sprite, mask=mask)
 
     # Save the sprite
@@ -262,7 +261,7 @@ class viewer_substitute:
     :type img_colorMap: str, optional
     :param cut_coords: The MNI coordinates of the point where the cut is performed
         as a 3-tuple: (x, y, z). If None is given, the cuts are calculated
-        automaticaly.
+        automatically.
     :type cut_coords: None, or a tuple of floats, optional
     :param colorbar: If True, display a colorbar on top of the plots.
     :type colorbar: boolean, optional
@@ -296,7 +295,7 @@ class viewer_substitute:
     :param dim: Dimming factor applied to background image. By default, automatic
         heuristics are applied based upon the background image intensity.
         Accepted float values, where a typical scan is between -2 and 2
-        (-2 = increase constrast; 2 = decrease contrast), but larger values
+        (-2 = increase contrast; 2 = decrease contrast), but larger values
         can be used for a more pronounced effect. 0 means no dimming.
     :type dim: float or 'auto', optional
     :param vmax: max value for mapping colors.
@@ -317,7 +316,7 @@ class viewer_substitute:
     :type resampling_interpolation: string, optional
     :param opacity: The level of opacity of the overlay (0: transparent, 1: opaque)
     :type opacity: float in [0,1], optional
-    :param value: dislay the value of the overlay at the current voxel.
+    :param value: display the value of the overlay at the current voxel.
     :type value: boolean, optional
     :param base64: turn on/off embedding of sprites in the html using base64 encoding.
         If the flag is off, the sprites (and the colorbar) will be saved in
@@ -381,12 +380,12 @@ class viewer_substitute:
         :param stat_map_img: The statistical map image. Can be either a 3D volume
             or a 4D volume with exactly one time point.
         :type stat_map_img: stasNiimg-like object, See
-            http://nilearn.github.io/manipulating_images/input_output.html
+            https://nilearn.github.io/dev/manipulating_images/index.html
         :param bg_img: The background image that the stat map will be plotted on top of.
             If nothing is specified, the MNI152 template will be used.
             To turn off background image, just pass "bg_img=False".
         :type bg_img: Niimg-like object, optional
-            See http://nilearn.github.io/manipulating_images/input_output.html
+            See https://nilearn.github.io/dev/manipulating_images/index.html
         """
         # Prepare the color map and thresholding
         mask_img, stat_map_img, data, self.threshold = _mask_stat_map(
@@ -445,16 +444,16 @@ class viewer_substitute:
         width=None, height=None):
         """ Apply substitution in a template, using tempita.
 
-            :param template: a template where brainsprite data needs to be substitued.
+            :param template: a template where brainsprite data needs to be substituted.
             :type template: tempita template
             :param javascript: the tempita name to substitute with brainsprite javascript snippet.
-                If None, javascript is not substitued.
+                If None, javascript is not substituted.
             :type javascript: str or None
             :param html: the tempita name to substitute with brainsprite html snippet.
-                If None, html is not substitued.
+                If None, html is not substituted.
             :type html: str or None
-            :param library: the tempita name to substitue with the brainsprite js library.
-                If None, library is not substitued.
+            :param library: the tempita name to substitute with the brainsprite js library.
+                If None, library is not substituted.
             :type library: str or None
             :param namespace: a list of names to substitute, using tempita's substitute method.
             :type namespace: dict

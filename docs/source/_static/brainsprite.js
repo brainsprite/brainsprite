@@ -78,7 +78,7 @@ function initCanvas (brain, canvas) {
   brain.canvasRead.width = 1
   brain.canvasRead.height = 1
 
-  // A master sagital canvas for the merge of background and overlay
+  // A master sagittal canvas for the merge of background and overlay
   brain.planes = {}
   brain.planes.canvasMaster = document.createElement('canvas')
   brain.planes.contextMaster = brain.planes.canvasMaster.getContext('2d')
@@ -340,7 +340,7 @@ var brainsprite = function (params) {
         0, 0, brain.sprite.width, brain.sprite.height)
     };
 
-    // Draw the X canvas (sagital)
+    // Draw the X canvas (sagittal)
     brain.planes.canvasX = document.createElement('canvas')
     brain.planes.contextX = brain.planes.canvasX.getContext('2d')
     brain.planes.canvasX.width = nY
@@ -386,7 +386,7 @@ var brainsprite = function (params) {
     // Now draw the slice
     switch (type) {
       case 'X':
-        // Draw a sagital slice in memory
+        // Draw a sagittal slice in memory
         pos.XW = ((brain.numSlice.X) % brain.nbCol)
         pos.XH = (brain.numSlice.X - pos.XW) / brain.nbCol
         brain.planes.contextX.drawImage(brain.planes.canvasMaster,

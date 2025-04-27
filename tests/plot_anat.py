@@ -46,7 +46,8 @@ bsprite.fit(haxby_anat_filename)
 # information. The parameters indicate which tempita names we used in the
 # template for the javascript, html and library code, respectively.
 import tempita
-file_template = '../docs/source/_static/viewer_template.html'
+from pathlib import Path
+file_template = Path.cwd() / '..' / "docs" / "source" / "_static" / "viewer_template.html"
 template = tempita.Template.from_filename(file_template, encoding="utf-8")
 
 viewer = bsprite.transform(template, javascript='js', html='html', library='bsprite')

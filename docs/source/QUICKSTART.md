@@ -32,7 +32,7 @@ does not use jquery):
 
 Finally, once the page is loaded, brainsprite is called to create a
 `brain` object. The parameters brainsprite are used to tweak the appearance of
-the viewer, as well as specify important meta-data which cannot be infered from
+the viewer, as well as specify important meta-data which cannot be inferred from
 the sprite, such as the size of each slice (in pixel):
 ```html
  <script>

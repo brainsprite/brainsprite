@@ -13,25 +13,29 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../brainsprite'))
+from brainsprite._version import __version__
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'brainsprite'
-copyright = '2020, Brainsprite team'
+copyright = 'Brainsprite team'
 author = 'Brainsprite team'
 
+# The full current version, including alpha/beta/rc tags.
+current_version = __version__
 
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['recommonmark',
-              'sphinx.ext.autosectionlabel',
+extensions = [
+              "myst_parser",
               'sphinx_gallery.gen_gallery',
               'sphinx_js',
-              'sphinx.ext.autodoc'
+              'sphinx.ext.autodoc',
+              "sphinx_copybutton",
              ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -48,6 +52,9 @@ sphinx_gallery_conf = {
      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
      'thumbnail_size': (500, 300),
 }
+
+# The suffix of source filenames.
+source_suffix = [".rst", ".md"]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -69,6 +76,8 @@ html_favicon = 'img/logo_brainsprite_small.png'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+js_source_path = '../../'
 
 # Custom css
 html_css_files = [
