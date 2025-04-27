@@ -13,7 +13,7 @@ from nilearn.image import get_data, new_img_like
 from brainsprite import brainsprite as bp
 
 
-def _check_html(html_view, title=None):
+def _check_html(html_view):
     """Check the presence of some expected code in the html viewer."""
     assert isinstance(html_view, bp.StatMapView)
     assert "var brain =" in str(html_view)
