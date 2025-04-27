@@ -1,1 +1,4 @@
-example_*.png
+plot_anat.png
+plot_anat_reference.png
+plot_stat_map.png
+plot_stat_map_reference.png

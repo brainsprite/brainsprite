@@ -3,5 +3,8 @@ clean:
 # rm -rf $SCRIPTPATH/tests/plot_*.html
 
 minify:
-	npm install -g minify
-	minify brainsprite.js > brainsprite.min.js
+	node  build.js
+
+js_test:
+	mkdir -p docs/build/html/_images
+	npm test

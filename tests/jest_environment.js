@@ -1,9 +1,7 @@
-const fs = require('fs');
-const JestNodeEnvironment = require('jest-environment-node');
-const path = require('path');
+const NodeEnvironment = require('jest-environment-node').default;
 const puppeteer = require('puppeteer');
 
-class TestEnvironment extends JestNodeEnvironment {
+class TestEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
   }
@@ -11,20 +9,16 @@ class TestEnvironment extends JestNodeEnvironment {
   async setup() {
     await super.setup();
 
-    const wsEndpoint = fs.readFileSync(
-      path.join(__dirname, '.puppeteerEndpoint'),
-      'utf8',
-    );
-    if (!wsEndpoint) {
-      throw new Error('wsEndpoint not found');
-    }
-
-    this.global.__BROWSER__ = await puppeteer.connect({
-      browserWSEndpoint: wsEndpoint,
+    // Launch browser (instead of connecting to an external one)
+    this.global.__BROWSER__ = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
   }
 
   async teardown() {
+    if (this.global.__BROWSER__) {
+      await this.global.__BROWSER__.close();
+    }
     await super.teardown();
   }
 

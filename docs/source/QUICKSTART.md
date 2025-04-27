@@ -26,7 +26,7 @@ Then you include the brainsprite minified library (and jquery for the
 `$( window ).load(function()` instruction below, although brainsprite itself
 does not use jquery):
 ```html
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 <script type="text/javascript" src="brainsprite.min.js"></script>
 ```
 

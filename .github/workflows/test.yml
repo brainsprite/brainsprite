@@ -21,7 +21,7 @@ env:
 
 jobs:
 
-    test_and_coverage:
+    test_python:
 
         name: Test with ${{ matrix.py }} on ${{ matrix.os }}
 
@@ -43,6 +43,7 @@ jobs:
             with:
                 python-version: ${{ matrix.py }}
                 allow-prereleases: true
+
         -   name: Install tox
             run: uv tool install tox --with=tox-uv --with=tox-gh-actions
         -   name: Show tox config
@@ -65,3 +66,22 @@ jobs:
                 flags: ${{ matrix.os }}_${{ matrix.py }}
                 token: ${{ secrets.CODECOV_TOKEN }}
             if: success()
+
+    test_js:
+
+        name: Test Javascript
+
+        runs-on: ubuntu-latest
+
+        steps:
+        -   uses: actions/checkout@v4
+        -   uses: actions/setup-node@v4
+            with:
+                node-version: 18      
+
+        -   name: Install
+            run: npm install
+            
+        -   name: Run test suite
+            run: make js_test
+
