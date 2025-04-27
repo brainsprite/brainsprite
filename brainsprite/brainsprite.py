@@ -86,7 +86,7 @@ def _threshold_data(data, threshold=None):
     return data, mask, threshold
 
 
-def _bytesIO_to_base64(handle_io):
+def _bytes_io_to_base64(handle_io):
     """Encode the content of a bytesIO virtual file as base64.
     Also closes the file.
     Returns: data.
@@ -213,7 +213,7 @@ def _save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", f
     if output_sprite is None:
         output_sprite = BytesIO()
         imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap, format=format)
-        output_sprite = _bytesIO_to_base64(output_sprite)
+        output_sprite = _bytes_io_to_base64(output_sprite)
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
 
@@ -229,7 +229,7 @@ def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     if output_cmap is None:
         output_cmap = BytesIO()
         imsave(output_cmap, data, cmap=cmap, format=format)
-        output_cmap = _bytesIO_to_base64(output_cmap)
+        output_cmap = _bytes_io_to_base64(output_cmap)
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
     return output_cmap
