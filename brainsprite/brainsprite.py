@@ -1,6 +1,5 @@
 """Python interface for the brainsprite.js library."""
 
-import os
 import warnings
 from base64 import b64encode
 from io import BytesIO
@@ -69,13 +68,8 @@ def _threshold_data(data, threshold=None):
     )
 
     # Mask data
-    if threshold == 0:
-        mask = data == 0
-        data = data * np.logical_not(mask)
-    else:
-        mask = (data >= -threshold) & (data <= threshold)
-        data = data * np.logical_not(mask)
-
+    mask = data == 0 if threshold == 0 else (data >= -threshold) & (data <= threshold)
+    data = data * np.logical_not(mask)
     if not np.any(mask):
         warnings.warn(
             f"Threshold given was {threshold}, "
@@ -86,7 +80,7 @@ def _threshold_data(data, threshold=None):
     return data, mask, threshold
 
 
-def _bytesIO_to_base64(handle_io):
+def _bytes_io_to_base64(handle_io):
     """Encode the content of a bytesIO virtual file as base64.
     Also closes the file.
     Returns: data.
@@ -181,18 +175,18 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     # Convert cut coordinates into cut slices
     try:
         cut_slices = apply_affine(np.linalg.inv(stat_map_img.affine), cut_coords)
-    except ValueError:
+    except ValueError as e:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
             f"You provided cut_coords={cut_coords}"
-        )
-    except IndexError:
+        ) from e
+    except IndexError as e:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
             f"You provided single cut, cut_coords={cut_coords}"
-        )
+        ) from e
 
     return cut_slices
 
@@ -213,7 +207,7 @@ def _save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", f
     if output_sprite is None:
         output_sprite = BytesIO()
         imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap, format=format)
-        output_sprite = _bytesIO_to_base64(output_sprite)
+        output_sprite = _bytes_io_to_base64(output_sprite)
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
 
@@ -229,7 +223,7 @@ def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     if output_cmap is None:
         output_cmap = BytesIO()
         imsave(output_cmap, data, cmap=cmap, format=format)
-        output_cmap = _bytesIO_to_base64(output_cmap)
+        output_cmap = _bytes_io_to_base64(output_cmap)
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
     return output_cmap
@@ -417,10 +411,9 @@ class viewer_substitute:
         )
 
         # Add the brainsprite.min.js library
-        js_dir = os.path.join(os.path.dirname(__file__), "data", "js")
-        with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
+        js_dir = Path(__file__).parent / "data" / "js"
+        with (js_dir / "brainsprite.min.js").open("r") as f:
             self.library_ = f.read()
-            f.close()
 
         # Suggest a size for the viewer
         # width x height, in pixels
@@ -492,9 +485,9 @@ class viewer_substitute:
             file_colormap = None
         else:
             file_template = resource_path.joinpath("brainsprite_template.html")
-            file_bg = self.sprite + ".png"
-            file_bg = self.sprite_overlay + ".png"
-            file_colormap = self.img_colorMap + ".png"
+            file_bg = f"{self.sprite}.png"
+            file_bg = f"{self.sprite_overlay}.png"
+            file_colormap = f"{self.img_colorMap}.png"
         tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
         # Fill template
