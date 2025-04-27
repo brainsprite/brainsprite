@@ -36,9 +36,9 @@ def _check_affine(affine):
     assert affine[2, 2] == affine[1, 1]
     assert affine[0, 0] > 0
 
-    A, b = image.resampling.to_matrix_vector(affine)
+    a, b = image.resampling.to_matrix_vector(affine)
     assert np.all(
-        (np.abs(A) > 0.001).sum(axis=0) == 1
+        (np.abs(a) > 0.001).sum(axis=0) == 1
     ), "the affine transform was not near-diagonal"
 
 
@@ -49,15 +49,15 @@ def test_data_to_sprite():
     sprite = bp._data_to_sprite(data)
 
     # Generate ground truth for the sprite
-    Z = np.zeros([8, 8])
-    Zr = np.zeros([2, 8])
-    Cr = np.tile(np.array([[0, 0, 1, 1, 1, 1, 0, 0]]), [4, 1])
-    C = np.concatenate((Zr, Cr, Zr), axis=0)
+    z = np.zeros([8, 8])
+    zr = np.zeros([2, 8])
+    cr = np.tile(np.array([[0, 0, 1, 1, 1, 1, 0, 0]]), [4, 1])
+    c = np.concatenate((zr, cr, zr), axis=0)
     gtruth = np.concatenate(
         (
-            np.concatenate((Z, Z, C), axis=1),
-            np.concatenate((C, C, C), axis=1),
-            np.concatenate((Z, Z, Z), axis=1),
+            np.concatenate((z, z, c), axis=1),
+            np.concatenate((c, c, c), axis=1),
+            np.concatenate((z, z, z), axis=1),
         ),
         axis=0,
     )
@@ -70,30 +70,30 @@ def test_threshold_data():
     data = np.arange(-3, 4)
 
     # Check that an 'auto' threshold leaves at least one element
-    data_t, mask, thresh = bp._threshold_data(data, threshold="auto")
+    data_t, mask, _ = bp._threshold_data(data, threshold="auto")
     gtruth_m = np.array([False, True, True, True, True, True, False])
     gtruth_d = np.array([-3, 0, 0, 0, 0, 0, 3])
     assert (mask == gtruth_m).all()
     assert (data_t == gtruth_d).all()
 
     # Check that threshold=None keeps everything
-    data_t, mask, thresh = bp._threshold_data(data, threshold=None)
+    data_t, mask, _ = bp._threshold_data(data, threshold=None)
     assert np.all(np.logical_not(mask))
     assert np.all(data_t == data)
 
     # Check positive threshold works
-    data_t, mask, thresh = bp._threshold_data(data, threshold=1)
+    data_t, mask, _ = bp._threshold_data(data, threshold=1)
     gtruth = np.array([False, False, True, True, True, False, False])
     assert (mask == gtruth).all()
 
     # Check 0 threshold works
-    data_t, mask, thresh = bp._threshold_data(data, threshold=0)
+    data_t, mask, _ = bp._threshold_data(data, threshold=0)
     gtruth = np.array([False, False, False, True, False, False, False])
     assert (mask == gtruth).all()
 
     # Check that overly lenient threshold returns array
     data = np.arange(3, 10)
-    data_t, mask, thresh = bp._threshold_data(data, threshold=2)
+    data_t, mask, _ = bp._threshold_data(data, threshold=2)
     gtruth = np.full(7, False)
     assert (mask == gtruth).all()
 
@@ -127,11 +127,11 @@ def test_mask_stat_map():
     img, data = _simulate_img()
 
     # Try not to threshold anything
-    mask_img, img, data_t, thre = bp._mask_stat_map(img, threshold=None)
+    mask_img, img, _, _ = bp._mask_stat_map(img, threshold=None)
     assert np.max(get_data(mask_img)) == 0
 
     # Now threshold at zero
-    mask_img, img, data_t, thre = bp._mask_stat_map(img, threshold=0)
+    mask_img, img, _, _ = bp._mask_stat_map(img, threshold=0)
     assert np.min((data == 0) == get_data(mask_img))
 
 
@@ -140,16 +140,16 @@ def test_load_bg_img():
     affine = np.eye(4)
     affine[0, 0] = -1
     affine[0, 1] = 0.1
-    img, data = _simulate_img(affine)
+    img, _check_html = _simulate_img(affine)
 
     # use empty bg_img
-    bg_img, bg_min, bg_max, black_bg = bp._load_bg_img(img, bg_img=None)
+    bg_img, _, _, _ = bp._load_bg_img(img, bg_img=None)
 
     # Check positive isotropic, near-diagonal affine
     _check_affine(bg_img.affine)
 
     # Try to load the default background
-    bg_img, bg_min, bg_max, black_bg = bp._load_bg_img(img)
+    bg_img, _, _, __builtins__ = bp._load_bg_img(img)
 
     # Check positive isotropic, near-diagonal affine
     _check_affine(bg_img.affine)
