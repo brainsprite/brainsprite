@@ -13,13 +13,6 @@ from nilearn.image import get_data, new_img_like
 from brainsprite import brainsprite as bp
 
 
-def _check_html(html_view):
-    """Check the presence of some expected code in the html viewer."""
-    assert isinstance(html_view, bp.StatMapView)
-    assert "var brain =" in str(html_view)
-    assert "overlayImg" in str(html_view)
-
-
 def _simulate_img(affine=None):
     """Simulate data with one "spot"
     Returns: img, data.
@@ -216,7 +209,7 @@ def test_viewer_substitute():
     with warnings.catch_warnings(record=True) as w:
         # Create a fake functional image by resample the template
         img = image.resample_img(mni, target_affine=3 * np.eye(3))
-        file_template =             Path(__file__).resolve().parent / "data" / "html" / "viewer_template.html"        
+        file_template = Path(__file__).resolve().parent / "data" / "html" / "viewer_template.html"
         template = tempita.Template.from_filename(file_template, encoding="utf-8")
         bsprite = bp.viewer_substitute(
             cmap="gray",
@@ -250,3 +243,10 @@ def test_viewer_substitute():
     assert warnings_set.issubset(
         expected_set
     ), f"the following warnings were not expected: {warnings_set.difference(expected_set)}"
+
+
+def _check_html(html_view):
+    """Check the presence of some expected code in the html viewer."""
+    assert isinstance(html_view, bp.StatMapView)
+    assert "var brain =" in str(html_view)
+    assert "overlayImg" in str(html_view)
