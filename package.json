@@ -9,8 +9,7 @@
     "python": "src/brainsprite"
   },
   "scripts": {
-    "test": "jest",
-    "coverage:browser": "jest && nyc report --reporter=html"
+    "test": "jest"
   },
   "repository": {
     "type": "git",

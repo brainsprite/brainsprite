@@ -22,6 +22,8 @@ env:
 jobs:
 
     test_python:
+        # - minify jsavascript code and add it to python package
+        # - run python tests via tox
 
         name: Test with ${{ matrix.py }} on ${{ matrix.os }}
 
@@ -36,8 +38,17 @@ jobs:
         steps:
 
         -   uses: actions/checkout@v4
+
+        -   uses: actions/setup-node@v4
+            with:
+                node-version: 18
+
+        -   name: Minify JS for python
+            run: make minify
+
         -   name: Install the latest version of uv
             uses: astral-sh/setup-uv@v6
+
         -   name: Setup python
             uses: actions/setup-python@v5
             with:
@@ -70,11 +81,16 @@ jobs:
     test_js:
 
         name: Test Javascript
+        # - set up all js and python dependencies
+        # - run js test with browser coverage
+        #   - copy non-minified version of the code in python package (useful for coverage)
+        #   - run python examples to generate html required by javascript tests
 
         runs-on: ubuntu-latest
 
         steps:
         -   uses: actions/checkout@v4
+
         -   uses: actions/setup-node@v4
             with:
                 node-version: 18
@@ -91,14 +107,15 @@ jobs:
         -   name: Install tox
             run: uv tool install tox --with=tox-uv --with=tox-gh-actions
 
-        -   name: Show tox config
-            run: tox c
-
-        -   name: Build doc
-            run: tox run -e examples
-
         -   name: Install
             run: npm install
 
         -   name: Run test suite
-            run: make js_test
+            run: make coverage
+
+        -   name: Upload html coverage
+            if: success() || failure()
+            uses: actions/upload-artifact@v4
+            with:
+                name: coverage
+                path: coverage
