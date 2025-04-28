@@ -15,7 +15,7 @@ from pathlib import Path
 
 from brainsprite._version import __version__
 
-sys.path.insert(0, Path("../brainsprite").resolve())
+sys.path.insert(0, Path("../src/brainsprite").resolve())
 
 # -- Project information -----------------------------------------------------
 
@@ -37,6 +37,7 @@ extensions = [
     "sphinx_js",
     "sphinx.ext.autodoc",
     "sphinx_copybutton",
+    "sphinx_rtd_theme",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -49,13 +50,13 @@ exclude_patterns = []
 
 # Sphinx gallery
 sphinx_gallery_conf = {
-    "examples_dirs": "../../tests",  # path to your example scripts
+    "examples_dirs": "../../examples",  # path to your example scripts
     "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
     "thumbnail_size": (500, 300),
 }
 
 # The suffix of source filenames.
-source_suffix = [".rst", ".md"]
+source_suffix = {".rst": "restructuredtext", ".md": "restructuredtext"}
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -78,9 +79,16 @@ html_favicon = "img/logo_brainsprite_small.png"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-js_source_path = "../../"
+html_context = {
+    "display_github": True,
+    "github_user": "brainsprite",
+    "github_repo": "brainsprite",
+    "github_version": "edit/master/docs/source/",
+}
 
 # Custom css
 html_css_files = [
     "css/custom.css",
 ]
+
+js_source_path = "../../"

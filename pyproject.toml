@@ -128,7 +128,7 @@ unfixable = []
 max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*" = ["B018", "E402", "D203", "D213", "D400", "D415"]
+"examples/**/*" = ["B018", "E402", "D203", "D213", "D400", "D415"]
 "tests/python/*" = ["D103", "D404", "PLR2004"]
 
 [tool.ruff.lint.pylint]
