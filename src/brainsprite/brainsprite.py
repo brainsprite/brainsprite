@@ -199,16 +199,23 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     return cut_slices
 
 
-def _save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", format="png"):
+def _save_sprite(img,
+                 vmax,
+                 vmin,
+                 output_sprite=None,
+                 mask=None,
+                 cmap="Grays",
+                 format="png",
+                 radiological=False):
     """Generate a sprite from a 3D Niimg-like object.
     Returns: sprite.
     """
     # Create sprite
-    sprite = _data_to_sprite(safe_get_data(img, ensure_finite=True))
+    sprite = _data_to_sprite(safe_get_data(img, ensure_finite=True), radiological)
 
     # Mask the sprite
     if mask is not None:
-        mask = _data_to_sprite(safe_get_data(mask, ensure_finite=True))
+        mask = _data_to_sprite(safe_get_data(mask, ensure_finite=True), radiological)
         sprite = np.ma.array(sprite, mask=mask)
 
     # Save the sprite
@@ -522,6 +529,7 @@ class viewer_substitute:
                 vmax=self.bg_max_,
                 vmin=self.bg_min_,
                 cmap="gray",
+                radiological=self.radiological,
             ),
             overlay_base64=_save_sprite(
                 output_sprite=file_overlay,
@@ -530,6 +538,7 @@ class viewer_substitute:
                 vmin=self.colors_["vmin"],
                 mask=mask_img,
                 cmap=self.cmap,
+                radiological=self.radiological,
             ),
             colormap_base64=_save_cm(
                 output_cmap=file_colormap, cmap=self.colors_["cmap"], format="png"
