@@ -30,7 +30,7 @@ tests/js/*html: src/brainsprite/data/js/brainsprite.js
 	rm -fr src/brainsprite/data/js/brainsprite.js
 
 .PHONY: coverage
-coverage: tests/js/*html
+coverage: install tests/js/*html
 	mkdir -p docs/build/html/_images
 	npm run test
 	npm i nyc -g
