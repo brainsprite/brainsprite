@@ -34,5 +34,5 @@
     hide: {{colorbar}}
   },
   radiological: {{radiological}},
-  showLR: {{radiological}},
+  showLR: {{showLR}},
 }

@@ -561,6 +561,6 @@ class viewer_substitute:
             min=self.colors_["vmin"],
             max=self.colors_["vmax"],
             colorbar=float(not self.colorbar),
-            radiological=self.radiological,
-            showLR=self.showLR,
+            radiological=float(self.radiological),
+            showLR=float(self.showLR),
         )
