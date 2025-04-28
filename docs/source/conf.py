@@ -37,6 +37,7 @@ extensions = [
     "sphinx_js",
     "sphinx.ext.autodoc",
     "sphinx_copybutton",
+    "sphinx_rtd_theme"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,7 +56,7 @@ sphinx_gallery_conf = {
 }
 
 # The suffix of source filenames.
-source_suffix = [".rst", ".md"]
+source_suffix = {'.rst': 'restructuredtext', '.md': 'restructuredtext'}
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -78,10 +79,11 @@ html_favicon = "img/logo_brainsprite_small.png"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-html_theme_options = {
-    'display_version': True,
-    'github_url': 'https://github.com/brainsprite/brainsprite'
-
+html_context = {
+  'display_github': True,
+  'github_user': 'brainsprite',
+  'github_repo': 'brainsprite',
+  'github_version': 'edit/master/docs/source/'
 }
 
 # Custom css
