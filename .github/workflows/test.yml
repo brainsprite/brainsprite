@@ -51,7 +51,7 @@ jobs:
 
         -   name: Run test suite
             run: |
-                tox run --list-dependencies -e test -- brainsprite
+                tox run --list-dependencies -e test -- tests/python
 
         -   name: Upload html coverage
             if: success() || failure()

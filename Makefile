@@ -5,7 +5,7 @@ clean:
 
 minify:
 	node build.js
-	cp brainsprite.min.js brainsprite/data/js/
+	cp brainsprite.min.js src/brainsprite/data/js/
 
 js_test:
 	mkdir -p docs/build/html/_images

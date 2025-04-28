@@ -50,10 +50,10 @@ ignore-words = ".github/codespell_ignore_words.txt"
 skip = "./.git"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "brainsprite/_version.py"
+version-file = "src/brainsprite/_version.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["brainsprite"]
+packages = ["src/brainsprite"]
 
 [tool.hatch.version]
 source = "vcs"
@@ -69,7 +69,7 @@ xfail_strict = true
 [tool.ruff]
 include = [
     "pyproject.toml",
-    "brainsprite/**/*.py",
+    "src/**/*.py",
     "docs/**/*.py",
     "tests/**/*.py"
 ]
@@ -128,8 +128,8 @@ unfixable = []
 max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
-"brainsprite/**/tests/*" = ["D103", "D404", "PLR2004"]
 "tests/**/*" = ["B018", "E402", "D203", "D213", "D400", "D415"]
+"tests/python/*" = ["D103", "D404", "PLR2004"]
 
 [tool.ruff.lint.pylint]
 # https://docs.astral.sh/ruff/settings/#lint_pylint_max-args
