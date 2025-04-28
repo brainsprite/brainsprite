@@ -17,4 +17,5 @@ Brainsprite is a lightweight javascript library to create interactive brain view
    QUICKSTART
    APIPY
    APIJS
+   CONTRIBUTING
    auto_examples/index.rst
