@@ -57,7 +57,7 @@ from pathlib import Path
 
 import tempita
 
-file_template = Path.cwd() / ".." / "docs" / "source" / "_static" / "viewer_template.html"
+file_template = Path.cwd() / "examples" / "viewer_template.html"
 template = tempita.Template.from_filename(file_template, encoding="utf-8")
 
 viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
@@ -70,7 +70,7 @@ viewer
 # %%
 # The following instruction can be used to save the viewer in a stand-alone,
 # html document:
-viewer.save_as_html("plot_anat.html")
+viewer.save_as_html(Path.cwd() / "examples" / "plot_anat.html")
 
 # %%
 # It is possible to include this html page as an iframe in

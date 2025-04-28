@@ -1,7 +1,8 @@
 clean:
 	make -C docs clean
 	rm -fr dist
-# rm -rf $SCRIPTPATH/tests/plot_*.html
+	rm -fr examples/*.html
+	rm -fr src/brainsprite/data/js/brainsprite.js
 
 install:
 	npm install
