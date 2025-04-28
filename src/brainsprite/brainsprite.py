@@ -307,6 +307,8 @@ class viewer_substitute:
         If the flag is off, the sprites (and the colorbar) will be saved in
         files named based on parameters sprite, sprite_overlay and img_colorMap.
     :type base64: boolean (default True)
+    :type radiological: boolean (default False)
+    :type showLR: boolean (default True)
 
     :return bsprite: a brainsprite viewer template substitution tool.
 
@@ -334,6 +336,8 @@ class viewer_substitute:
         opacity=1,
         value=True,
         base64=True,
+        radiological=False,
+        showLR=True,
     ):
         """Set up default attributes for the class."""
         self.canvas = canvas
@@ -356,6 +360,8 @@ class viewer_substitute:
         self.opacity = opacity
         self.value = value
         self.base64 = base64
+        self.radiological = radiological
+        self.showLR = showLR
 
     def fit(self, stat_map_img, bg_img="MNI152"):
         """Generate sprite and meta-data from a brain volume. Also optionally
@@ -555,4 +561,6 @@ class viewer_substitute:
             min=self.colors_["vmin"],
             max=self.colors_["vmax"],
             colorbar=float(not self.colorbar),
+            radiological=self.radiological,
+            showLR=self.showLR,
         )

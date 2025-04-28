@@ -32,5 +32,7 @@
     min: {{min}},
     max: {{max}},
     hide: {{colorbar}}
-  }
+  },
+  radiological: {{radiological}},
+  showLR: {{radiological}},
 }
