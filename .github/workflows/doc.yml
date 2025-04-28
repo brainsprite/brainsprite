@@ -1,0 +1,66 @@
+---
+name: documentation
+
+on:
+    push:
+        branches:
+        -   main
+        -   master
+    pull_request:
+        branches:
+        -   '*'
+    workflow_dispatch:
+
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+# Force to use color
+env:
+    FORCE_COLOR: true
+
+permissions:
+    contents: write
+
+jobs:
+    docs:
+        runs-on: ubuntu-latest
+        steps:
+        -   uses: actions/checkout@v4
+        -   uses: actions/setup-node@v4
+            with:
+                node-version: 14
+
+        -   name: Install the latest version of uv
+            uses: astral-sh/setup-uv@v6
+
+        -   name: Setup python
+            uses: actions/setup-python@v5
+            with:
+                python-version: 3.9
+                allow-prereleases: true
+
+        -   name: Install tox
+            run: uv tool install tox --with=tox-uv --with=tox-gh-actions
+
+        -   name: Show tox config
+            run: tox c
+
+        -   name: Build doc
+            run: tox run -e doc
+
+        -   name: Upload documentation
+            uses: actions/upload-artifact@v4
+            with:
+                name: doc
+                path: docs/build/html
+
+        -   name: Deploy to GitHub Pages
+            uses: peaceiris/actions-gh-pages@v4
+            if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+            with:
+                publish_branch: gh-pages
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: docs/build/html
+                force_orphan: true

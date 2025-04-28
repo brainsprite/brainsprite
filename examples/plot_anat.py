@@ -1,10 +1,11 @@
-"""
-Anatomical scan viewer
+"""Anatomical scan viewer
 ======================
+
 Generate a brainsprite viewer for an anatomical MRI scan, by populating an html
 template.
 """
-#%%
+
+# %%
 # We first download an anatomical scan through one of nilearn's fetcher:
 from nilearn import datasets
 
@@ -12,7 +13,7 @@ from nilearn import datasets
 haxby_dataset = datasets.fetch_haxby()
 haxby_anat_filename = haxby_dataset.anat[0]
 
-#%%
+# %%
 # Now let's have a look at a generic html template, and focus on the parts that need
 # to be filled in:
 #
@@ -21,7 +22,7 @@ haxby_anat_filename = haxby_dataset.anat[0]
 #    :emphasize-lines: 5-8,12-15,22-25
 #    :linenos:
 
-#%%
+# %%
 # The parts with :code:`{{ }}` are part of the tempita language, and means that
 # we need to populate these parts with three types of brainsprite code: an html
 # snippet, a javascript snippet, and the brainsprite.js library itself. Let's use
@@ -37,31 +38,41 @@ haxby_anat_filename = haxby_dataset.anat[0]
 #  * add a title to the viewer (:code:`title`)
 from brainsprite import viewer_substitute
 
-bsprite = viewer_substitute(cmap='gray', symmetric_cmap=False, black_bg=True,
-                         threshold=None, vmax=250, title="anatomical scan", value=False)
+bsprite = viewer_substitute(
+    cmap="gray",
+    symmetric_cmap=False,
+    black_bg=True,
+    threshold=None,
+    vmax=250,
+    title="anatomical scan",
+    value=False,
+)
 bsprite.fit(haxby_anat_filename)
 
-#%%
+# %%
 # We can now open the template with tempita, and fill it with the required
 # information. The parameters indicate which tempita names we used in the
 # template for the javascript, html and library code, respectively.
+from pathlib import Path
+
 import tempita
-file_template = '../docs/source/_static/viewer_template.html'
+
+file_template = Path.cwd() / ".." / "docs" / "source" / "_static" / "viewer_template.html"
 template = tempita.Template.from_filename(file_template, encoding="utf-8")
 
-viewer = bsprite.transform(template, javascript='js', html='html', library='bsprite')
+viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
 
-#%%
+# %%
 # The object :code:`viewer` can be called directly to insert the viewer inside
 # a jupyter notebook:
 viewer
 
-#%%
+# %%
 # The following instruction can be used to save the viewer in a stand-alone,
 # html document:
-viewer.save_as_html('plot_anat.html')
+viewer.save_as_html("plot_anat.html")
 
-#%%
+# %%
 # It is possible to include this html page as an iframe in
 # another html document, using the following snippet.
 #
@@ -82,6 +93,6 @@ viewer.save_as_html('plot_anat.html')
 #       style="padding:0; border:0; display: block;
 #       margin-left: auto; margin-right: auto"></iframe>
 
-#%%
+# %%
 # The templating approach presented here is generic, and allows to insert one
 # or multiple viewers in any html document template.

@@ -1,40 +1,35 @@
-"""Python interface for the brainsprite.js library.
-"""
-import os
-import json
+"""Python interface for the brainsprite.js library."""
+
 import warnings
-from pathlib import Path
-from io import BytesIO
 from base64 import b64encode
+from io import BytesIO
+from pathlib import Path
 
 import numpy as np
+import tempita
 from matplotlib.image import imsave
-
 from nibabel.affines import apply_affine
-
-from nilearn.image import resample_to_img, new_img_like, reorder_img
-from nilearn.plotting.js_plotting_utils import get_html_template, colorscale
-from nilearn.plotting import cm
-from nilearn.plotting.find_cuts import find_xyz_cut_coords
-from nilearn.plotting.img_plotting import _load_anat
-from nilearn.reporting import HTMLDocument
+from nilearn._utils.extmath import fast_abs_percentile
+from nilearn._utils.niimg import safe_get_data
 from nilearn._utils.niimg_conversions import check_niimg_3d
 from nilearn._utils.param_validation import check_threshold
-from nilearn._utils.extmath import fast_abs_percentile
-from nilearn._utils.niimg import _safe_get_data
 from nilearn.datasets import load_mni152_template
-from nilearn.externals import tempita
+from nilearn.image import new_img_like, reorder_img, resample_to_img
+from nilearn.plotting import cm
+from nilearn.plotting.find_cuts import find_xyz_cut_coords
+from nilearn.plotting.html_document import HTMLDocument
+from nilearn.plotting.img_plotting import load_anat
+from nilearn.plotting.js_plotting_utils import colorscale
 
 
 def _data_to_sprite(data):
-    """ Convert a 3D array into a sprite of sagittal slices.
-        Returns: sprite (2D numpy array)
-        If each sagittal slice is nz (height) x ny (width) pixels, the sprite
-        size is (M x nz) x (N x ny), where M and N are computed to be roughly
-        equal. All slices are pasted together row by row, from top left to
-        bottom right. The last row is completed with empty slices.
+    """Convert a 3D array into a sprite of sagittal slices.
+    Returns: sprite (2D numpy array)
+    If each sagittal slice is nz (height) x ny (width) pixels, the sprite
+    size is (M x nz) x (N x ny), where M and N are computed to be roughly
+    equal. All slices are pasted together row by row, from top left to
+    bottom right. The last row is completed with empty slices.
     """
-
     nx, ny, nz = data.shape
     nrows = int(np.ceil(np.sqrt(nx)))
     ncolumns = int(np.ceil(nx / float(nrows)))
@@ -53,8 +48,8 @@ def _data_to_sprite(data):
 
 
 def _threshold_data(data, threshold=None):
-    """ Threshold a data array.
-        Returns: data (array), mask (boolean array) threshold (updated)
+    """Threshold a data array.
+    Returns: data (array), mask (boolean array) threshold (updated).
     """
     # If threshold is None, do nothing
     if threshold is None:
@@ -73,25 +68,22 @@ def _threshold_data(data, threshold=None):
     )
 
     # Mask data
-    if threshold == 0:
-        mask = data == 0
-        data = data * np.logical_not(mask)
-    else:
-        mask = (data >= -threshold) & (data <= threshold)
-        data = data * np.logical_not(mask)
-
+    mask = data == 0 if threshold == 0 else (data >= -threshold) & (data <= threshold)
+    data = data * np.logical_not(mask)
     if not np.any(mask):
         warnings.warn(
-            "Threshold given was {0}, but "
-            "the data has no values below {1}. ".format(threshold, data.min())
+            f"Threshold given was {threshold}, "
+            f"but "
+            f"the data has no values below {data.min()}. ",
+            stacklevel=2,
         )
     return data, mask, threshold
 
 
-def _bytesIO_to_base64(handle_io):
-    """ Encode the content of a bytesIO virtual file as base64.
-        Also closes the file.
-        Returns: data
+def _bytes_io_to_base64(handle_io):
+    """Encode the content of a bytesIO virtual file as base64.
+    Also closes the file.
+    Returns: data.
     """
     handle_io.seek(0)
     data = b64encode(handle_io.read()).decode("utf-8")
@@ -100,12 +92,12 @@ def _bytesIO_to_base64(handle_io):
 
 
 def _mask_stat_map(stat_map_img, threshold=None):
-    """ Load a stat map and apply a threshold.
-        Returns: mask_img, stat_map_img, data, threshold
+    """Load a stat map and apply a threshold.
+    Returns: mask_img, stat_map_img, data, threshold.
     """
     # Load stat map
     stat_map_img = check_niimg_3d(stat_map_img, dtype="auto")
-    data = _safe_get_data(stat_map_img, ensure_finite=True)
+    data = safe_get_data(stat_map_img, ensure_finite=True)
 
     # threshold the stat_map
     if threshold is not None:
@@ -117,9 +109,9 @@ def _mask_stat_map(stat_map_img, threshold=None):
 
 
 def _load_bg_img(stat_map_img, bg_img="MNI152", black_bg="auto", dim="auto"):
-    """ Load and resample bg_img in an isotropic resolution,
-        with a positive diagonal affine matrix.
-        Returns: bg_img, bg_min, bg_max, black_bg
+    """Load and resample bg_img in an isotropic resolution,
+    with a positive diagonal affine matrix.
+    Returns: bg_img, bg_min, bg_max, black_bg.
     """
     if (bg_img is None or bg_img is False) and black_bg == "auto":
         black_bg = False
@@ -127,36 +119,35 @@ def _load_bg_img(stat_map_img, bg_img="MNI152", black_bg="auto", dim="auto"):
     if bg_img is not None and bg_img is not False:
         if isinstance(bg_img, str) and bg_img == "MNI152":
             bg_img = load_mni152_template()
-        bg_img, black_bg, bg_min, bg_max = _load_anat(
-            bg_img, dim=dim, black_bg=black_bg
-        )
+        bg_img, black_bg, bg_min, bg_max = load_anat(bg_img, dim=dim, black_bg=black_bg)
     else:
-        bg_img = new_img_like(
-            stat_map_img, np.zeros(stat_map_img.shape), stat_map_img.affine
-        )
+        bg_img = new_img_like(stat_map_img, np.zeros(stat_map_img.shape), stat_map_img.affine)
         bg_min = 0
         bg_max = 0
-    bg_img = reorder_img(bg_img, resample="nearest")
+    bg_img = reorder_img(bg_img, resample="nearest", copy_header=True)
     return bg_img, bg_min, bg_max, black_bg
 
 
-def _resample_stat_map(
-    stat_map_img, bg_img, mask_img, resampling_interpolation="continuous"
-):
-    """ Resample the stat map and mask to the background.
-        Returns: stat_map_img, mask_img
+def _resample_stat_map(stat_map_img, bg_img, mask_img, resampling_interpolation="continuous"):
+    """Resample the stat map and mask to the background.
+    Returns: stat_map_img, mask_img.
     """
     stat_map_img = resample_to_img(
-        stat_map_img, bg_img, interpolation=resampling_interpolation
+        stat_map_img,
+        bg_img,
+        interpolation=resampling_interpolation,
+        force_resample=True,
     )
-    mask_img = resample_to_img(mask_img, bg_img, fill_value=1, interpolation="nearest")
+    mask_img = resample_to_img(
+        mask_img, bg_img, fill_value=1, interpolation="nearest", force_resample=True
+    )
 
     return stat_map_img, mask_img
 
 
 def _viewer_size(shape):
-    """ Define the size of the viewer.
-        Returns: width_view, height_view
+    """Define the size of the viewer.
+    Returns: width_view, height_view.
     """
     # slices_width = sagittal_width (y) + coronal_width (x) + axial_width (x)
     slices_width = shape[1] + 2 * shape[0]
@@ -176,8 +167,7 @@ def _viewer_size(shape):
 
 
 def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
-    """For internal use. Find slice numbers for the cut.
-    """
+    """For internal use. Find slice numbers for the cut."""
     # Select coordinates for the cut
     if cut_coords is None:
         cut_coords = find_xyz_cut_coords(stat_map_img, activation_threshold=threshold)
@@ -185,42 +175,39 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     # Convert cut coordinates into cut slices
     try:
         cut_slices = apply_affine(np.linalg.inv(stat_map_img.affine), cut_coords)
-    except ValueError:
+    except ValueError as e:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
-            "You provided cut_coords={0}".format(cut_coords)
-        )
-    except IndexError:
+            f"You provided cut_coords={cut_coords}"
+        ) from e
+    except IndexError as e:
         raise ValueError(
             "The input given for display_mode='ortho' needs to be "
             "a list of 3d world coordinates in (x, y, z). "
-            "You provided single cut, cut_coords={0}".format(cut_coords)
-        )
+            f"You provided single cut, cut_coords={cut_coords}"
+        ) from e
 
     return cut_slices
 
 
-def _save_sprite(
-    img, vmax, vmin, output_sprite=None, mask=None, cmap="Greys", format="png"
-):
-    """ Generate a sprite from a 3D Niimg-like object.
-        Returns: sprite
+def _save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", format="png"):
+    """Generate a sprite from a 3D Niimg-like object.
+    Returns: sprite.
     """
-
     # Create sprite
-    sprite = _data_to_sprite(_safe_get_data(img, ensure_finite=True))
+    sprite = _data_to_sprite(safe_get_data(img, ensure_finite=True))
 
     # Mask the sprite
     if mask is not None:
-        mask = _data_to_sprite(_safe_get_data(mask, ensure_finite=True))
+        mask = _data_to_sprite(safe_get_data(mask, ensure_finite=True))
         sprite = np.ma.array(sprite, mask=mask)
 
     # Save the sprite
     if output_sprite is None:
         output_sprite = BytesIO()
         imsave(output_sprite, sprite, vmin=vmin, vmax=vmax, cmap=cmap, format=format)
-        output_sprite = _bytesIO_to_base64(output_sprite)
+        output_sprite = _bytes_io_to_base64(output_sprite)
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
 
@@ -228,9 +215,7 @@ def _save_sprite(
 
 
 def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
-    """ Save the colormap of an image as an image file.
-    """
-
+    """Save the colormap of an image as an image file."""
     # the colormap
     data = np.arange(0.0, n_colors) / (n_colors - 1.0)
     data = data.reshape([1, n_colors])
@@ -238,7 +223,7 @@ def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     if output_cmap is None:
         output_cmap = BytesIO()
         imsave(output_cmap, data, cmap=cmap, format=format)
-        output_cmap = _bytesIO_to_base64(output_cmap)
+        output_cmap = _bytes_io_to_base64(output_cmap)
     else:
         imsave(output_cmap, data, cmap=cmap, format=format)
     return output_cmap
@@ -249,8 +234,7 @@ class StatMapView(HTMLDocument):
 
 
 class viewer_substitute:
-    """
-    Templating tool to insert a brainsprite viewer in an HTML document
+    """Templating tool to insert a brainsprite viewer in an HTML document.
 
     :param canvas: The label for the brainsprite html canvas.
     :type canvas: str, optional
@@ -262,7 +246,7 @@ class viewer_substitute:
     :type img_colorMap: str, optional
     :param cut_coords: The MNI coordinates of the point where the cut is performed
         as a 3-tuple: (x, y, z). If None is given, the cuts are calculated
-        automaticaly.
+        automatically.
     :type cut_coords: None, or a tuple of floats, optional
     :param colorbar: If True, display a colorbar on top of the plots.
     :type colorbar: boolean, optional
@@ -296,7 +280,7 @@ class viewer_substitute:
     :param dim: Dimming factor applied to background image. By default, automatic
         heuristics are applied based upon the background image intensity.
         Accepted float values, where a typical scan is between -2 and 2
-        (-2 = increase constrast; 2 = decrease contrast), but larger values
+        (-2 = increase contrast; 2 = decrease contrast), but larger values
         can be used for a more pronounced effect. 0 means no dimming.
     :type dim: float or 'auto', optional
     :param vmax: max value for mapping colors.
@@ -317,7 +301,7 @@ class viewer_substitute:
     :type resampling_interpolation: string, optional
     :param opacity: The level of opacity of the overlay (0: transparent, 1: opaque)
     :type opacity: float in [0,1], optional
-    :param value: dislay the value of the overlay at the current voxel.
+    :param value: display the value of the overlay at the current voxel.
     :type value: boolean, optional
     :param base64: turn on/off embedding of sprites in the html using base64 encoding.
         If the flag is off, the sprites (and the colorbar) will be saved in
@@ -374,24 +358,21 @@ class viewer_substitute:
         self.base64 = base64
 
     def fit(self, stat_map_img, bg_img="MNI152"):
-        """
-        Generate sprite and meta-data from a brain volume. Also optionally
+        """Generate sprite and meta-data from a brain volume. Also optionally
         incorporate a background image.
 
         :param stat_map_img: The statistical map image. Can be either a 3D volume
             or a 4D volume with exactly one time point.
         :type stat_map_img: stasNiimg-like object, See
-            http://nilearn.github.io/manipulating_images/input_output.html
+            https://nilearn.github.io/dev/manipulating_images/index.html
         :param bg_img: The background image that the stat map will be plotted on top of.
             If nothing is specified, the MNI152 template will be used.
             To turn off background image, just pass "bg_img=False".
         :type bg_img: Niimg-like object, optional
-            See http://nilearn.github.io/manipulating_images/input_output.html
+            See https://nilearn.github.io/dev/manipulating_images/index.html
         """
         # Prepare the color map and thresholding
-        mask_img, stat_map_img, data, self.threshold = _mask_stat_map(
-            stat_map_img, self.threshold
-        )
+        mask_img, stat_map_img, data, self.threshold = _mask_stat_map(stat_map_img, self.threshold)
 
         self.colors_ = colorscale(
             self.cmap,
@@ -416,9 +397,7 @@ class viewer_substitute:
         stat_map_img, mask_img = _resample_stat_map(
             stat_map_img, bg_img, mask_img, self.resampling_interpolation
         )
-        self.cut_slices_ = _get_cut_slices(
-            stat_map_img, self.cut_coords, self.threshold
-        )
+        self.cut_slices_ = _get_cut_slices(stat_map_img, self.cut_coords, self.threshold)
 
         # Now create the viewer, and populate the sprite data
         self.html_ = self._brainsprite_html(bg_img, stat_map_img, mask_img)
@@ -432,55 +411,62 @@ class viewer_substitute:
         )
 
         # Add the brainsprite.min.js library
-        js_dir = os.path.join(os.path.dirname(__file__), "data", "js")
-        with open(os.path.join(js_dir, "brainsprite.min.js")) as f:
+        js_dir = Path(__file__).parent / "data" / "js"
+        with (js_dir / "brainsprite.min.js").open("r") as f:
             self.library_ = f.read()
-            f.close()
 
         # Suggest a size for the viewer
         # width x height, in pixels
         self.width_, self.height_ = _viewer_size(stat_map_img.shape)
 
-    def transform(self, template, javascript, html, library, namespace=None,
-        width=None, height=None):
-        """ Apply substitution in a template, using tempita.
+    def transform(
+        self,
+        template,
+        javascript,
+        html,
+        library,
+        namespace=None,
+        width=None,
+        height=None,
+    ):
+        """Apply substitution in a template, using tempita.
 
-            :param template: a template where brainsprite data needs to be substitued.
-            :type template: tempita template
-            :param javascript: the tempita name to substitute with brainsprite javascript snippet.
-                If None, javascript is not substitued.
-            :type javascript: str or None
-            :param html: the tempita name to substitute with brainsprite html snippet.
-                If None, html is not substitued.
-            :type html: str or None
-            :param library: the tempita name to substitue with the brainsprite js library.
-                If None, library is not substitued.
-            :type library: str or None
-            :param namespace: a list of names to substitute, using tempita's substitute method.
-            :type namespace: dict
-            :param width: the width of the html report.
-                If None, the width of the report will be the width of the viewer.
-            :type height: int or None
-            :param height: the height of the html report.
-                If None, the height of the report will be the height of the viewer.
-            :type height: int or None
+        :param template: a template where brainsprite data needs to be substituted.
+        :type template: tempita template
+        :param javascript: the tempita name to substitute with brainsprite javascript snippet.
+            If None, javascript is not substituted.
+        :type javascript: str or None
+        :param html: the tempita name to substitute with brainsprite html snippet.
+            If None, html is not substituted.
+        :type html: str or None
+        :param library: the tempita name to substitute with the brainsprite js library.
+            If None, library is not substituted.
+        :type library: str or None
+        :param namespace: a list of names to substitute, using tempita's substitute method.
+        :type namespace: dict
+        :param width: the width of the html report.
+            If None, the width of the report will be the width of the viewer.
+        :type height: int or None
+        :param height: the height of the html report.
+            If None, the height of the report will be the height of the viewer.
+        :type height: int or None
         """
-        if namespace == None:
+        if namespace is None:
             namespace = {}
 
-        if javascript != None:
+        if javascript is not None:
             namespace[javascript] = self.javascript_
 
-        if html != None:
+        if html is not None:
             namespace[html] = self.html_
 
-        if library != None:
+        if library is not None:
             namespace[library] = self.library_
 
-        if width == None:
+        if width is None:
             width = self.width_
 
-        if height == None:
+        if height is None:
             height = self.height_
 
         # Populate template
@@ -489,20 +475,19 @@ class viewer_substitute:
         return StatMapView(viewer, width=width, height=height)
 
     def _brainsprite_html(self, bg_img, stat_map_img, mask_img):
-        """Create an html snippet for the brainsprite viewer (with sprite data).
-        """
+        """Create an html snippet for the brainsprite viewer (with sprite data)."""
         # Initiate template
-        resource_path = Path(__file__).resolve().parent.joinpath("data", "html")
+        resource_path = Path(__file__).resolve().parent / "data" / "html"
         if self.base64:
-            file_template = resource_path.joinpath("brainsprite_template_base64.html")
+            file_template = resource_path / "brainsprite_template_base64.html"
             file_bg = None
             file_overlay = None
             file_colormap = None
         else:
-            file_template = resource_path.joinpath("brainsprite_template.html")
-            file_bg = self.sprite + ".png"
-            file_bg = self.sprite_overlay + ".png"
-            file_colormap = self.img_colorMap + ".png"
+            file_template = resource_path / "brainsprite_template.html"
+            file_bg = f"{self.sprite}.png"
+            file_bg = f"{self.sprite_overlay}.png"
+            file_colormap = f"{self.img_colorMap}.png"
         tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
         # Fill template
@@ -533,11 +518,10 @@ class viewer_substitute:
         return snippet_html
 
     def _brainsprite_js(self, shape, affine, colorFont, colorBackground):
-        """ Create a js snippet for the brainsprite viewer
-        """
+        """Create a js snippet for the brainsprite viewer."""
         # Initiate template
-        resource_path = Path(__file__).resolve().parent.joinpath("data", "js")
-        file_template = resource_path.joinpath("brainsprite_template.js")
+        resource_path = Path(__file__).resolve().parent / "data" / "js"
+        file_template = resource_path / "brainsprite_template.js"
         tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
         return tpl.substitute(

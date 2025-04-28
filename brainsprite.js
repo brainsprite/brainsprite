@@ -79,7 +79,7 @@ function initCanvas (brain, canvas) {
   brain.canvasRead.width = 1
   brain.canvasRead.height = 1
 
-  // A master sagital canvas for the merge of background and overlay
+  // A master sagittal canvas for the merge of background and overlay
   brain.planes = {}
   brain.planes.canvasMaster = document.createElement('canvas')
   brain.planes.contextMaster = brain.planes.canvasMaster.getContext('2d')
@@ -150,7 +150,7 @@ function initColorMap (colorMap) {
  * @param {boolean} params.flagCoordinates turn on/off slice coordinates.
  * @param {object} params.origin {"X","Y","Z"} coordinates of the origin .
  * @param {number} params.voxelSize the size of one voxel (assumed to be isotropic)
- * @param {array} params.affine the voxel-to-world transform. Use folse for isotropic diagonal using origin and voxelSize.
+ * @param {array} params.affine the voxel-to-world transform. Use false for isotropic diagonal using origin and voxelSize.
  * @param {number} params.heightColorBar height of the text for the colorbar.
  * @param {number} params.sizeFont the size of other texts.
  * @param {integer} params.nbDecimals the number of decimals when showing the value.
@@ -263,7 +263,7 @@ function brainsprite(params) {
         0, 0, brain.sprite.width, brain.sprite.height)
     };
 
-    // Draw the X canvas (sagital)
+    // Draw the X canvas (sagittal)
     brain.planes.canvasX = document.createElement('canvas')
     brain.planes.contextX = brain.planes.canvasX.getContext('2d')
     brain.planes.canvasX.width = nY
@@ -373,7 +373,7 @@ function brainsprite(params) {
     // Now draw the slice
     switch (type) {
       case 'X':
-        // Draw a sagital slice in memory
+        // Draw a sagittal slice in memory
         pos.XW = ((brain.numSlice.X) % brain.nbCol)
         pos.XH = (brain.numSlice.X - pos.XW) / brain.nbCol
         brain.planes.contextX.drawImage(brain.planes.canvasMaster,

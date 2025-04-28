@@ -1,0 +1,142 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-vcs"]
+
+[project]
+authors = [{name = "Nilearn developers"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
+]
+dependencies = ["Tempita", "nilearn[plotting]>=0.10.3"]
+description = "Python API for the brainsprite MRI brain viewer"
+# Version from setuptools_scm
+dynamic = ["version"]
+license = {text = "MIT"}
+maintainers = [{name = "Pierre Bellec", email = "pierre.bellec@gmail.com"}]
+name = "brainsprite"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+# Requirements necessary for building the documentation
+doc = [
+    "sphinx>=7.4.7",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-gallery>=0.18.0",
+    "sphinx_rtd_theme",
+    "sphinx-js",
+    "myst-parser>=3.0.1"
+]
+# For running unit and docstring tests
+test = ["coverage", "pytest>=6.0.0", "pytest-cov"]
+
+[project.urls]
+"Bug Reports" = "https://github.com/brainsprite/brainsprite/issues"
+Funding = "https://ccna-ccnv.ca/"
+Homepage = "https://brainsprite.github.io"
+Source = "https://github.com/brainsprite/brainsprite/"
+
+[tool.codespell]
+builtin = "clear,rare,en-GB_to_en-US"
+ignore-words = ".github/codespell_ignore_words.txt"
+skip = "./.git"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/brainsprite/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/brainsprite"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers --doctest-modules --showlocals -s -vv"
+doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
+junit_family = "xunit2"
+log_cli_level = "INFO"
+minversion = "6.0"
+xfail_strict = true
+
+[tool.ruff]
+include = [
+    "pyproject.toml",
+    "src/**/*.py",
+    "docs/**/*.py",
+    "tests/**/*.py"
+]
+indent-width = 4
+line-length = 100
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+fixable = ["ALL"]
+ignore = [
+    "D101",
+    "D104",
+    "D205",
+    "ERA001",
+    "F821",
+    "N801",
+    "N803"
+]
+# List of all the ruff rules (includes why the rule matters)
+# https://docs.astral.sh/ruff/rules/
+select = [
+    "ARG",
+    "B",
+    "C",
+    "D",
+    "E",
+    "ERA",
+    "F",
+    "FLY",
+    "FURB",
+    "I",
+    "N",
+    "NPY",
+    "PERF",
+    "PIE",
+    "PTH",
+    "PD",
+    "PGH",
+    "PLR",
+    "RUF",
+    "SIM",
+    "UP",
+    "W"
+]
+unfixable = []
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+"examples/**/*" = ["B018", "E402", "D203", "D213", "D400", "D415"]
+"tests/python/*" = ["D103", "D404", "PLR2004"]
+
+[tool.ruff.lint.pylint]
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-args
+max-args = 20
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-branches
+max-branches = 15
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-returns
+max-returns = 3
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-statements
+max-statements = 25
