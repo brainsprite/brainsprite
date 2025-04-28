@@ -129,7 +129,7 @@ max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
 "brainsprite/**/tests/*" = ["D103", "D404", "PLR2004"]
-"tests/**/*" = ["B018", "E402", "D203", "D213"]
+"tests/**/*" = ["B018", "E402", "D203", "D213", "D400", "D415"]
 
 [tool.ruff.lint.pylint]
 # https://docs.astral.sh/ruff/settings/#lint_pylint_max-args

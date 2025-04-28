@@ -1,4 +1,4 @@
-"""Statistical map viewer.
+"""Statistical map viewer
 ======================
 
 Generate a brainsprite viewer for an activation map with an anatomical
