@@ -1,4 +1,4 @@
-"""Anatomical scan viewer.
+"""Anatomical scan viewer
 ======================
 
 Generate a brainsprite viewer for an anatomical MRI scan, by populating an html
