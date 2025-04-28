@@ -6,5 +6,3 @@
 # Brainsprite
 
 Brainsprite is a library to incorporate interactive brain viewers in html web documents. Brainsprite is composed of two components: a javascript rendering engine, and a python API used to populate an html template with all necessary data and meta data. The documentation of the project can be found on https://brainsprite.github.io
-
-
