@@ -126,4 +126,4 @@ ENV/
 
 
 # hatchling
-brainsprite/_version.py
+src/brainsprite/_version.py
