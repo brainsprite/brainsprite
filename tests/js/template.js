@@ -32,7 +32,7 @@ module.exports.fullTest = (file, clip) => {
 
         // copy the screenshot as a thumbnail in the docs
         // also archive a copy of the screenshot as future reference, if specified
-        const fileThumb = buildFilePNG(file, '../docs/build/html/_images/sphx_glr_', '_thumb')
+        const fileThumb = buildFilePNG(file, '../../docs/build/html/_images/sphx_glr_', '_thumb')
         fs.copyFileSync(fileCurrent, fileThumb)
         const fileReference = buildFilePNG(file, '', '_reference')
         if ('TEST_RUN' in process.env && process.env.TEST_RUN === 'init') {
