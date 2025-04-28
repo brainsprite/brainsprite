@@ -416,7 +416,7 @@ class viewer_substitute:
         js_dir = Path(__file__).parent / "data" / "js"
         if (js_dir / "brainsprite.js").exists():
             with (js_dir / "brainsprite.js").open("r") as f:
-                self.library_ = f.read()            
+                self.library_ = f.read()
         else:
             with (js_dir / "brainsprite.min.js").open("r") as f:
                 self.library_ = f.read()
