@@ -2,6 +2,7 @@ clean:
 	make -C docs clean
 	rm -fr dist
 	rm -fr examples/*.html
+	rm -fr tests/js/*.html
 	rm -fr src/brainsprite/data/js/brainsprite.js
 
 install:
