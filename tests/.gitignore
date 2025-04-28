@@ -3,3 +3,4 @@ plot_anat_diff.png
 plot_stat_map.png
 plot_stat_map_diff.png
 .puppeteerEndpoint
+js/*.html

@@ -411,9 +411,15 @@ class viewer_substitute:
         )
 
         # Add the brainsprite.min.js library
+        # if the unminified version is present,
+        # we rely on it (useful for testing coverage in javascript)
         js_dir = Path(__file__).parent / "data" / "js"
-        with (js_dir / "brainsprite.min.js").open("r") as f:
-            self.library_ = f.read()
+        if (js_dir / "brainsprite.js").exists():
+            with (js_dir / "brainsprite.js").open("r") as f:
+                self.library_ = f.read()
+        else:
+            with (js_dir / "brainsprite.min.js").open("r") as f:
+                self.library_ = f.read()
 
         # Suggest a size for the viewer
         # width x height, in pixels
