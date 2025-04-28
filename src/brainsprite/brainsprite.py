@@ -22,7 +22,7 @@ from nilearn.plotting.img_plotting import load_anat
 from nilearn.plotting.js_plotting_utils import colorscale
 
 
-def _data_to_sprite(data):
+def _data_to_sprite(data, radiological=False):
     """Convert a 3D array into a sprite of sagittal slices.
     Returns: sprite (2D numpy array)
     If each sagittal slice is nz (height) x ny (width) pixels, the sprite
@@ -37,12 +37,20 @@ def _data_to_sprite(data):
     sprite = np.zeros((nrows * nz, ncolumns * ny))
     indrow, indcol = np.where(np.ones((nrows, ncolumns)))
 
-    for xx in range(nx):
-        # we need to flip the image in the x axis
-        sprite[
-            (indrow[xx] * nz) : ((indrow[xx] + 1) * nz),
-            (indcol[xx] * ny) : ((indcol[xx] + 1) * ny),
-        ] = data[xx, :, ::-1].transpose()
+    if radiological:
+        for xx in range(nx):
+            # we need to flip the image in the x axis
+            sprite[
+                (indrow[xx] * nz) : ((indrow[xx] + 1) * nz),
+                (indcol[xx] * ny) : ((indcol[xx] + 1) * ny),
+            ] = data[nx - xx - 1, :, ::-1].transpose()
+    else:
+        for xx in range(nx):
+            # we need to flip the image in the x axis
+            sprite[
+                (indrow[xx] * nz) : ((indrow[xx] + 1) * nz),
+                (indcol[xx] * ny) : ((indcol[xx] + 1) * ny),
+            ] = data[xx, :, ::-1].transpose()
 
     return sprite
 
