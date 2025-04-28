@@ -6,7 +6,7 @@
   "directories": {
     "doc": "docs",
     "test": "tests",
-    "python": "brainsprite"
+    "python": "src/brainsprite"
   },
   "scripts": {
     "test": "jest"
@@ -37,9 +37,11 @@
     "express": "^4.17.1",
     "jest": "^29.7.0",
     "jsdoc": "^4.0.4",
+    "nyc": "^17.1.0",
     "pixelmatch": "^5.1.0",
     "pngjs": "^4.0.0",
-    "puppeteer": "^22.8.2"
+    "puppeteer": "^22.8.2",
+    "puppeteer-to-istanbul": "^1.4.0"
   },
   "dependencies": {
     "jquery": "^3.5.0"
