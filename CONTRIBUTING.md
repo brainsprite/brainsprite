@@ -5,15 +5,14 @@
 ### Javascript
 
 ```bash
-npm install
-make test
+make coverage
 ```
 
 ### Python
 
 ```bash
 pip install tox
-tox run -e test -- brainsprite
+tox run -e test -- tests/python
 ```
 
 ## Build the documentation
