@@ -73,7 +73,7 @@ coverage.xml
 docs/build/
 docs/source/_static/brainsprite.js
 docs/source/auto_examples
-examples/*.html
+examples/plot*.html
 sg_execution_times.rst
 
 # PyBuilder
