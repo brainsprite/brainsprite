@@ -216,9 +216,7 @@ def test_viewer_substitute():
     with warnings.catch_warnings(record=True) as w:
         # Create a fake functional image by resample the template
         img = image.resample_img(mni, target_affine=3 * np.eye(3))
-        file_template = (
-            Path(__file__).resolve().parent.joinpath("..", "data", "html", "viewer_template.html")
-        )
+        file_template =             Path(__file__).resolve().parent / "data" / "html" / "viewer_template.html"        
         template = tempita.Template.from_filename(file_template, encoding="utf-8")
         bsprite = bp.viewer_substitute(
             cmap="gray",

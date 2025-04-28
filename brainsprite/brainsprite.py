@@ -477,14 +477,14 @@ class viewer_substitute:
     def _brainsprite_html(self, bg_img, stat_map_img, mask_img):
         """Create an html snippet for the brainsprite viewer (with sprite data)."""
         # Initiate template
-        resource_path = Path(__file__).resolve().parent.joinpath("data", "html")
+        resource_path = Path(__file__).resolve().parent / "data" / "html"
         if self.base64:
-            file_template = resource_path.joinpath("brainsprite_template_base64.html")
+            file_template = resource_path / "brainsprite_template_base64.html"
             file_bg = None
             file_overlay = None
             file_colormap = None
         else:
-            file_template = resource_path.joinpath("brainsprite_template.html")
+            file_template = resource_path / "brainsprite_template.html"
             file_bg = f"{self.sprite}.png"
             file_bg = f"{self.sprite_overlay}.png"
             file_colormap = f"{self.img_colorMap}.png"
@@ -520,8 +520,8 @@ class viewer_substitute:
     def _brainsprite_js(self, shape, affine, colorFont, colorBackground):
         """Create a js snippet for the brainsprite viewer."""
         # Initiate template
-        resource_path = Path(__file__).resolve().parent.joinpath("data", "js")
-        file_template = resource_path.joinpath("brainsprite_template.js")
+        resource_path = Path(__file__).resolve().parent / "data" / "js"
+        file_template = resource_path / "brainsprite_template.js"
         tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
         return tpl.substitute(
