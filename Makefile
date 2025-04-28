@@ -3,11 +3,14 @@ clean:
 	rm -fr dist
 # rm -rf $SCRIPTPATH/tests/plot_*.html
 
-minify:
+install:
+	npm install
+
+minify: install
 	node build.js
 	cp brainsprite.min.js src/brainsprite/data/js/
 
-js_test:
+js_test: install
 	mkdir -p docs/build/html/_images
 	npm test
 
