@@ -199,14 +199,9 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     return cut_slices
 
 
-def _save_sprite(img,
-                 vmax,
-                 vmin,
-                 output_sprite=None,
-                 mask=None,
-                 cmap="Grays",
-                 format="png",
-                 radiological=False):
+def _save_sprite(
+    img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", format="png", radiological=False
+):
     """Generate a sprite from a 3D Niimg-like object.
     Returns: sprite.
     """
