@@ -1,0 +1,8 @@
+---
+languages:
+    python:
+        enabled: false
+    javascript:
+        enabled: false
+exclude_paths:
+-   '**/*'
