@@ -163,6 +163,8 @@ function initColorMap (colorMap) {
  * @param {string} params.onclick command to call on click.
  * @param {object} params.colormap object. if false, no colormap.
  * @param {boolean} params.nanValue unable to read values.
+ * @param {boolean} params.radiological If true plot sections as a radiological view.
+ * @param {boolean} params.showLR: If true, positions and left/right annotation are added to the plot.
  * @return {object} a brainsprite viewer object.
  */
 function brainsprite(params) {
