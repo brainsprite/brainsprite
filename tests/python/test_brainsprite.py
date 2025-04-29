@@ -245,6 +245,33 @@ def test_viewer_substitute():
     ), f"the following warnings were not expected: {warnings_set.difference(expected_set)}"
 
 
+def test_viewer_substitute_radiological():
+    mni = datasets.load_mni152_template()
+
+    # Create a fake functional image by resample the template
+    img = image.resample_img(mni, target_affine=3 * np.eye(3))
+
+    file_template = Path(__file__).resolve().parent / "data" / "html" / "viewer_template.html"
+
+    template = tempita.Template.from_filename(file_template, encoding="utf-8")
+
+    bsprite = bp.viewer_substitute(
+        cmap="gray",
+        symmetric_cmap=False,
+        black_bg=True,
+        threshold=None,
+        vmax=250,
+        title="Slice viewer",
+        value=False,
+        radiological=False,
+        showLR=False,
+    )
+    bsprite.fit(img)
+    viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
+
+    _check_html(viewer)
+
+
 def _check_html(html_view):
     """Check the presence of some expected code in the html viewer."""
     assert isinstance(html_view, bp.StatMapView)

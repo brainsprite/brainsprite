@@ -28,7 +28,11 @@ stat_img = motor_images.images[0]
 from brainsprite import viewer_substitute
 
 bsprite = viewer_substitute(
-    threshold=3, opacity=0.5, title="plot_stat_map", cut_coords=[36, -27, 66]
+    threshold=3,
+    opacity=0.5,
+    title="plot_stat_map",
+    cut_coords=[36, -27, 66],
+    radiological=True,
 )
 bsprite.fit(stat_img, bg_img=anat)
 

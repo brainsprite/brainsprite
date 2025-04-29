@@ -46,6 +46,7 @@ bsprite = viewer_substitute(
     vmax=250,
     title="anatomical scan",
     value=False,
+    radiological=False,
 )
 bsprite.fit(haxby_anat_filename)
 

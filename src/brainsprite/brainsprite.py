@@ -22,7 +22,7 @@ from nilearn.plotting.img_plotting import load_anat
 from nilearn.plotting.js_plotting_utils import colorscale
 
 
-def _data_to_sprite(data):
+def _data_to_sprite(data, radiological=False):
     """Convert a 3D array into a sprite of sagittal slices.
     Returns: sprite (2D numpy array)
     If each sagittal slice is nz (height) x ny (width) pixels, the sprite
@@ -37,12 +37,20 @@ def _data_to_sprite(data):
     sprite = np.zeros((nrows * nz, ncolumns * ny))
     indrow, indcol = np.where(np.ones((nrows, ncolumns)))
 
-    for xx in range(nx):
-        # we need to flip the image in the x axis
-        sprite[
-            (indrow[xx] * nz) : ((indrow[xx] + 1) * nz),
-            (indcol[xx] * ny) : ((indcol[xx] + 1) * ny),
-        ] = data[xx, :, ::-1].transpose()
+    if radiological:
+        for xx in range(nx):
+            # we need to flip the image in the x axis
+            sprite[
+                (indrow[xx] * nz) : ((indrow[xx] + 1) * nz),
+                (indcol[xx] * ny) : ((indcol[xx] + 1) * ny),
+            ] = data[nx - xx - 1, :, ::-1].transpose()
+    else:
+        for xx in range(nx):
+            # we need to flip the image in the x axis
+            sprite[
+                (indrow[xx] * nz) : ((indrow[xx] + 1) * nz),
+                (indcol[xx] * ny) : ((indcol[xx] + 1) * ny),
+            ] = data[xx, :, ::-1].transpose()
 
     return sprite
 
@@ -191,16 +199,18 @@ def _get_cut_slices(stat_map_img, cut_coords=None, threshold=None):
     return cut_slices
 
 
-def _save_sprite(img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", format="png"):
+def _save_sprite(
+    img, vmax, vmin, output_sprite=None, mask=None, cmap="Grays", format="png", radiological=False
+):
     """Generate a sprite from a 3D Niimg-like object.
     Returns: sprite.
     """
     # Create sprite
-    sprite = _data_to_sprite(safe_get_data(img, ensure_finite=True))
+    sprite = _data_to_sprite(safe_get_data(img, ensure_finite=True), radiological)
 
     # Mask the sprite
     if mask is not None:
-        mask = _data_to_sprite(safe_get_data(mask, ensure_finite=True))
+        mask = _data_to_sprite(safe_get_data(mask, ensure_finite=True), radiological)
         sprite = np.ma.array(sprite, mask=mask)
 
     # Save the sprite
@@ -307,6 +317,8 @@ class viewer_substitute:
         If the flag is off, the sprites (and the colorbar) will be saved in
         files named based on parameters sprite, sprite_overlay and img_colorMap.
     :type base64: boolean (default True)
+    :type radiological: boolean (default False)
+    :type showLR: boolean (default True)
 
     :return bsprite: a brainsprite viewer template substitution tool.
 
@@ -334,6 +346,8 @@ class viewer_substitute:
         opacity=1,
         value=True,
         base64=True,
+        radiological=False,
+        showLR=True,
     ):
         """Set up default attributes for the class."""
         self.canvas = canvas
@@ -356,6 +370,8 @@ class viewer_substitute:
         self.opacity = opacity
         self.value = value
         self.base64 = base64
+        self.radiological = radiological
+        self.showLR = showLR
 
     def fit(self, stat_map_img, bg_img="MNI152"):
         """Generate sprite and meta-data from a brain volume. Also optionally
@@ -508,6 +524,7 @@ class viewer_substitute:
                 vmax=self.bg_max_,
                 vmin=self.bg_min_,
                 cmap="gray",
+                radiological=self.radiological,
             ),
             overlay_base64=_save_sprite(
                 output_sprite=file_overlay,
@@ -516,6 +533,7 @@ class viewer_substitute:
                 vmin=self.colors_["vmin"],
                 mask=mask_img,
                 cmap=self.cmap,
+                radiological=self.radiological,
             ),
             colormap_base64=_save_cm(
                 output_cmap=file_colormap, cmap=self.colors_["cmap"], format="png"
@@ -555,4 +573,6 @@ class viewer_substitute:
             min=self.colors_["vmin"],
             max=self.colors_["vmax"],
             colorbar=float(not self.colorbar),
+            radiological=float(self.radiological),
+            showLR=float(self.showLR),
         )
