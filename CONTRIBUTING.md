@@ -5,6 +5,7 @@
 ### Javascript
 
 ```bash
+pip install tox
 make coverage
 ```
 
