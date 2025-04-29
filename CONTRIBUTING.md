@@ -2,7 +2,7 @@
 
 ## Code style
 
-The repository relies on pre-commit to enforce code-style at commit time
+The repository relies on pre-commit to enforce code style at commit time
 and in continuous-integration.
 
 To run it locally:
@@ -20,13 +20,6 @@ pre-commit install
 
 ## Run tests
 
-### Javascript
-
-```bash
-pip install tox
-make coverage
-```
-
 ### Python
 
 ```bash
@@ -34,7 +27,21 @@ pip install tox
 tox run -e test -- tests/python
 ```
 
+### Javascript
+
+The javascript tests check how brainsprite behaves in the browser,
+so the python `examples/*.py` are run via tox to generate the html pages to test.
+
+All of this can be handled via make.
+
+```bash
+pip install tox
+make coverage
+```
+
 ## Build the documentation
+
+Documentation includes some examples generated via sphinx-gallery.
 
 Output will be in `docs/build/html`.
 

@@ -24,6 +24,7 @@ jobs:
     test_python:
         # - minify jsavascript code and add it to python package
         # - run python tests via tox
+        # - upload coverage as artifacts and to codecov
 
         name: Test with ${{ matrix.py }} on ${{ matrix.os }}
 
@@ -85,6 +86,7 @@ jobs:
         # - run js test with browser coverage
         #   - copy non-minified version of the code in python package (useful for coverage)
         #   - run python examples to generate html required by javascript tests
+        # - upload coverage as artifacts
 
         runs-on: ubuntu-latest
 
