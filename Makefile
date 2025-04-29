@@ -20,7 +20,7 @@ build: clean minify
 
 .PHONY: src/brainsprite/data/js/brainsprite.js
 src/brainsprite/data/js/brainsprite.js:
-	cp brainsprite.js src/brainsprite/data/js
+	cp src/brainsprite.js src/brainsprite/data/js
 
 .PHONY: tests/js/*html
 tests/js/*html: src/brainsprite/data/js/brainsprite.js
