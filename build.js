@@ -1,6 +1,6 @@
 // build.js
-const esbuild = require('esbuild');
-const { version } = require('./package.json');
+const esbuild = require('esbuild')
+const { version } = require('./package.json')
 
 esbuild.build({
   entryPoints: ['brainsprite.js'],
@@ -9,4 +9,4 @@ esbuild.build({
   banner: {
     js: `/*! brainsprite v${version} */`
   }
-});
+})

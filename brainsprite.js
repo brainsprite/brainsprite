@@ -1,12 +1,12 @@
 function displayFloat (v, nbDecimals) {
-  var str = parseFloat(v).toFixed(nbDecimals)
+  const str = parseFloat(v).toFixed(nbDecimals)
   return str.indexOf('.') === -1 ? str + '.' : str.replace(/0+$/, '')
 }
 
 function initBrain (params) {
   // Parameter initialization - for internal use
 
-  var defaultParams = {
+  const defaultParams = {
     smooth: false,
     flagValue: false,
     colorBackground: '#000000',
@@ -25,9 +25,9 @@ function initBrain (params) {
     numSlice: false,
     onclick: '',
     radiological: false,
-    showLR: true,
+    showLR: true
   }
-  var brain = Object.assign({}, defaultParams, params)
+  const brain = Object.assign({}, defaultParams, params)
 
   // Build affine, if not specified
   if (typeof brain.affine === 'boolean' && brain.affine === false) {
@@ -45,11 +45,11 @@ function initBrain (params) {
 
   // Coordinates for current slices -
   // these will get updated when drawing the slices
-  brain.coordinatesSlice = { 'X': 0, 'Y': 0, 'Z': 0 }
+  brain.coordinatesSlice = { X: 0, Y: 0, Z: 0 }
 
   // width and height for the canvas
-  brain.widthCanvas = { 'X': 0, 'Y': 0, 'Z': 0, 'max': 0 }
-  brain.heightCanvas = { 'X': 0, 'Y': 0, 'Z': 0, 'max': 0 }
+  brain.widthCanvas = { X: 0, Y: 0, Z: 0, max: 0 }
+  brain.heightCanvas = { X: 0, Y: 0, Z: 0, max: 0 }
 
   return brain
 }
@@ -116,7 +116,8 @@ function initOverlay (brain, sprite, nbSlice) {
   brain.overlay.nbCol = brain.overlay.sprite.width / nbSlice.Y
   brain.overlay.nbRow = brain.overlay.sprite.height / nbSlice.Z
   brain.overlay.nbSlice = {
-    X: typeof nbSlice.X !== 'undefined' ? nbSlice.X
+    X: typeof nbSlice.X !== 'undefined'
+      ? nbSlice.X
       : brain.overlay.nbCol * brain.overlay.nbRow,
     Y: nbSlice.Y,
     Z: nbSlice.Z
@@ -167,7 +168,7 @@ function initColorMap (colorMap) {
  * @param {boolean} params.showLR: If true, positions and left/right annotation are added to the plot.
  * @return {object} a brainsprite viewer object.
  */
-function brainsprite(params) {
+function brainsprite (params) {
   let brain = initBrain(params)
   brain = initCanvas(brain, params.canvas)
   brain = initSprite(brain, params.sprite, params.nbSlice)
@@ -178,7 +179,7 @@ function brainsprite(params) {
     brain.colorMap = initColorMap(params.colorMap)
   };
 
-  let getValue = function (rgb, colorMap) {
+  const getValue = function (rgb, colorMap) {
   // Extract the value associated with a voxel by looking up in a colormap.
     if (!colorMap) {
       return NaN
@@ -198,7 +199,7 @@ function brainsprite(params) {
     return (ind * (colorMap.max - colorMap.min) / (nbColor - 1)) + colorMap.min
   }
 
-  let updateValue = function () {
+  const updateValue = function () {
     // Update voxel value
     const pos = {}
     if (brain.overlay && !brain.nanValue) {
@@ -227,14 +228,14 @@ function brainsprite(params) {
     };
   }
 
-  let vec3FromVec4Mat4Mul = function (result, mat4, vec4) {
+  const vec3FromVec4Mat4Mul = function (result, mat4, vec4) {
     for (let r = 0; r < 3; ++r) {
       result[r] = vec4[0] * mat4[r][0] + vec4[1] * mat4[r][1] + vec4[2] * mat4[r][2] + vec4[3] * mat4[r][3]
     }
   }
 
   const coordVoxel = [0, 0, 0]
-  let updateCoordinates = function () {
+  const updateCoordinates = function () {
     vec3FromVec4Mat4Mul(coordVoxel, brain.affine,
       [brain.numSlice.X + 1, brain.numSlice.Y + 1, brain.numSlice.Z + 1, 1])
     brain.coordinatesSlice.X = coordVoxel[0]
@@ -246,7 +247,7 @@ function brainsprite(params) {
   // Initialize the viewer //
   //* **********************//
   brain.init = function () {
-    let nX = brain.nbSlice.X; let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z
+    const nX = brain.nbSlice.X; const nY = brain.nbSlice.Y; const nZ = brain.nbSlice.Z
 
     brain.resize()
 
@@ -301,8 +302,8 @@ function brainsprite(params) {
   // Resize the viewer //
   //* ******************//
   brain.resize = function () {
-    let clientWidth = brain.canvas.parentElement.clientWidth
-    let nX = brain.nbSlice.X; let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z
+    const clientWidth = brain.canvas.parentElement.clientWidth
+    const nX = brain.nbSlice.X; const nY = brain.nbSlice.Y; const nZ = brain.nbSlice.Z
 
     // Calculate the width of the X, Y and Z slices in the canvas,
     // based on the width of its parent
@@ -342,7 +343,7 @@ function brainsprite(params) {
           brain.heightCanvas.Z)
 
     // Apply the width/height to the canvas, if necessary
-    let widthAll =
+    const widthAll =
         brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z
     if (brain.canvas.width !== widthAll) {
       brain.canvas.width = widthAll
@@ -366,11 +367,11 @@ function brainsprite(params) {
   //* **************************************//
   brain.draw = function (slice, type) {
     // Init variables
-    let pos = {}; let coord; let coordWidth
-    let offX = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.X / 2)
-    let offY = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Y / 2)
-    let offZ = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Z / 2)
-    let nY = brain.nbSlice.Y; let nZ = brain.nbSlice.Z; let xx
+    const pos = {}; let coord; let coordWidth
+    const offX = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.X / 2)
+    const offY = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Y / 2)
+    const offZ = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Z / 2)
+    const nY = brain.nbSlice.Y; const nZ = brain.nbSlice.Z; let xx
 
     // Now draw the slice
     switch (type) {
@@ -434,8 +435,8 @@ function brainsprite(params) {
         brain.context.fillRect(brain.widthCanvas.X, 0, brain.widthCanvas.Y,
           brain.canvas.height)
         for (xx = 0; xx < brain.nbSlice.X; xx++) {
-          let posW = (xx % brain.nbCol)
-          let posH = (xx - posW) / brain.nbCol
+          const posW = (xx % brain.nbCol)
+          const posH = (xx - posW) / brain.nbCol
           brain.planes.contextY.drawImage(brain.planes.canvasMaster,
             posW * brain.nbSlice.Y + brain.numSlice.Y, posH * brain.nbSlice.Z,
             1, brain.nbSlice.Z, xx, 0, 1, brain.nbSlice.Z)
@@ -493,23 +494,23 @@ function brainsprite(params) {
         if (brain.showLR) {
           const isRadiological = !!brain.radiological
           const centerY = Math.round(brain.canvas.height / 2)
-        
+
           const { font, textAlign, textBaseline } = brain.context
-        
+
           brain.context.font = `${brain.sizeFontPixels}px Arial`
           brain.context.textAlign = 'center'
           brain.context.textBaseline = 'middle'
           brain.context.fillStyle = brain.colorFont
-        
+
           const labelLeft = isRadiological ? 'R' : 'L'
           const labelRight = isRadiological ? 'L' : 'R'
-        
-          const paddingRatio = 0.05  // 5% from each side
+
+          const paddingRatio = 0.05 // 5% from each side
           const offsetX = brain.widthCanvas.Y * paddingRatio
-        
+
           brain.context.fillText(labelLeft, brain.widthCanvas.X + offsetX, centerY)
           brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y - offsetX, centerY)
-        
+
           brain.context.font = font
           brain.context.textAlign = textAlign
           brain.context.textBaseline = textBaseline
@@ -523,8 +524,8 @@ function brainsprite(params) {
         brain.context.fillRect(brain.widthCanvas.X + brain.widthCanvas.Y, 0,
           brain.widthCanvas.Z, brain.canvas.height)
         for (xx = 0; xx < brain.nbSlice.X; xx++) {
-          let posW = (xx % brain.nbCol)
-          let posH = (xx - posW) / brain.nbCol
+          const posW = (xx % brain.nbCol)
+          const posH = (xx - posW) / brain.nbCol
           brain.planes.contextZ.drawImage(brain.planes.canvasMaster,
             posW * brain.nbSlice.Y, posH * brain.nbSlice.Z + brain.nbSlice.Z -
             brain.numSlice.Z - 1, brain.nbSlice.Y, 1, 0, xx, brain.nbSlice.Y, 1)
@@ -558,23 +559,23 @@ function brainsprite(params) {
         if (brain.showLR) {
           const isRadiological = !!brain.radiological
           const centerY = Math.round(brain.canvas.height / 2)
-        
+
           const { font, textAlign, textBaseline } = brain.context
-        
+
           brain.context.font = `${brain.sizeFontPixels}px Arial`
           brain.context.textAlign = 'center'
           brain.context.textBaseline = 'middle'
           brain.context.fillStyle = brain.colorFont
-        
+
           const labelLeft = isRadiological ? 'R' : 'L'
           const labelRight = isRadiological ? 'L' : 'R'
-        
-          const paddingRatio = 0.05  // 5% from each side
+
+          const paddingRatio = 0.05 // 5% from each side
           const offsetX = brain.widthCanvas.Y * paddingRatio
-        
+
           brain.context.fillText(labelLeft, brain.widthCanvas.X + brain.widthCanvas.Y + offsetX, centerY)
           brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z - offsetX, centerY)
-        
+
           brain.context.font = font
           brain.context.textAlign = textAlign
           brain.context.textBaseline = textBaseline
@@ -584,9 +585,9 @@ function brainsprite(params) {
 
   // In case of click, update brain slices
   brain.clickBrain = function (e) {
-    let rect = brain.canvas.getBoundingClientRect()
+    const rect = brain.canvas.getBoundingClientRect()
     let xx = e.clientX - rect.left
-    let yy = e.clientY - rect.top
+    const yy = e.clientY - rect.top
     let sy, sz
 
     if (xx < brain.widthCanvas.X) {
@@ -597,15 +598,15 @@ function brainsprite(params) {
       brain.numSlice.Z = Math.max(Math.min(sz, brain.nbSlice.Z - 1), 0)
     } else if (xx < (brain.widthCanvas.X + brain.widthCanvas.Y)) {
       xx = xx - brain.widthCanvas.X
-      let sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Y))
-      let sz = Math.round((brain.nbSlice.Z - 1) * (((brain.heightCanvas.max +
+      const sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Y))
+      const sz = Math.round((brain.nbSlice.Z - 1) * (((brain.heightCanvas.max +
         brain.heightCanvas.X) / 2) - yy) / brain.heightCanvas.X)
       brain.numSlice.X = Math.max(Math.min(sx, brain.nbSlice.X - 1), 0)
       brain.numSlice.Z = Math.max(Math.min(sz, brain.nbSlice.Z - 1), 0)
     } else {
       xx = xx - brain.widthCanvas.X - brain.widthCanvas.Y
-      let sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Z))
-      let sy = Math.round((brain.nbSlice.Y - 1) * (((brain.heightCanvas.max +
+      const sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Z))
+      const sy = Math.round((brain.nbSlice.Y - 1) * (((brain.heightCanvas.max +
         brain.heightCanvas.Z) / 2) - yy) / brain.heightCanvas.Z)
       brain.numSlice.X = Math.max(Math.min(sx, brain.nbSlice.X - 1), 0)
       brain.numSlice.Y = Math.max(Math.min(sy, brain.nbSlice.Y - 1), 0)

@@ -1,4 +1,4 @@
-const template = require('./template.js');
+const template = require('./template.js')
 
 file = 'plot_anat.html'
 template.fullTest(file,

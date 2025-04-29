@@ -34,4 +34,4 @@ coverage: install tests/js/*html
 	mkdir -p docs/build/html/_images
 	npm run test
 	npm i nyc -g
-	nyc report --reporter=html 
+	nyc report --reporter=html
