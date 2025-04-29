@@ -3,7 +3,7 @@ const esbuild = require('esbuild')
 const { version } = require('./package.json')
 
 esbuild.build({
-  entryPoints: ['brainsprite.js'],
+  entryPoints: ['src/brainsprite.js'],
   outfile: 'dist/brainsprite.min.js',
   minify: true,
   banner: {

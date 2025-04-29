@@ -2,10 +2,6 @@ const NodeEnvironment = require('jest-environment-node').default
 const puppeteer = require('puppeteer')
 
 class TestEnvironment extends NodeEnvironment {
-  // constructor (config) {
-  //   super(config)
-  // }
-
   async setup () {
     await super.setup()
 

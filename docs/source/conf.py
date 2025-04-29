@@ -91,4 +91,4 @@ html_css_files = [
     "css/custom.css",
 ]
 
-js_source_path = "../../"
+js_source_path = "../../src"
