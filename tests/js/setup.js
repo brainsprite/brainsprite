@@ -5,7 +5,7 @@ const path = require('path')
 
 module.exports = async function () {
   const app = express()
-  app.use(express.static(__dirname + '/'))
+  app.use(express.static(path.join(__dirname, '/')))
   global.__SERVER__ = app.listen(8080)
 
   const browser = await puppeteer.launch({

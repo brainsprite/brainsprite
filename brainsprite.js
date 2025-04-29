@@ -168,7 +168,7 @@ function initColorMap (colorMap) {
  * @param {boolean} params.showLR: If true, positions and left/right annotation are added to the plot.
  * @return {object} a brainsprite viewer object.
  */
-function brainsprite (params) {
+function brainsprite (params) { // eslint-disable-line no-unused-vars
   let brain = initBrain(params)
   brain = initCanvas(brain, params.canvas)
   brain = initSprite(brain, params.sprite, params.nbSlice)

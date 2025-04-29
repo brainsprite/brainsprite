@@ -1,5 +1,6 @@
+/* global __BROWSER__ */
+
 const path = require('path')
-const http = require('http')
 const fs = require('fs')
 const PNG = require('pngjs').PNG
 const pixelmatch = require('pixelmatch')
@@ -11,7 +12,6 @@ const buildFilePNG = function (file, prefix, suffix) {
 module.exports.fullTest = (file, clip) => {
   describe('index page', () => {
     let page
-    const fileCurrent = buildFilePNG(file, '', '')
 
     beforeAll(async () => {
       page = await __BROWSER__.newPage()
