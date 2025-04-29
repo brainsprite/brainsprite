@@ -23,7 +23,7 @@ pip install tox
 tox run -e doc
 ```
 
-## Build the distributions 
+## Build the distributions
 
 ```bash
 make build

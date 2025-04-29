@@ -14,7 +14,7 @@ repos:
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: mixed-line-ending
-    # -   id: trailing-whitespace
+    -   id: trailing-whitespace
 
     # Checks for .rst files
 -   repo: https://github.com/pre-commit/pygrep-hooks
@@ -56,6 +56,11 @@ repos:
     hooks:
     -   id: prettier
         types_or: [css]
+
+-   repo: https://github.com/standard/standard
+    rev: v17.1.2
+    hooks:
+    -   id: standard
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.3
