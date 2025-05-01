@@ -493,7 +493,8 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
 
         if (brain.showLR) {
           const isRadiological = !!brain.radiological
-          const centerY = Math.round(brain.canvas.height / 2)
+
+          const paddingTop = Math.round(0.22 * brain.canvas.height)
 
           const { font, textAlign, textBaseline } = brain.context
 
@@ -508,8 +509,8 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
           const paddingRatio = 0.05 // 5% from each side
           const offsetX = brain.widthCanvas.Y * paddingRatio
 
-          brain.context.fillText(labelLeft, brain.widthCanvas.X + offsetX, centerY)
-          brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y - offsetX, centerY)
+          brain.context.fillText(labelLeft, brain.widthCanvas.X + offsetX, paddingTop)
+          brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y - offsetX, paddingTop)
 
           brain.context.font = font
           brain.context.textAlign = textAlign
@@ -558,7 +559,8 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
 
         if (brain.showLR) {
           const isRadiological = !!brain.radiological
-          const centerY = Math.round(brain.canvas.height / 2)
+
+          const paddingTop = Math.round(0.22 * brain.canvas.height)
 
           const { font, textAlign, textBaseline } = brain.context
 
@@ -573,8 +575,8 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
           const paddingRatio = 0.05 // 5% from each side
           const offsetX = brain.widthCanvas.Y * paddingRatio
 
-          brain.context.fillText(labelLeft, brain.widthCanvas.X + brain.widthCanvas.Y + offsetX, centerY)
-          brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z - offsetX, centerY)
+          brain.context.fillText(labelLeft, brain.widthCanvas.X + brain.widthCanvas.Y + offsetX, paddingTop)
+          brain.context.fillText(labelRight, brain.widthCanvas.X + brain.widthCanvas.Y + brain.widthCanvas.Z - offsetX, paddingTop)
 
           brain.context.font = font
           brain.context.textAlign = textAlign
