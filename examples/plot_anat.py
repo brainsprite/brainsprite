@@ -71,6 +71,7 @@ viewer = bsprite.transform(template, javascript="js", html="html", library="bspr
 # a jupyter notebook:
 viewer
 
+# %%
 # viewer.open_in_browser()
 
 # %%
