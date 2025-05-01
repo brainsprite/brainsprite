@@ -71,6 +71,8 @@ viewer = bsprite.transform(template, javascript="js", html="html", library="bspr
 # a jupyter notebook:
 viewer
 
+# viewer.open_in_browser()
+
 # %%
 # The following instruction can be used to save the viewer in a stand-alone,
 # html document:
