@@ -494,7 +494,7 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
         if (brain.showLR) {
           const isRadiological = !!brain.radiological
 
-          const paddingTop = Math.round(0.22 * brain.canvas.height);
+          const paddingTop = Math.round(0.22 * brain.canvas.height)
 
           const { font, textAlign, textBaseline } = brain.context
 
@@ -560,7 +560,7 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
         if (brain.showLR) {
           const isRadiological = !!brain.radiological
 
-          const paddingTop = Math.round(0.22 * b.canvas.height);
+          const paddingTop = Math.round(0.22 * brain.canvas.height)
 
           const { font, textAlign, textBaseline } = brain.context
 
