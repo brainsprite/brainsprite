@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Python &mdash; brainsprite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=06db1814" />
+
+  
+    <link rel="shortcut icon" href="_static/logo_brainsprite_small.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Javascript" href="APIJS.html" />
+    <link rel="prev" title="Getting started" href="QUICKSTART.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            brainsprite
+              <img src="_static/logo_brainsprite.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="INSTALL.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QUICKSTART.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Python</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#brainsprite.viewer_substitute"><code class="docutils literal notranslate"><span class="pre">viewer_substitute</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#brainsprite.viewer_substitute.fit"><code class="docutils literal notranslate"><span class="pre">viewer_substitute.fit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#brainsprite.viewer_substitute.transform"><code class="docutils literal notranslate"><span class="pre">viewer_substitute.transform()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APIJS.html">API Javascript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">brainsprite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Python</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/brainsprite/brainsprite/blob/edit/master/docs/source/APIPY.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-brainsprite">
+<span id="api-python"></span><h1>API Python<a class="headerlink" href="#module-brainsprite" title="Link to this heading"></a></h1>
+<p>Brainsprite python API.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="brainsprite.viewer_substitute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">brainsprite.</span></span><span class="sig-name descname"><span class="pre">viewer_substitute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas='3Dviewer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sprite='spriteImg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sprite_overlay='overlayImg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_colorMap='colorMap'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_coords=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorbar=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">draw_cross=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">black_bg='auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap=&lt;matplotlib.colors.LinearSegmentedColormap</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetric_cmap=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim='auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resampling_interpolation='continuous'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base64=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radiological=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showLR=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#brainsprite.viewer_substitute" title="Link to this definition"></a></dt>
+<dd><p>Templating tool to insert a brainsprite viewer in an HTML document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>canvas</strong> (<em>str</em><em>, </em><em>optional</em>) – The label for the brainsprite html canvas.</p></li>
+<li><p><strong>sprite</strong> (<em>str</em><em>, </em><em>optional</em>) – The label for the html sprite background image.</p></li>
+<li><p><strong>sprite_overlay</strong> (<em>str</em><em>, </em><em>optional</em>) – The label for the html sprite overlay image.</p></li>
+<li><p><strong>img_colorMap</strong> (<em>str</em><em>, </em><em>optional</em>) – The label for the html colormap image.</p></li>
+<li><p><strong>cut_coords</strong> (<em>None</em><em>, or </em><em>a tuple</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – The MNI coordinates of the point where the cut is performed
+as a 3-tuple: (x, y, z). If None is given, the cuts are calculated
+automatically.</p></li>
+<li><p><strong>colorbar</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, display a colorbar on top of the plots.</p></li>
+<li><p><strong>title</strong> (<em>string</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – The title displayed on the figure (or None: no title).</p></li>
+<li><p><strong>threshold</strong> (<em>string</em><em>, </em><em>number</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – If None is given, the image is not thresholded.
+If a string of the form “90%” is given, use the 90-th percentile of
+the absolute value in the image.
+If a number is given, it is used to threshold the image:
+values below the threshold (in absolute value) are plotted
+as transparent. If auto is given, the threshold is determined
+automatically.</p></li>
+<li><p><strong>annotate</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If annotate is True, current cuts are added to the viewer.</p></li>
+<li><p><strong>draw_cross</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If draw_cross is True, a cross is drawn on the plot to
+indicate the cuts.</p></li>
+<li><p><strong>black_bg</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the background of the image is set to be black.
+Otherwise, a white background is used.
+If set to auto, an educated guess is made to find if the background
+is white or black.</p></li>
+<li><p><strong>cmap</strong> (<em>matplotlib colormap</em><em>, </em><em>optional</em>) – The colormap for specified image.</p></li>
+<li><p><strong>symmetric_cmap</strong> (<em>bool</em><em>, </em><em>optional</em>) – True: make colormap symmetric (ranging from -vmax to vmax).
+False: the colormap will go from the minimum of the volume to vmax.
+Set it to False if you are plotting a positive volume, e.g. an atlas
+or an anatomical image.</p></li>
+<li><p><strong>dim</strong> (<em>float</em><em> or </em><em>'auto'</em><em>, </em><em>optional</em>) – Dimming factor applied to background image. By default, automatic
+heuristics are applied based upon the background image intensity.
+Accepted float values, where a typical scan is between -2 and 2
+(-2 = increase contrast; 2 = decrease contrast), but larger values
+can be used for a more pronounced effect. 0 means no dimming.</p></li>
+<li><p><strong>vmax</strong> (<em>float</em><em>, or </em><em>None</em><em>, </em><em>optional</em>) – max value for mapping colors.
+If vmax is None and symmetric_cmap is True, vmax is the max
+absolute value of the volume.
+If vmax is None and symmetric_cmap is False, vmax is the max
+value of the volume.</p></li>
+<li><p><strong>vmin</strong> (<em>float</em><em>, or </em><em>None</em><em>, </em><em>optional</em>) – min value for mapping colors.
+If <cite>symmetric_cmap</cite> is <cite>True</cite>, <cite>vmin</cite> is always equal to <cite>-vmax</cite> and
+cannot be chosen.
+If <cite>symmetric_cmap</cite> is <cite>False</cite>, <cite>vmin</cite> defaults to the min of the
+image, or 0 when a threshold is used.</p></li>
+<li><p><strong>resampling_interpolation</strong> (<em>string</em><em>, </em><em>optional</em>) – The interpolation method for resampling.
+Can be ‘continuous’, ‘linear’, or ‘nearest’.
+See nilearn.image.resample_img</p></li>
+<li><p><strong>opacity</strong> (<em>float in</em><em> [</em><em>0</em><em>,</em><em>1</em><em>]</em><em>, </em><em>optional</em>) – The level of opacity of the overlay (0: transparent, 1: opaque)</p></li>
+<li><p><strong>value</strong> (<em>boolean</em><em>, </em><em>optional</em>) – display the value of the overlay at the current voxel.</p></li>
+<li><p><strong>base64</strong> (<em>boolean</em><em> (</em><em>default True</em><em>)</em>) – turn on/off embedding of sprites in the html using base64 encoding.
+If the flag is off, the sprites (and the colorbar) will be saved in
+files named based on parameters sprite, sprite_overlay and img_colorMap.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return bsprite<span class="colon">:</span></dt>
+<dd class="field-even"><p>a brainsprite viewer template substitution tool.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="brainsprite.viewer_substitute.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat_map_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_img</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MNI152'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#brainsprite.viewer_substitute.fit" title="Link to this definition"></a></dt>
+<dd><p>Generate sprite and meta-data from a brain volume. Also optionally
+incorporate a background image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stat_map_img</strong> (stasNiimg-like object, See
+<a class="reference external" href="https://nilearn.github.io/dev/manipulating_images/index.html">https://nilearn.github.io/dev/manipulating_images/index.html</a>) – The statistical map image. Can be either a 3D volume
+or a 4D volume with exactly one time point.</p></li>
+<li><p><strong>bg_img</strong> (Niimg-like object, optional
+See <a class="reference external" href="https://nilearn.github.io/dev/manipulating_images/index.html">https://nilearn.github.io/dev/manipulating_images/index.html</a>) – The background image that the stat map will be plotted on top of.
+If nothing is specified, the MNI152 template will be used.
+To turn off background image, just pass “bg_img=False”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="brainsprite.viewer_substitute.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">javascript</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#brainsprite.viewer_substitute.transform" title="Link to this definition"></a></dt>
+<dd><p>Apply substitution in a template, using tempita.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template</strong> (<em>tempita template</em>) – a template where brainsprite data needs to be substituted.</p></li>
+<li><p><strong>javascript</strong> (<em>str</em><em> or </em><em>None</em>) – the tempita name to substitute with brainsprite javascript snippet.
+If None, javascript is not substituted.</p></li>
+<li><p><strong>html</strong> (<em>str</em><em> or </em><em>None</em>) – the tempita name to substitute with brainsprite html snippet.
+If None, html is not substituted.</p></li>
+<li><p><strong>library</strong> (<em>str</em><em> or </em><em>None</em>) – the tempita name to substitute with the brainsprite js library.
+If None, library is not substituted.</p></li>
+<li><p><strong>namespace</strong> (<em>dict</em>) – a list of names to substitute, using tempita’s substitute method.</p></li>
+<li><p><strong>width</strong> – the width of the html report.
+If None, the width of the report will be the width of the viewer.</p></li>
+<li><p><strong>height</strong> (<em>int</em><em> or </em><em>None</em>) – the height of the html report.
+If None, the height of the report will be the height of the viewer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="QUICKSTART.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="APIJS.html" class="btn btn-neutral float-right" title="API Javascript" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Brainsprite team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

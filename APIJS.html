@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Javascript &mdash; brainsprite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=06db1814" />
+
+  
+    <link rel="shortcut icon" href="_static/logo_brainsprite_small.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="CONTRIBUTING.html" />
+    <link rel="prev" title="API Python" href="APIPY.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            brainsprite
+              <img src="_static/logo_brainsprite.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="INSTALL.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QUICKSTART.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APIPY.html">API Python</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Javascript</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#brainsprite"><code class="docutils literal notranslate"><span class="pre">brainsprite()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">brainsprite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Javascript</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/brainsprite/brainsprite/blob/edit/master/docs/source/APIJS.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-javascript">
+<h1>API Javascript<a class="headerlink" href="#api-javascript" title="Link to this heading"></a></h1>
+<dl class="js function">
+<dt class="sig sig-object js" id="brainsprite">
+<span class="sig-name descname"><span class="n"><span class="pre">brainsprite</span></span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#brainsprite" title="Link to this definition"></a></dt>
+<dd><p>Brainsprite viewer object prototype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params.smooth</strong> (<em>boolean</em>) – turn on/off smoothing of the main slices.</p></li>
+<li><p><strong>params.flagValue</strong> (<em>boolean</em>) – turn on/off display of the current value.</p></li>
+<li><p><strong>params.colorBackground</strong> (<em>string</em>) – the color for background.</p></li>
+<li><p><strong>params.colorFont</strong> (<em>string</em>) – the color for the fonts.</p></li>
+<li><p><strong>params.colorCrosshair</strong> (<em>string</em>) – the color of the crosshair.</p></li>
+<li><p><strong>params.flagCoordinates</strong> (<em>boolean</em>) – turn on/off slice coordinates.</p></li>
+<li><p><strong>params.origin</strong> (<em>object</em>) – {“X”,”Y”,”Z”} coordinates of the origin .</p></li>
+<li><p><strong>params.voxelSize</strong> (<em>number</em>) – the size of one voxel (assumed to be isotropic)</p></li>
+<li><p><strong>params.affine</strong> (<em>array</em>) – the voxel-to-world transform. Use false for isotropic diagonal using origin and voxelSize.</p></li>
+<li><p><strong>params.heightColorBar</strong> (<em>number</em>) – height of the text for the colorbar.</p></li>
+<li><p><strong>params.sizeFont</strong> (<em>number</em>) – the size of other texts.</p></li>
+<li><p><strong>params.nbDecimals</strong> (<em>integer</em>) – the number of decimals when showing the value.</p></li>
+<li><p><strong>params.crosshair</strong> (<em>boolean</em>) – turns on/off the crosshair.</p></li>
+<li><p><strong>params.sizeCrosshair</strong> (<em>float</em>) – the size of the crosshair, expressed as a fraction of the slice (comprised between 0 and 1).</p></li>
+<li><p><strong>params.title</strong> (<em>string</em>) – the title for the viewer. false will use no title.</p></li>
+<li><p><strong>params.numSlice</strong> (<em>object</em>) – {“X”, “Y”, “Z”} coordinates of the initial cut. false will use the middle of the volume.</p></li>
+<li><p><strong>params.overlay</strong> (<em>object</em>) – object. If false, no overlay.</p></li>
+<li><p><strong>params.overlay.opacity</strong> (<em>number</em>) – the opacity of the overlay.</p></li>
+<li><p><strong>params.onclick</strong> (<em>string</em>) – command to call on click.</p></li>
+<li><p><strong>params.colormap</strong> (<em>object</em>) – object. if false, no colormap.</p></li>
+<li><p><strong>params.nanValue</strong> (<em>boolean</em>) – unable to read values.</p></li>
+<li><p><strong>params.radiological</strong> (<em>boolean</em>) – If true plot sections as a radiological view.</p></li>
+<li><p><strong>params.showLR:</strong> (<em>boolean</em>) – If true, positions and left/right annotation are added to the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>object</strong> – a brainsprite viewer object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="APIPY.html" class="btn btn-neutral float-left" title="API Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CONTRIBUTING.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Brainsprite team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

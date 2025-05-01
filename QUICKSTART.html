@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting started &mdash; brainsprite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=06db1814" />
+
+  
+    <link rel="shortcut icon" href="_static/logo_brainsprite_small.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Python" href="APIPY.html" />
+    <link rel="prev" title="Installation" href="INSTALL.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            brainsprite
+              <img src="_static/logo_brainsprite.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="INSTALL.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-brainsprite">Why brainsprite?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#html-code">HTML code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#javascript-code">Javascript code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-code">Python code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APIPY.html">API Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APIJS.html">API Javascript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">brainsprite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting started</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/brainsprite/brainsprite/blob/edit/master/docs/source/QUICKSTART.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<section id="why-brainsprite">
+<h2>Why brainsprite?<a class="headerlink" href="#why-brainsprite" title="Link to this heading"></a></h2>
+<p>Brainsprite viewers are designed to be elements on a web dashboard: they load fast,
+and can easily be interfaced with other interactive elements.
+The brainsprite javascript library is thus as small and fast as possible, while
+the heavy lifting of data preparation is done through a python library.</p>
+</section>
+<section id="html-code">
+<h2>HTML code<a class="headerlink" href="#html-code" title="Link to this heading"></a></h2>
+<p><img alt="" src="_images/sprite_small.jpg" /></p>
+<p>Brainsprite works from a sprite image (also known as a mosaic) such as the one
+above.The first thing to do is to add a div in an html document with an empty
+canvas (which will be populated with the viewer) as well as the sprite image,
+which is hidden:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">canvas</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;3Dviewer&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;spriteImg&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;hidden&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;sprite.jpg&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="javascript-code">
+<h2>Javascript code<a class="headerlink" href="#javascript-code" title="Link to this heading"></a></h2>
+<p>Then you include the brainsprite minified library (and jquery for the
+<code class="docutils literal notranslate"><span class="pre">$(</span> <span class="pre">window</span> <span class="pre">).load(function()</span></code> instruction below, although brainsprite itself
+does not use jquery):</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://code.jquery.com/jquery-3.5.0.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;brainsprite.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Finally, once the page is loaded, brainsprite is called to create a
+<code class="docutils literal notranslate"><span class="pre">brain</span></code> object. The parameters brainsprite are used to tweak the appearance of
+the viewer, as well as specify important meta-data which cannot be inferred from
+the sprite, such as the size of each slice (in pixel):</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span> <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="nx">$</span><span class="p">(</span><span class="w"> </span><span class="nb">window</span><span class="w"> </span><span class="p">).</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">brain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">brainsprite</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">canvas</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;3Dviewer&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">sprite</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spriteImg&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">nbSlice</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;Y&#39;</span><span class="o">:</span><span class="mf">233</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Z&#39;</span><span class="o">:</span><span class="mf">189</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Other important parameters are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">canvas</span></code>: the ID of the canvas where the brain slices will be added;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sprite</span></code>: the ID of the sprite image;</p></li>
+</ul>
+<p>The call to <code class="docutils literal notranslate"><span class="pre">brainsprite</span></code> will automatically generate a brain viewer, just like
+this one:</p>
+<iframe src="_static/example_basic.html" width=500 height=200 style="padding:0; border:0; display: block; margin-left: auto; margin-right: auto"></iframe>
+</section>
+<section id="python-code">
+<h2>Python code<a class="headerlink" href="#python-code" title="Link to this heading"></a></h2>
+<p>The brainsprite python library uses <a class="reference external" href="https://nilearn.github.io/">nilearn</a> in
+order to generate the sprites, as well as the html and javascript code required
+above. This code can be inserted into an html page template based on the
+<a class="reference external" href="https://pypi.org/project/Tempita/">tempita</a> library. Altogether, adding a
+brain viewer to a webpage only takes a few lines of python. Check the tutorials
+to learn more about the syntax.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="INSTALL.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="APIPY.html" class="btn btn-neutral float-right" title="API Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Brainsprite team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
