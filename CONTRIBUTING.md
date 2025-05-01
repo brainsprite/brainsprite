@@ -57,3 +57,68 @@ Output will be stored in `dist` folder.
 ```bash
 make build
 ```
+
+## Make a release
+
+Assuming you are bumping to version `X.Y.Z`
+
+### Bump version
+
+- bump the version in `package.json`
+
+```json
+{
+  "name": "brainsprite.js",
+  "version": "X.Y.Z",
+```
+
+- update the minified code
+
+```bash
+make minify
+```
+
+### Open a release pull request
+
+Open a PR `[REL] X.Y.Z`.
+
+Once all the relevant CI passe, merge it.
+
+### Create a tag
+
+Checkout the master branch from upstream and tag it.
+
+```bash
+git checkout master
+git fetch --all
+git reset --hard upstream/master
+git tag X.Y.Z
+```
+
+### Building the python package
+
+```bash
+git checkout X.Y.Z
+make build
+```
+
+### Push to pypi
+
+If you have the right access to pypi:
+
+```bash
+twine upload dist/python/*
+```
+
+### Push to npm
+
+TODO
+
+
+### Github release
+
+At this point, we need to upload the binaries to GitHub and link them to the tag.
+To do so, go to the tags under the "Releases" tab,
+and edit the `X.Y.Z` tag by providing a description,
+and upload the python and minified javascript distributions we just created
+(you can just drag and drop the files from the `dist` folder.).
