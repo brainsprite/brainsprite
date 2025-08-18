@@ -10,6 +10,7 @@ import tempita
 from matplotlib.image import imsave
 from nibabel.affines import apply_affine
 from nilearn._utils.extmath import fast_abs_percentile
+from nilearn._utils.html_document import HTMLDocument
 from nilearn._utils.niimg import safe_get_data
 from nilearn._utils.niimg_conversions import check_niimg_3d
 from nilearn._utils.param_validation import check_threshold
@@ -17,7 +18,6 @@ from nilearn.datasets import load_mni152_template
 from nilearn.image import new_img_like, reorder_img, resample_to_img
 from nilearn.plotting import cm
 from nilearn.plotting.find_cuts import find_xyz_cut_coords
-from nilearn.plotting.html_document import HTMLDocument
 from nilearn.plotting.img_plotting import load_anat
 from nilearn.plotting.js_plotting_utils import colorscale
 
