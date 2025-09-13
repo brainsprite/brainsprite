@@ -12,8 +12,8 @@ from nilearn import datasets
 anat = datasets.MNI152_FILE_PATH
 
 # one motor contrast map from NeuroVault
-motor_images = datasets.fetch_neurovault_motor_task()
-stat_img = motor_images.images[0]
+stat_img = datasets.load_sample_motor_activation_image()
+
 
 # %%
 # We are going to use the same template and instruction as in the

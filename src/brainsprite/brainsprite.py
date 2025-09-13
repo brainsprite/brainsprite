@@ -17,9 +17,9 @@ from nilearn._utils.param_validation import check_threshold
 from nilearn.datasets import load_mni152_template
 from nilearn.image import new_img_like, reorder_img, resample_to_img
 from nilearn.plotting import cm
+from nilearn.plotting._engine_utils import colorscale
 from nilearn.plotting.find_cuts import find_xyz_cut_coords
-from nilearn.plotting.img_plotting import load_anat
-from nilearn.plotting.js_plotting_utils import colorscale
+from nilearn.plotting.image.utils import load_anat
 
 
 def _data_to_sprite(data, radiological=False):
@@ -145,9 +145,15 @@ def _resample_stat_map(stat_map_img, bg_img, mask_img, resampling_interpolation=
         bg_img,
         interpolation=resampling_interpolation,
         force_resample=True,
+        copy_header=True,
     )
     mask_img = resample_to_img(
-        mask_img, bg_img, fill_value=1, interpolation="nearest", force_resample=True
+        mask_img,
+        bg_img,
+        fill_value=1,
+        interpolation="nearest",
+        force_resample=True,
+        copy_header=True,
     )
 
     return stat_map_img, mask_img
