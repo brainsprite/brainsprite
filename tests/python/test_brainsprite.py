@@ -249,7 +249,9 @@ def test_viewer_substitute_radiological():
     mni = datasets.load_mni152_template()
 
     # Create a fake functional image by resample the template
-    img = image.resample_img(mni, target_affine=3 * np.eye(3))
+    img = image.resample_img(
+        mni, target_affine=3 * np.eye(3), copy_header=True, force_resample=True
+    )
 
     file_template = Path(__file__).resolve().parent / "data" / "html" / "viewer_template.html"
 
