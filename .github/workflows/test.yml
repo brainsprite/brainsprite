@@ -67,7 +67,7 @@ jobs:
 
         -   name: Upload html coverage
             if: success() || failure()
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v5
             with:
                 name: ${{ matrix.os }}_${{ matrix.py }}_htmlcov
                 path: htmlcov
@@ -117,14 +117,14 @@ jobs:
 
         -   name: Upload html coverage
             if: success() || failure()
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v5
             with:
                 name: coverage
                 path: coverage
 
         -   name: Upload reference, new and diff images from test
             if: success() || failure()
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v5
             with:
                 name: image
                 path: tests/js/*.png

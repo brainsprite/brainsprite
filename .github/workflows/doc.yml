@@ -51,7 +51,7 @@ jobs:
             run: tox run -e doc
 
         -   name: Upload documentation
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v5
             with:
                 name: doc
                 path: docs/build/html
