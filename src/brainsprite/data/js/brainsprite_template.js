@@ -6,15 +6,19 @@
     Y: {{Y}},
     Z: {{Z}}
   },
-  overlay: {
-    sprite: "{{sprite_overlay}}",
-    nbSlice: {
-      X: {{X_overlay}},
-      Y: {{Y_overlay}},
-      Z: {{Z_overlay}}
+  overlays: [
+    {{for i, ov in enumerate(overlays_js)}}
+    {
+      sprite: "{{sprite_overlay}}_{{i}}",
+      nbSlice: {
+        X: {{ov['X']}},
+        Y: {{ov['Y']}},
+        Z: {{ov['Z']}}
+      },
+      opacity: {{ov['opacity']}}
     },
-    opacity: {{opacity}}
-  },
+    {{endfor}}
+  ],
   colorBackground: "{{colorBackground}}",
   colorFont: "{{colorFont}}",
   crosshair: {{crosshair}},
