@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <div id="div_viewer">{{ html }}</div>
+  <div style="margin-top: 8px;">
+    <label for="opacitySlider">Overlay opacity:</label>
+    <input type="range" id="opacitySlider" min="0" max="1" step="0.01" value="{{opacity}}"
+           oninput="brain.overlays[0].opacity = parseFloat(this.value);
+                    brain.drawAll();
+                    document.getElementById('opacityLabel').textContent =
+                      Math.round(parseFloat(this.value) * 100) + '%'">
+    <span id="opacityLabel">{{opacity_pct}}%</span>
+  </div>
+  <p style="font-size:0.85em; color:#555;">
+    Tip: slide to adjust overlay transparency and assess registration quality.
+  </p>
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+  <script>
+    {{ bsprite }}
+  </script>
+  <script>
+  $(window).on('load', function() {
+    brain = brainsprite({{ js }});
+  });
+  </script>
+</body>
+</html>

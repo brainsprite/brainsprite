@@ -399,3 +399,23 @@ def test_view_fmri_labels():
         bp_viewer.view_fmri(
             img_4d, bg_img=None, threshold=None, value=False, labels=["only one"]
         )
+
+
+def test_view_registration():
+    """view_registration returns a valid StatMapView with an opacity slider."""
+    img, _ = _simulate_img()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_registration(img, bg_img=None, value=False)
+    assert isinstance(viewer, bp.StatMapView)
+    assert "opacitySlider" in str(viewer)
+    assert "50%" in str(viewer)
+
+
+def test_view_registration_opacity():
+    """view_registration reflects the initial opacity in the HTML output."""
+    img, _ = _simulate_img()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_registration(img, bg_img=None, value=False, opacity=0.75)
+    assert "75%" in str(viewer)
