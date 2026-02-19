@@ -11,6 +11,7 @@ import tempita
 from nilearn.image import get_data, new_img_like
 
 from brainsprite import brainsprite as bp
+from brainsprite import viewer as bp_viewer
 
 
 def _simulate_img(affine=None):
@@ -357,3 +358,44 @@ def _check_html(html_view):
     assert isinstance(html_view, bp.StatMapView)
     assert "var brain =" in str(html_view)
     assert "overlayImg" in str(html_view)
+
+
+def test_view_fmri():
+    """view_fmri returns a valid StatMapView for a 4D image."""
+    img, data = _simulate_img()
+    img_4d = Nifti1Image(np.stack([data, data * 0.5], axis=-1), np.eye(4))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_fmri(img_4d, bg_img=None, threshold=None, value=False)
+    assert isinstance(viewer, bp.StatMapView)
+    assert "bsLabels" in str(viewer)
+    assert "frameSlider" in str(viewer)
+    assert "Volume 0" in str(viewer)
+
+
+def test_view_fmri_tr():
+    """view_fmri auto-generates time labels when tr is provided."""
+    img, data = _simulate_img()
+    img_4d = Nifti1Image(np.stack([data, data * 0.5, data * 0.25], axis=-1), np.eye(4))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_fmri(img_4d, bg_img=None, threshold=None, value=False, tr=2.0)
+    assert "Volume 0 (t=0 sec)" in str(viewer)
+    assert "Volume 1 (t=2 sec)" in str(viewer)
+    assert "Volume 2 (t=4 sec)" in str(viewer)
+
+
+def test_view_fmri_labels():
+    """view_fmri respects custom labels and raises on length mismatch."""
+    img, data = _simulate_img()
+    img_4d = Nifti1Image(np.stack([data, data * 0.5], axis=-1), np.eye(4))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_fmri(
+            img_4d, bg_img=None, threshold=None, value=False, labels=["A", "B"]
+        )
+    assert '"A"' in str(viewer)
+    with pytest.raises(ValueError, match="len\\(labels\\)"):
+        bp_viewer.view_fmri(
+            img_4d, bg_img=None, threshold=None, value=False, labels=["only one"]
+        )
