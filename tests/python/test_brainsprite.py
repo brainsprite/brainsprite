@@ -7,10 +7,11 @@ import numpy as np
 import pytest
 from nibabel import Nifti1Image
 from nilearn import datasets, image
-from nilearn.externals import tempita
+import tempita
 from nilearn.image import get_data, new_img_like
 
 from brainsprite import brainsprite as bp
+from brainsprite import viewer as bp_viewer
 
 
 def _simulate_img(affine=None):
@@ -274,8 +275,147 @@ def test_viewer_substitute_radiological():
     _check_html(viewer)
 
 
+def test_iter_volumes_3d():
+    """_iter_volumes yields the input unchanged for a 3D image."""
+    img, _ = _simulate_img()
+    volumes = list(bp._iter_volumes(img))
+    assert len(volumes) == 1
+    assert volumes[0] is img
+
+
+def test_iter_volumes_4d():
+    """_iter_volumes splits a 4D image into its constituent 3D volumes."""
+    img, data = _simulate_img()
+    data_4d = np.stack([data, data * 2, data * 3], axis=-1)
+    img_4d = Nifti1Image(data_4d, np.eye(4))
+    volumes = list(bp._iter_volumes(img_4d))
+    assert len(volumes) == 3
+    # Each volume should contain the expected data
+    for i, vol in enumerate(volumes):
+        np.testing.assert_allclose(vol.get_fdata(), data * (i + 1))
+
+
+def test_iter_volumes_list():
+    """_iter_volumes yields items from a list of 3D images."""
+    img, _ = _simulate_img()
+    img2, _ = _simulate_img()
+    volumes = list(bp._iter_volumes([img, img2]))
+    assert len(volumes) == 2
+    assert volumes[0] is img
+    assert volumes[1] is img2
+
+
+def test_viewer_substitute_4d():
+    """fit() on a 4D image generates one sprite per volume."""
+    img, data = _simulate_img()
+    data_4d = np.stack([data, data * 0.5, data * 0.25], axis=-1)
+    img_4d = Nifti1Image(data_4d, np.eye(4))
+
+    bsprite = bp.viewer_substitute(
+        cmap="gray",
+        symmetric_cmap=False,
+        black_bg=True,
+        threshold=None,
+        vmax=1,
+        title=None,
+        value=False,
+    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        bsprite.fit(img_4d, bg_img=None)
+
+    assert len(bsprite.sprites_overlay_) == 3, (
+        f"Expected 3 sprites, got {len(bsprite.sprites_overlay_)}"
+    )
+    # Each sprite should be a valid base64 PNG
+    for sprite in bsprite.sprites_overlay_:
+        assert sprite.startswith("iVBORw0KG"), "Sprite is not a valid base64 PNG"
+
+
+def test_viewer_substitute_list():
+    """fit() on a list of 3D images generates one sprite per image."""
+    img, data = _simulate_img()
+    img2 = Nifti1Image(data * 0.5, np.eye(4))
+
+    bsprite = bp.viewer_substitute(
+        cmap="gray",
+        symmetric_cmap=False,
+        black_bg=True,
+        threshold=None,
+        vmax=1,
+        title=None,
+        value=False,
+    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        bsprite.fit([img, img2], bg_img=None)
+
+    assert len(bsprite.sprites_overlay_) == 2
+
+
 def _check_html(html_view):
     """Check the presence of some expected code in the html viewer."""
     assert isinstance(html_view, bp.StatMapView)
     assert "var brain =" in str(html_view)
     assert "overlayImg" in str(html_view)
+
+
+def test_view_fmri():
+    """view_fmri returns a valid StatMapView for a 4D image."""
+    img, data = _simulate_img()
+    img_4d = Nifti1Image(np.stack([data, data * 0.5], axis=-1), np.eye(4))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_fmri(img_4d, bg_img=None, threshold=None, value=False)
+    assert isinstance(viewer, bp.StatMapView)
+    assert "bsLabels" in str(viewer)
+    assert "frameSlider" in str(viewer)
+    assert "Volume 0" in str(viewer)
+
+
+def test_view_fmri_tr():
+    """view_fmri auto-generates time labels when tr is provided."""
+    img, data = _simulate_img()
+    img_4d = Nifti1Image(np.stack([data, data * 0.5, data * 0.25], axis=-1), np.eye(4))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_fmri(img_4d, bg_img=None, threshold=None, value=False, tr=2.0)
+    assert "Volume 0 (t=0 sec)" in str(viewer)
+    assert "Volume 1 (t=2 sec)" in str(viewer)
+    assert "Volume 2 (t=4 sec)" in str(viewer)
+
+
+def test_view_fmri_labels():
+    """view_fmri respects custom labels and raises on length mismatch."""
+    img, data = _simulate_img()
+    img_4d = Nifti1Image(np.stack([data, data * 0.5], axis=-1), np.eye(4))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_fmri(
+            img_4d, bg_img=None, threshold=None, value=False, labels=["A", "B"]
+        )
+    assert '"A"' in str(viewer)
+    with pytest.raises(ValueError, match="len\\(labels\\)"):
+        bp_viewer.view_fmri(
+            img_4d, bg_img=None, threshold=None, value=False, labels=["only one"]
+        )
+
+
+def test_view_registration():
+    """view_registration returns a valid StatMapView with an opacity slider."""
+    img, _ = _simulate_img()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_registration(img, bg_img=None, value=False)
+    assert isinstance(viewer, bp.StatMapView)
+    assert "opacitySlider" in str(viewer)
+    assert "50%" in str(viewer)
+
+
+def test_view_registration_opacity():
+    """view_registration reflects the initial opacity in the HTML output."""
+    img, _ = _simulate_img()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        viewer = bp_viewer.view_registration(img, bg_img=None, value=False, opacity=0.75)
+    assert "75%" in str(viewer)

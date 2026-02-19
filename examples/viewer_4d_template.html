@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <!-- This is the div that will host the html brainsprite code -->
+  <div id="div_viewer">
+    <!-- Note the curly brackets are here to tell tempita to update this element. -->
+    {{ html }}
+  </div>
+
+  <!-- Slider and label for navigating 4D volumes -->
+  <div style="margin-top: 8px;">
+    <label for="frameSlider">Volume:</label>
+    <input type="range" id="frameSlider" min="0" max="{{num_frames - 1}}" value="0"
+           oninput="brain.setCurrentOverlay(parseInt(this.value)); document.getElementById('frameLabel').textContent = 'Frame ' + this.value">
+    <span id="frameLabel">Frame 0</span>
+  </div>
+  <p style="font-size:0.85em; color:#555;">
+    Tip: use the &#8592;&#8594; arrow keys to step through volumes.
+  </p>
+
+  <!-- Import jquery and brainsprite javascript libraries -->
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+  <script>
+    // We'll inject brainsprite.js here, to make the html self-contained.
+    {{ bsprite }}
+  </script>
+
+  <!-- That's where the js brainsprite code will live -->
+  <script>
+  // On load: build all figures
+  $( window ).on('load',function() {
+    // Create brain slices (brain is declared in global scope for the slider)
+    brain = brainsprite(
+      // that's where all the brainsprite parameters will be injected.
+      {{ js }}
+    );
+
+    // Sync the slider when arrow keys change the overlay
+    document.addEventListener('keydown', function() {
+      document.getElementById('frameSlider').value = brain.currentOverlay;
+      document.getElementById('frameLabel').textContent = 'Frame ' + brain.currentOverlay;
+    });
+  });
+  </script>
+</body>
+</html>

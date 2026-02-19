@@ -245,6 +245,23 @@ def _save_cm(cmap, output_cmap=None, format="png", n_colors=256):
     return output_cmap
 
 
+def _iter_volumes(stat_map_img):
+    """Yield 3D NIfTI volumes from a 4D image or list of 3D images."""
+    import nibabel as nib
+
+    if isinstance(stat_map_img, list):
+        yield from stat_map_img
+    else:
+        shape = getattr(stat_map_img, "shape", None)
+        if shape is not None and len(shape) == 4 and shape[3] > 1:
+            data = stat_map_img.get_fdata()
+            affine = stat_map_img.affine
+            for i in range(shape[3]):
+                yield nib.Nifti1Image(data[..., i], affine)
+        else:
+            yield stat_map_img  # 3D or 4D with single time point (handled by check_niimg_3d)
+
+
 class StatMapView(HTMLDocument):
     pass
 
@@ -383,22 +400,39 @@ class viewer_substitute:
         """Generate sprite and meta-data from a brain volume. Also optionally
         incorporate a background image.
 
-        :param stat_map_img: The statistical map image. Can be either a 3D volume
-            or a 4D volume with exactly one time point.
-        :type stat_map_img: stasNiimg-like object, See
-            https://nilearn.github.io/dev/manipulating_images/index.html
+        :param stat_map_img: The statistical map image. Can be a 3D volume,
+            a 4D volume (each time point becomes a separate overlay), or a list
+            of 3D Niimg-like objects.
+        :type stat_map_img: Niimg-like object or list of Niimg-like objects.
+            See https://nilearn.github.io/dev/manipulating_images/index.html
         :param bg_img: The background image that the stat map will be plotted on top of.
             If nothing is specified, the MNI152 template will be used.
             To turn off background image, just pass "bg_img=False".
         :type bg_img: Niimg-like object, optional
             See https://nilearn.github.io/dev/manipulating_images/index.html
         """
-        # Prepare the color map and thresholding
-        mask_img, stat_map_img, data, self.threshold = _mask_stat_map(stat_map_img, self.threshold)
+        # Normalize to list of 3D volumes
+        volumes = list(_iter_volumes(stat_map_img))
+        first_vol = volumes[0]
+
+        # Process first volume: get threshold and structural info
+        mask_img_0, first_vol_processed, data_0, self.threshold = _mask_stat_map(
+            first_vol, self.threshold
+        )
+
+        # Collect data across all volumes for a global colorscale
+        if len(volumes) == 1:
+            all_data = data_0.ravel()
+        else:
+            all_data_parts = [data_0.ravel()]
+            for vol in volumes[1:]:
+                _, _, vol_data, _ = _mask_stat_map(vol, self.threshold)
+                all_data_parts.append(vol_data.ravel())
+            all_data = np.concatenate(all_data_parts)
 
         self.colors_ = colorscale(
             self.cmap,
-            data.ravel(),
+            all_data,
             threshold=self.threshold,
             symmetric_cmap=self.symmetric_cmap,
             vmax=self.vmax,
@@ -412,22 +446,43 @@ class viewer_substitute:
             cfont = "#000000"
             cbg = "#FFFFFF"
 
-        # Prepare the data for the cuts
+        # Load background using first volume
         bg_img, self.bg_min_, self.bg_max_, self.black_bg_ = _load_bg_img(
-            stat_map_img, bg_img, self.black_bg, self.dim
+            first_vol_processed, bg_img, self.black_bg, self.dim
         )
-        stat_map_img, mask_img = _resample_stat_map(
-            stat_map_img, bg_img, mask_img, self.resampling_interpolation
+
+        # Resample first volume for cut slice selection
+        first_resampled, _ = _resample_stat_map(
+            first_vol_processed, bg_img, mask_img_0, self.resampling_interpolation
         )
-        self.cut_slices_ = _get_cut_slices(stat_map_img, self.cut_coords, self.threshold)
+        self.cut_slices_ = _get_cut_slices(first_resampled, self.cut_coords, self.threshold)
+        self.overlay_shape_ = first_resampled.shape
+        self.overlay_affine_ = first_resampled.affine
+
+        # Generate sprites for all volumes
+        self.sprites_overlay_ = []
+        for vol in volumes:
+            mi, vi, _, _ = _mask_stat_map(vol, self.threshold)
+            vi_resampled, mi_resampled = _resample_stat_map(
+                vi, bg_img, mi, self.resampling_interpolation
+            )
+            sprite_b64 = _save_sprite(
+                img=vi_resampled,
+                vmax=self.colors_["vmax"],
+                vmin=self.colors_["vmin"],
+                mask=mi_resampled,
+                cmap=self.cmap,
+                radiological=self.radiological,
+            )
+            self.sprites_overlay_.append(sprite_b64)
 
         # Now create the viewer, and populate the sprite data
-        self.html_ = self._brainsprite_html(bg_img, stat_map_img, mask_img)
+        self.html_ = self._brainsprite_html(bg_img)
 
         # Add the javascript snippet
         self.javascript_ = self._brainsprite_js(
-            shape=stat_map_img.shape,
-            affine=stat_map_img.affine,
+            shape=self.overlay_shape_,
+            affine=self.overlay_affine_,
             colorFont=cfont,
             colorBackground=cbg,
         )
@@ -445,7 +500,7 @@ class viewer_substitute:
 
         # Suggest a size for the viewer
         # width x height, in pixels
-        self.width_, self.height_ = _viewer_size(stat_map_img.shape)
+        self.width_, self.height_ = _viewer_size(self.overlay_shape_)
 
     def transform(
         self,
@@ -502,49 +557,54 @@ class viewer_substitute:
 
         return StatMapView(viewer, width=width, height=height)
 
-    def _brainsprite_html(self, bg_img, stat_map_img, mask_img):
+    def _brainsprite_html(self, bg_img):
         """Create an html snippet for the brainsprite viewer (with sprite data)."""
         # Initiate template
         resource_path = Path(__file__).resolve().parent / "data" / "html"
         if self.base64:
             file_template = resource_path / "brainsprite_template_base64.html"
-            file_bg = None
-            file_overlay = None
-            file_colormap = None
+            tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
+            snippet_html = tpl.substitute(
+                canvas=self.canvas,
+                sprite=self.sprite,
+                img_colorMap=self.img_colorMap,
+                sprite_overlay=self.sprite_overlay,
+                bg_base64=_save_sprite(
+                    img=bg_img,
+                    vmax=self.bg_max_,
+                    vmin=self.bg_min_,
+                    cmap="gray",
+                    radiological=self.radiological,
+                ),
+                overlays_base64=self.sprites_overlay_,
+                colormap_base64=_save_cm(cmap=self.colors_["cmap"], format="png"),
+            )
         else:
             file_template = resource_path / "brainsprite_template.html"
+            tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
             file_bg = f"{self.sprite}.png"
-            file_bg = f"{self.sprite_overlay}.png"
             file_colormap = f"{self.img_colorMap}.png"
-        tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
-
-        # Fill template
-        snippet_html = tpl.substitute(
-            canvas=self.canvas,
-            sprite=self.sprite,
-            img_colorMap=self.img_colorMap,
-            sprite_overlay=self.sprite_overlay,
-            bg_base64=_save_sprite(
+            _save_sprite(
                 output_sprite=file_bg,
                 img=bg_img,
                 vmax=self.bg_max_,
                 vmin=self.bg_min_,
                 cmap="gray",
                 radiological=self.radiological,
-            ),
-            overlay_base64=_save_sprite(
-                output_sprite=file_overlay,
-                img=stat_map_img,
-                vmax=self.colors_["vmax"],
-                vmin=self.colors_["vmin"],
-                mask=mask_img,
-                cmap=self.cmap,
-                radiological=self.radiological,
-            ),
-            colormap_base64=_save_cm(
-                output_cmap=file_colormap, cmap=self.colors_["cmap"], format="png"
-            ),
-        )
+            )
+            _save_cm(output_cmap=file_colormap, cmap=self.colors_["cmap"], format="png")
+            overlays_src = [
+                f"{self.sprite_overlay}_{i}.png" for i in range(len(self.sprites_overlay_))
+            ]
+            snippet_html = tpl.substitute(
+                canvas=self.canvas,
+                sprite=self.sprite,
+                img_colorMap=self.img_colorMap,
+                sprite_overlay=self.sprite_overlay,
+                bg_src=file_bg,
+                colormap_src=file_colormap,
+                overlays_src=overlays_src,
+            )
         return snippet_html
 
     def _brainsprite_js(self, shape, affine, colorFont, colorBackground):
@@ -554,6 +614,12 @@ class viewer_substitute:
         file_template = resource_path / "brainsprite_template.js"
         tpl = tempita.Template.from_filename(str(file_template), encoding="utf-8")
 
+        # Build one entry per overlay volume (all share the same shape)
+        overlays_js = [
+            {"X": shape[0], "Y": shape[1], "Z": shape[2], "opacity": self.opacity}
+            for _ in self.sprites_overlay_
+        ]
+
         return tpl.substitute(
             canvas=self.canvas,
             sprite=self.sprite,
@@ -561,10 +627,7 @@ class viewer_substitute:
             Y=shape[1],
             Z=shape[2],
             sprite_overlay=self.sprite_overlay,
-            X_overlay=shape[0],
-            Y_overlay=shape[1],
-            Z_overlay=shape[2],
-            opacity=self.opacity,
+            overlays_js=overlays_js,
             colorBackground=colorBackground,
             colorFont=colorFont,
             crosshair=float(self.draw_cross),
