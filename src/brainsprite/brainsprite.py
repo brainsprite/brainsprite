@@ -80,9 +80,7 @@ def _threshold_data(data, threshold=None):
     data = data * np.logical_not(mask)
     if not np.any(mask):
         warnings.warn(
-            f"Threshold given was {threshold}, "
-            f"but "
-            f"the data has no values below {data.min()}. ",
+            f"Threshold given was {threshold}, but the data has no values below {data.min()}. ",
             stacklevel=2,
         )
     return data, mask, threshold
