@@ -12,7 +12,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
 ]
 dependencies = ["tempita", "nilearn[plotting]>=0.12.0"]
 description = "Python API for the brainsprite MRI brain viewer"
@@ -25,6 +26,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
+dev = ["brainsprite[doc,test]", "pre-commit"]
 # Requirements necessary for building the documentation
 doc = [
     "sphinx>=7.4.7",

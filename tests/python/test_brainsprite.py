@@ -5,9 +5,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+import tempita
 from nibabel import Nifti1Image
 from nilearn import datasets, image
-from nilearn.externals import tempita
 from nilearn.image import get_data, new_img_like
 
 from brainsprite import brainsprite as bp
