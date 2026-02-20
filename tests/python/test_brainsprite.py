@@ -1,5 +1,7 @@
 """Test for brainsprite."""
 
+import os
+import sys
 import warnings
 from pathlib import Path
 
@@ -104,7 +106,10 @@ def test_save_sprite():
 
     # Check the sprite is correct
     assert sprite_base64.startswith("iVBORw0KG")
-    assert sprite_base64.endswith("ABJRU5ErkJggg==")
+    if sys.platform == "darwin" or os.name == "nt":
+        assert sprite_base64.endswith("AAASUVORK5CYII=")
+    else:
+        assert sprite_base64.endswith("ABJRU5ErkJggg==")
 
 
 def test_save_cmap():
