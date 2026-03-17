@@ -643,17 +643,6 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
     brain.draw(brain.numSlice.Z, 'Z')
   }
 
-  brain.setSlice = function (newSlice) {
-    if (newSlice) {
-      if (newSlice.X !== undefined) brain.numSlice.X = Math.round(newSlice.X);
-      if (newSlice.Y !== undefined) brain.numSlice.Y = Math.round(newSlice.Y);
-      if (newSlice.Z !== undefined) brain.numSlice.Z = Math.round(newSlice.Z);
-    }
-    updateValue();
-    updateCoordinates();
-    brain.drawAll();
-  }
-
   // Attach a listener for clicks
   brain.canvas.addEventListener('click', brain.clickBrain, false)
 
