@@ -204,8 +204,9 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
     const pos = {}
     if (brain.overlay && !brain.nanValue) {
       try {
-        pos.XW = Math.round((brain.numSlice.X) % brain.nbCol)
-        pos.XH = Math.round((brain.numSlice.X - pos.XW) / brain.nbCol)
+        const drawXValue = toVisualX(brain.numSlice.X)
+        pos.XW = Math.round((drawXValue) % brain.nbCol)
+        pos.XH = Math.round((drawXValue - pos.XW) / brain.nbCol)
         brain.contextRead.clearRect(0, 0, 1, 1)
         brain.contextRead.drawImage(
           brain.overlay.sprite,
@@ -232,6 +233,13 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
     for (let r = 0; r < 3; ++r) {
       result[r] = vec4[0] * mat4[r][0] + vec4[1] * mat4[r][1] + vec4[2] * mat4[r][2] + vec4[3] * mat4[r][3]
     }
+  }
+
+  const toVisualX = function (voxelX) {
+    return brain.radiological ? (brain.nbSlice.X - 1 - voxelX) : voxelX
+  }
+  const toVoxelX = function (visualX) {
+    return brain.radiological ? (brain.nbSlice.X - 1 - visualX) : visualX
   }
 
   const coordVoxel = [0, 0, 0]
@@ -367,7 +375,7 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
   //* **************************************//
   brain.draw = function (slice, type) {
     // Init variables
-    const pos = {}; let coord; let coordWidth
+    const pos = {}; let coord; let coordWidth; let drawX
     const offX = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.X / 2)
     const offY = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Y / 2)
     const offZ = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Z / 2)
@@ -377,8 +385,9 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
     switch (type) {
       case 'X':
         // Draw a sagittal slice in memory
-        pos.XW = ((brain.numSlice.X) % brain.nbCol)
-        pos.XH = (brain.numSlice.X - pos.XW) / brain.nbCol
+        drawX = toVisualX(brain.numSlice.X)
+        pos.XW = ((drawX) % brain.nbCol)
+        pos.XH = (drawX - pos.XW) / brain.nbCol
         brain.planes.contextX.drawImage(brain.planes.canvasMaster,
           pos.XW * nY, pos.XH * nZ, nY, nZ,
           0, 0, nY, nZ)
@@ -445,7 +454,7 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
         // Add a crosshair
         if (brain.crosshair) {
           brain.planes.contextY.fillStyle = brain.colorCrosshair
-          brain.planes.contextY.fillRect(brain.numSlice.X, offZ, 1,
+          brain.planes.contextY.fillRect(toVisualX(brain.numSlice.X), offZ, 1,
             brain.nbSlice.Z - 2 * offZ)
           brain.planes.contextY.fillRect(offX, brain.nbSlice.Z -
             brain.numSlice.Z - 1, brain.nbSlice.X - 2 * offX, 1)
@@ -535,7 +544,7 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
         // Add a crosshair
         if (brain.crosshair) {
           brain.planes.contextZ.fillStyle = brain.colorCrosshair
-          brain.planes.contextZ.fillRect(offY, brain.numSlice.X,
+          brain.planes.contextZ.fillRect(offY, toVisualX(brain.numSlice.X),
             brain.nbSlice.Y - 2 * offY, 1)
           brain.planes.contextZ.fillRect(brain.numSlice.Y, offX, 1,
             brain.nbSlice.X - 2 * offX)
@@ -600,14 +609,16 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
       brain.numSlice.Z = Math.max(Math.min(sz, brain.nbSlice.Z - 1), 0)
     } else if (xx < (brain.widthCanvas.X + brain.widthCanvas.Y)) {
       xx = xx - brain.widthCanvas.X
-      const sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Y))
+      const visualX = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Y))
+      const sx = toVoxelX(visualX)
       const sz = Math.round((brain.nbSlice.Z - 1) * (((brain.heightCanvas.max +
         brain.heightCanvas.X) / 2) - yy) / brain.heightCanvas.X)
       brain.numSlice.X = Math.max(Math.min(sx, brain.nbSlice.X - 1), 0)
       brain.numSlice.Z = Math.max(Math.min(sz, brain.nbSlice.Z - 1), 0)
     } else {
       xx = xx - brain.widthCanvas.X - brain.widthCanvas.Y
-      const sx = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Z))
+      const visualX = Math.round((brain.nbSlice.X - 1) * (xx / brain.widthCanvas.Z))
+      const sx = toVoxelX(visualX)
       const sy = Math.round((brain.nbSlice.Y - 1) * (((brain.heightCanvas.max +
         brain.heightCanvas.Z) / 2) - yy) / brain.heightCanvas.Z)
       brain.numSlice.X = Math.max(Math.min(sx, brain.nbSlice.X - 1), 0)
