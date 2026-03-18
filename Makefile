@@ -27,6 +27,7 @@ tests/js/*html: src/brainsprite/data/js/brainsprite.js
 	tox run -e examples
 	cp examples/plot_anat.html tests/js
 	cp examples/plot_stat_map.html tests/js
+	cp examples/plot_stat_map_radio.html tests/js
 	rm -fr src/brainsprite/data/js/brainsprite.js
 
 .PHONY: coverage

@@ -52,6 +52,7 @@ template = tempita.Template.from_filename(file_template, encoding="utf-8")
 
 viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
 
+# %%
 # In a Jupyter notebook, if ``view`` is the output of a cell, it will
 # be displayed below the cell
 viewer
@@ -59,6 +60,26 @@ viewer
 # %%
 # The following instruction can be used to save the viewer in a stand-alone,
 # html document:
+viewer.save_as_html(examples_dir / "plot_stat_map_radio.html")
+
+# %%
+# Let's also generate a non-radiological view of the image.
+
+bsprite = viewer_substitute(
+    threshold=3,
+    opacity=0.5,
+    title="plot_stat_map",
+    cut_coords=[36, -27, 66],
+    radiological=False,
+)
+bsprite.fit(stat_img, bg_img=anat)
+
+viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
+
+#  %%
+viewer
+
+# %%
 viewer.save_as_html(examples_dir / "plot_stat_map.html")
 
 # %%
