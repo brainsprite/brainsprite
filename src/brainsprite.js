@@ -375,7 +375,7 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
   //* **************************************//
   brain.draw = function (slice, type) {
     // Init variables
-    const pos = {}; let coord; let coordWidth
+    const pos = {}; let coord; let coordWidth; let drawX;
     const offX = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.X / 2)
     const offY = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Y / 2)
     const offZ = Math.ceil((1 - brain.sizeCrosshair) * brain.nbSlice.Z / 2)
@@ -385,7 +385,7 @@ function brainsprite (params) { // eslint-disable-line no-unused-vars
     switch (type) {
       case 'X':
         // Draw a sagittal slice in memory
-        let drawX = toVisualX(brain.numSlice.X);
+        drawX = toVisualX(brain.numSlice.X);
         pos.XW = ((drawX) % brain.nbCol)
         pos.XH = (drawX - pos.XW) / brain.nbCol
         brain.planes.contextX.drawImage(brain.planes.canvasMaster,
