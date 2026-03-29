@@ -72,7 +72,7 @@ jobs:
                 path: htmlcov
 
         -   name: Upload coverage to CodeCov
-            uses: codecov/codecov-action@v5
+            uses: codecov/codecov-action@v6
             with:
                 flags: ${{ matrix.os }}_${{ matrix.py }}
                 token: ${{ secrets.CODECOV_TOKEN }}
