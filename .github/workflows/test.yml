@@ -37,9 +37,9 @@ jobs:
 
         steps:
 
-        -   uses: actions/checkout@v6
+        -   uses: actions/checkout@v7
 
-        -   uses: actions/setup-node@v6
+        -   uses: actions/setup-node@v7
             with:
                 node-version: 18
 
@@ -50,7 +50,7 @@ jobs:
             uses: astral-sh/setup-uv@v7
 
         -   name: Setup python
-            uses: actions/setup-python@v6
+            uses: actions/setup-python@v7
             with:
                 python-version: ${{ matrix.py }}
                 allow-prereleases: true
@@ -66,13 +66,13 @@ jobs:
 
         -   name: Upload html coverage
             if: success() || failure()
-            uses: actions/upload-artifact@v6
+            uses: actions/upload-artifact@v7
             with:
                 name: ${{ matrix.os }}_${{ matrix.py }}_htmlcov
                 path: htmlcov
 
         -   name: Upload coverage to CodeCov
-            uses: codecov/codecov-action@v5
+            uses: codecov/codecov-action@v7
             with:
                 flags: ${{ matrix.os }}_${{ matrix.py }}
                 token: ${{ secrets.CODECOV_TOKEN }}
@@ -90,9 +90,9 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-        -   uses: actions/checkout@v6
+        -   uses: actions/checkout@v7
 
-        -   uses: actions/setup-node@v6
+        -   uses: actions/setup-node@v7
             with:
                 node-version: 18
 
@@ -100,7 +100,7 @@ jobs:
             uses: astral-sh/setup-uv@v7
 
         -   name: Setup python
-            uses: actions/setup-python@v6
+            uses: actions/setup-python@v7
             with:
                 python-version: '3.10'
                 allow-prereleases: true
@@ -116,14 +116,14 @@ jobs:
 
         -   name: Upload html coverage
             if: success() || failure()
-            uses: actions/upload-artifact@v6
+            uses: actions/upload-artifact@v7
             with:
                 name: coverage
                 path: coverage
 
         -   name: Upload reference, new and diff images from test
             if: success() || failure()
-            uses: actions/upload-artifact@v6
+            uses: actions/upload-artifact@v7
             with:
                 name: image
                 path: tests/js/*.png

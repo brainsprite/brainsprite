@@ -50,7 +50,16 @@ if examples_dir.name != "examples":
 file_template = examples_dir / "viewer_template.html"
 template = tempita.Template.from_filename(file_template, encoding="utf-8")
 
-viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
+# The viewer is wrapped in an iframe: ``width`` and ``height`` set its size
+# in pixels (by default, the size of the viewer computed during ``fit``).
+viewer = bsprite.transform(
+    template,
+    javascript="js",
+    html="html",
+    library="bsprite",
+    width=800,
+    height=360,
+)
 
 # %%
 # In a Jupyter notebook, if ``view`` is the output of a cell, it will
