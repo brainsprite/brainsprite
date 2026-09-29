@@ -27,8 +27,8 @@ jobs:
     docs:
         runs-on: ubuntu-latest
         steps:
-        -   uses: actions/checkout@v6
-        -   uses: actions/setup-node@v6
+        -   uses: actions/checkout@v7
+        -   uses: actions/setup-node@v7
             with:
                 node-version: 18
 
@@ -36,7 +36,7 @@ jobs:
             uses: astral-sh/setup-uv@v7
 
         -   name: Setup python
-            uses: actions/setup-python@v6
+            uses: actions/setup-python@v7
             with:
                 python-version: '3.10'
                 allow-prereleases: true
@@ -51,7 +51,7 @@ jobs:
             run: tox run -e doc
 
         -   name: Upload documentation
-            uses: actions/upload-artifact@v6
+            uses: actions/upload-artifact@v7
             with:
                 name: doc
                 path: docs/build/html
