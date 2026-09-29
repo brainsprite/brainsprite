@@ -1,9 +1,11 @@
 <!-- canvas featuring a brainsprite viewer -->
 <canvas id="{{canvas}}">
 <!-- Background sprite image -->
-<img id="{{sprite}}" class="hidden" src="data:image/png;base64,{{bg_base64}}" alt="background" />
+<img id="{{sprite}}" class="hidden" src="{{bg_src}}" alt="background" />
 <!-- Colormap -->
-<img id="{{img_colorMap}}" class="hidden" src="data:image/png;base64,{{colormap_base64}}" alt="colormap">
-<!-- Overlay sprite image-->
-<img id="{{sprite_overlay}}" class="hidden" src="data:image/png;base64,{{overlay_base64}}" alt="overlay">
+<img id="{{img_colorMap}}" class="hidden" src="{{colormap_src}}" alt="colormap">
+<!-- Overlay sprite images -->
+{{for i, overlay_src in enumerate(overlays_src)}}
+<img id="{{sprite_overlay}}_{{i}}" class="hidden" src="{{overlay_src}}" alt="overlay {{i}}">
+{{endfor}}
 </canvas>

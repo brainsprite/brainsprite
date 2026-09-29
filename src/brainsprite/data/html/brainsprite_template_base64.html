@@ -4,6 +4,8 @@
 <img id="{{sprite}}" class="hidden" src="data:image/png;base64,{{bg_base64}}" alt="background" />
 <!-- Colormap -->
 <img id="{{img_colorMap}}" class="hidden" src="data:image/png;base64,{{colormap_base64}}" alt="colormap">
-<!-- Overlay sprite image-->
-<img id="{{sprite_overlay}}" class="hidden" src="data:image/png;base64,{{overlay_base64}}" alt="overlay">
+<!-- Overlay sprite images -->
+{{for i, overlay_b64 in enumerate(overlays_base64)}}
+<img id="{{sprite_overlay}}_{{i}}" class="hidden" src="data:image/png;base64,{{overlay_b64}}" alt="overlay {{i}}">
+{{endfor}}
 </canvas>

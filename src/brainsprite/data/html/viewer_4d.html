@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <div id="div_viewer">{{ html }}</div>
+  <div style="margin-top: 8px;">
+    <label for="frameSlider">Volume:</label>
+    <input type="range" id="frameSlider" min="0" max="{{num_frames - 1}}" value="0"
+           oninput="brain.setCurrentOverlay(parseInt(this.value))">
+    <span id="frameLabel">{{labels[0]}}</span>
+  </div>
+  <p style="font-size:0.85em; color:#555;">
+    Tip: use &#8592;&#8594; arrow keys to step through volumes.
+  </p>
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+  <script>
+    var bsLabels = {{labels_json}};
+    {{ bsprite }}
+  </script>
+  <script>
+  $(window).on('load', function() {
+    brain = brainsprite({{ js }});
+
+    // Patch setCurrentOverlay so that every caller (arrow keys, slider,
+    // or programmatic) keeps the slider and label in sync automatically.
+    var _setOverlay = brain.setCurrentOverlay;
+    brain.setCurrentOverlay = function(index) {
+      _setOverlay(index);
+      document.getElementById('frameSlider').value = brain.currentOverlay;
+      document.getElementById('frameLabel').textContent = bsLabels[brain.currentOverlay];
+    };
+
+    // Prevent arrow keys from scrolling the page while navigating volumes.
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') e.preventDefault();
+    });
+  });
+  </script>
+</body>
+</html>
