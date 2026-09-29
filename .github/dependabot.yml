@@ -20,3 +20,9 @@ updates:
         npm:
             patterns:
             -   '*'
+    ignore:
+    # ESM-only in newer majors: tests/js use CommonJS require()
+    -   dependency-name: puppeteer
+        update-types: [version-update:semver-major]
+    -   dependency-name: pixelmatch
+        update-types: [version-update:semver-major]
