@@ -3,7 +3,7 @@ build-backend = "hatchling.build"
 requires = ["hatchling", "hatch-vcs"]
 
 [project]
-authors = [{name = "Nilearn developers"}]
+authors = [{ name = "Brainsprite developers" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -12,30 +12,32 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
 ]
-dependencies = ["tempita", "nilearn[plotting]>=0.12.0"]
+dependencies = ["tempita>=0.6.0", "nilearn[plotting]>=0.14.1"]
 description = "Python API for the brainsprite MRI brain viewer"
 # Version from setuptools_scm
 dynamic = ["version"]
-license = {text = "MIT"}
-maintainers = [{name = "Pierre Bellec", email = "pierre.bellec@gmail.com"}]
+license = { text = "MIT" }
+maintainers = [{ name = "Pierre Bellec", email = "pierre.bellec@gmail.com" }]
 name = "brainsprite"
 readme = "README.md"
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
+dev = ["brainsprite[doc,test]", "pre-commit>=4.6.2"]
 # Requirements necessary for building the documentation
 doc = [
     "sphinx>=7.4.7",
     "sphinx-copybutton>=0.5.2",
     "sphinx-gallery>=0.18.0",
-    "sphinx_rtd_theme",
-    "sphinx-js",
+    "sphinx_rtd_theme>=3.1.0",
+    "sphinx-js>=5.0.3",
     "myst-parser>=3.0.1"
 ]
 # For running unit and docstring tests
-test = ["coverage", "pytest>=6.0.0", "pytest-cov"]
+test = ["coverage>=7.0.0", "pytest>=8.0.0", "pytest-cov>=7.0.0", "tox>=4", "tox-uv"]
 
 [project.urls]
 "Bug Reports" = "https://github.com/brainsprite/brainsprite/issues"
@@ -62,7 +64,7 @@ addopts = "-ra --strict-config --strict-markers --doctest-modules --showlocals -
 doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
 junit_family = "xunit2"
 log_cli_level = "INFO"
-minversion = "6.0"
+minversion = "8.0"
 xfail_strict = true
 
 [tool.ruff]

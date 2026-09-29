@@ -1,13 +1,15 @@
 """Test for brainsprite."""
 
+import os
+import sys
 import warnings
 from pathlib import Path
 
 import numpy as np
 import pytest
+import tempita
 from nibabel import Nifti1Image
 from nilearn import datasets, image
-from nilearn.externals import tempita
 from nilearn.image import get_data, new_img_like
 
 from brainsprite import brainsprite as bp
@@ -32,9 +34,9 @@ def _check_affine(affine):
     assert affine[0, 0] > 0
 
     a, _ = image.resampling.to_matrix_vector(affine)
-    assert np.all(
-        (np.abs(a) > 0.001).sum(axis=0) == 1
-    ), "the affine transform was not near-diagonal"
+    assert np.all((np.abs(a) > 0.001).sum(axis=0) == 1), (
+        "the affine transform was not near-diagonal"
+    )
 
 
 def test_data_to_sprite():
@@ -104,7 +106,10 @@ def test_save_sprite():
 
     # Check the sprite is correct
     assert sprite_base64.startswith("iVBORw0KG")
-    assert sprite_base64.endswith("ABJRU5ErkJggg==")
+    if sys.platform == "darwin" or os.name == "nt":
+        assert sprite_base64.endswith("AAASUVORK5CYII=")
+    else:
+        assert sprite_base64.endswith("ABJRU5ErkJggg==")
 
 
 def test_save_cmap():
@@ -173,12 +178,12 @@ def test_resample_stat_map():
     _check_affine(mask_img.affine)
 
     # Check voxel size matches bg_img
-    assert (
-        stat_map_img.affine[0, 0] == bg_img.affine[0, 0]
-    ), "stat_map_img was not resampled at the resolution of background"
-    assert (
-        mask_img.affine[0, 0] == bg_img.affine[0, 0]
-    ), "mask_img was not resampled at the resolution of background"
+    assert stat_map_img.affine[0, 0] == bg_img.affine[0, 0], (
+        "stat_map_img was not resampled at the resolution of background"
+    )
+    assert mask_img.affine[0, 0] == bg_img.affine[0, 0], (
+        "mask_img was not resampled at the resolution of background"
+    )
 
 
 def test_get_cut_slices():
@@ -240,9 +245,9 @@ def test_viewer_substitute():
     # Check that all warnings were expected
     warnings_set = {warning_.category for warning_ in w}
     expected_set = {FutureWarning, UserWarning, DeprecationWarning}
-    assert warnings_set.issubset(
-        expected_set
-    ), f"the following warnings were not expected: {warnings_set.difference(expected_set)}"
+    assert warnings_set.issubset(expected_set), (
+        f"the following warnings were not expected: {warnings_set.difference(expected_set)}"
+    )
 
 
 def test_viewer_substitute_radiological():
