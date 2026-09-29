@@ -97,9 +97,9 @@ Once all the relevant CI passe, merge it.
 Checkout the master branch from upstream and tag it.
 
 ```bash
-git checkout master
+git checkout main
 git fetch --all
-git reset --hard upstream/master
+git reset --hard upstream/main
 git tag X.Y.Z
 ```
 
