@@ -32,7 +32,13 @@ tests/js/*html: src/brainsprite/data/js/brainsprite.js
 
 .PHONY: coverage
 coverage: install tests/js/*html
-	mkdir -p docs/build/html/_images
+	mkdir -p referencesdocs/build/html/_images
 	npm run test
 	npm i nyc -g
 	nyc report --reporter=html
+
+
+.PHONY:
+references: install tests/js/*html
+	mkdir -p docs/build/html/_images
+	TEST_RUN=init npm run test
