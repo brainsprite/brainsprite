@@ -6,4 +6,17 @@ updates:
 -   package-ecosystem: github-actions
     directory: /
     schedule:
-        interval: weekly
+        interval: quarterly
+    groups:
+        actions-infrastructure:
+            patterns:
+            -   actions/*
+
+-   package-ecosystem: npm
+    directory: /
+    schedule:
+        interval: quarterly
+    groups:
+        npm:
+            patterns:
+            -   '*'
