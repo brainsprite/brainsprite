@@ -14,17 +14,11 @@ from nilearn._utils.html_document import HTMLDocument
 from nilearn._utils.niimg import safe_get_data
 from nilearn._utils.param_validation import check_threshold
 from nilearn.datasets import load_mni152_template
-from nilearn.image import new_img_like, reorder_img, resample_to_img
+from nilearn.image import check_niimg_3d, new_img_like, reorder_img, resample_to_img
 from nilearn.plotting import cm
 from nilearn.plotting._engine_utils import colorscale
 from nilearn.plotting.find_cuts import find_xyz_cut_coords
 from nilearn.plotting.image.utils import load_anat
-
-try:
-    # TODO: remove when dropping support for nilearn >= 0.14
-    from nilearn._utils.niimg_conversions import check_niimg_3d
-except ImportError:
-    from nilearn.image import check_niimg_3d
 
 
 def _data_to_sprite(data, radiological=False):
