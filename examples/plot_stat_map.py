@@ -83,7 +83,14 @@ bsprite = viewer_substitute(
 )
 bsprite.fit(stat_img, bg_img=anat)
 
-viewer = bsprite.transform(template, javascript="js", html="html", library="bsprite")
+viewer = bsprite.transform(
+    template,
+    javascript="js",
+    html="html",
+    library="bsprite",
+    width=800,
+    height=360,
+)
 
 #  %%
 viewer
