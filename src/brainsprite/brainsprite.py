@@ -12,10 +12,9 @@ from nibabel.affines import apply_affine
 from nilearn._utils.extmath import fast_abs_percentile
 from nilearn._utils.html_document import HTMLDocument
 from nilearn._utils.niimg import safe_get_data
-from nilearn._utils.niimg_conversions import check_niimg_3d
 from nilearn._utils.param_validation import check_threshold
 from nilearn.datasets import load_mni152_template
-from nilearn.image import new_img_like, reorder_img, resample_to_img
+from nilearn.image import check_niimg_3d, new_img_like, reorder_img, resample_to_img
 from nilearn.plotting import cm
 from nilearn.plotting._engine_utils import colorscale
 from nilearn.plotting.find_cuts import find_xyz_cut_coords
@@ -80,9 +79,7 @@ def _threshold_data(data, threshold=None):
     data = data * np.logical_not(mask)
     if not np.any(mask):
         warnings.warn(
-            f"Threshold given was {threshold}, "
-            f"but "
-            f"the data has no values below {data.min()}. ",
+            f"Threshold given was {threshold}, but the data has no values below {data.min()}. ",
             stacklevel=2,
         )
     return data, mask, threshold
