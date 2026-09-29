@@ -39,6 +39,14 @@ pip install tox
 make coverage
 ```
 
+### Generate new reference images to test
+
+```bash
+pip install tox
+make references
+```
+
+
 ## Build the documentation
 
 Documentation includes some examples generated via sphinx-gallery.
